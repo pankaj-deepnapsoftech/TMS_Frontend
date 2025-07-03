@@ -8,10 +8,10 @@ import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { useNotifications } from '@/context/NotificationContext';
 import TicketForm from '@/components/TicketForm';
 import TicketCard from '@/components/TicketCard';
-import TicketStats from '@/components/TicketStats';
 import TicketFilters from '@/components/TicketFilters';
 import { Plus, Ticket } from 'lucide-react';
 import { users, departments, initialTickets } from '@/data';
+import TicketStats from '../components/TicketStats';
 
 const AdminDashboard = () => {
   const { toast } = useToast();
@@ -186,7 +186,7 @@ const AdminDashboard = () => {
           <p className="text-gray-400 mb-8">Oversee and manage all tickets across the team.</p>
         </motion.div>
         
-        <TicketStats tickets={tickets} />
+        <TicketStats />
         <TicketFilters
           searchTerm={searchTerm} setSearchTerm={setSearchTerm}
           statusFilter={statusFilter} setStatusFilter={setStatusFilter}

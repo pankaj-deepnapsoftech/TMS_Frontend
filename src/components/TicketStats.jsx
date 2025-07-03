@@ -1,58 +1,74 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle, Clock, AlertTriangle, Target, Ticket } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  CheckCircle,
+  Clock,
+  AlertTriangle,
+  Target,
+  Ticket,
+} from "lucide-react";
+import { axiosHandler } from "../config/axiosConfig";
 
-const TicketStats = ({ tickets }) => {
-  const totalTickets = tickets.length;
-  const openTickets = tickets.filter(ticket => ticket.status === 'open').length;
-  const inProgressTickets = tickets.filter(ticket => ticket.status === 'in-progress').length;
-  const resolvedTickets = tickets.filter(ticket => ticket.status === 'resolved').length;
-  const overdueTickets = tickets.filter(ticket => 
-    ticket.dueDate && new Date(ticket.dueDate) < new Date() && ticket.status !== 'resolved' && ticket.status !== 'closed'
-  ).length;
+
+const TicketStats = () => {
+  const [statsData, setStatsData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchStats = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await axiosHandler.get("/dashboard");
+      setStatsData(res?.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
 
   const stats = [
     {
-      title: 'Total Tickets',
-      value: totalTickets,
+      title: "Total Tickets",
+      value: statsData.total,
       icon: Ticket,
-      color: 'from-blue-500 to-cyan-500',
-      bgColor: 'bg-blue-500/20',
+      color: "from-blue-500 to-cyan-500",
+      bgColor: "bg-blue-500/20",
     },
     {
-      title: 'Open',
-      value: openTickets,
+      title: "Open",
+      value: statsData.open,
       icon: Target,
-      color: 'from-purple-500 to-pink-500',
-      bgColor: 'bg-purple-500/20',
+      color: "from-purple-500 to-pink-500",
+      bgColor: "bg-purple-500/20",
     },
     {
-      title: 'In Progress',
-      value: inProgressTickets,
+      title: "In Progress",
+      value: statsData.inProgress,
       icon: Clock,
-      color: 'from-yellow-500 to-orange-500',
-      bgColor: 'bg-yellow-500/20',
+      color: "from-yellow-500 to-orange-500",
+      bgColor: "bg-yellow-500/20",
     },
     {
-      title: 'Resolved',
-      value: resolvedTickets,
+      title: "Resolved",
+      value: statsData.resolved,
       icon: CheckCircle,
-      color: 'from-green-500 to-emerald-500',
-      bgColor: 'bg-green-500/20',
+      color: "from-green-500 to-emerald-500",
+      bgColor: "bg-green-500/20",
     },
   ];
 
-  if (overdueTickets > 0) {
-    stats.push({
-      title: 'Overdue',
-      value: overdueTickets,
-      icon: AlertTriangle,
-      color: 'from-red-500 to-pink-500',
-      bgColor: 'bg-red-500/20',
-    });
+  if (loading) {
+    return <div className="text-gray-400">Loading ticket stats...</div>;
   }
-
+  if (error) {
+    return <div className="text-red-400">{error}</div>;
+  }
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-8">
       {stats.map((stat, index) => (
@@ -72,7 +88,9 @@ const TicketStats = ({ tickets }) => {
               </div>
             </CardHeader>
             <CardContent>
-              <div className={`text-2xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>
+              <div
+                className={`text-2xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}
+              >
                 {stat.value}
               </div>
             </CardContent>
