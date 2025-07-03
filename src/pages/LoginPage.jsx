@@ -70,7 +70,7 @@ const LoginPage = () => {
                                 onChange={formik.handleChange}
                             />
                             <div onClick={() => setShowPassword(!showPassword)} className='absolute cursor-pointer right-3 top-9  '>
-                                {showPassword ? <Eye size={20} color='gra'  /> : <EyeOff color='gra' size={20} />}
+                                {showPassword ? <Eye size={20} color='gray'  /> : <EyeOff color='gray' size={20} />}
                             </div>
                             <Lock color='gray' size={19} className="absolute top-9 left-2" />
                         </div>
