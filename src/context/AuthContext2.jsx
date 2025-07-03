@@ -95,6 +95,7 @@ const AuthContextProvider = ({ children }) => {
            GtAllUsers()
        }
     },[])
+    // console.log(token)
     return (
         <AuthContext.Provider value={{ token, user, UserLogin, PostUserData, Logout, allUsers }}>
             {children}

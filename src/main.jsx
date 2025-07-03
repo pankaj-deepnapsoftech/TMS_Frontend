@@ -7,18 +7,19 @@ import App from '@/App';
 import '@/index.css';
 import { ToastContainer } from 'react-toastify';
 import AuthContextProvider from './context/AuthContext2';
+import TicketCreateProvider from './context/TicketCreateContext';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-      <ToastContainer />
-      {/* <AuthProvider> */}
+      <ToastContainer />   
         <AuthContextProvider>
+      <TicketCreateProvider>
           {/* <NotificationProvider> */}
-            <App />
+          <App />
           {/* </NotificationProvider> */}
+      </TicketCreateProvider>
         </AuthContextProvider>
-      {/* </AuthProvider> */}
     </BrowserRouter>
   </React.StrictMode>
 );

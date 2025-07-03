@@ -10,16 +10,18 @@ import TicketForm from '@/components/TicketForm';
 import TicketCard from '@/components/TicketCard';
 import TicketFilters from '@/components/TicketFilters';
 import { Plus, Ticket } from 'lucide-react';
-import {  departments, initialTickets } from '@/data';
+import { departments, initialTickets } from '@/data';
 import { useAuthContext } from '../context/AuthContext2';
 import { departmentFilters } from '../context/AuthContext2';
 import TicketStats from '../components/TicketStats';
+import { useTicketCreate } from '../context/TicketCreateContext';
 
 
 
 const AdminDashboard = () => {
   const { toast } = useToast();
   const { allUsers } = useAuthContext()
+  const { allTicket, DeleteTicket } = useTicketCreate()
   // const { createTicketAssignedNotification, createTicketStatusNotification, cleanupNotificationsForDeletedTickets } = useNotifications();
   const [tickets, setTickets] = useLocalStorage('tickets', initialTickets);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -52,112 +54,103 @@ const AdminDashboard = () => {
   };
 
   const filteredTickets = useMemo(() => {
-    return tickets.filter(ticket => {
+    return allTicket.filter(ticket => {
       const matchesSearch = ticket.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           (ticket.description && ticket.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
-                           ticket.ticketNumber.toLowerCase().includes(searchTerm.toLowerCase());
+        (ticket.description && ticket.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        ticket.ticketNumber.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesStatus = statusFilter === 'all' || ticket.status === statusFilter;
       const matchesPriority = priorityFilter === 'all' || ticket.priority === priorityFilter;
       const matchesCategory = categoryFilter === 'all' || ticket.category === categoryFilter;
       const matchesAssignee = ticketMatchesAssigneeFilter(ticket, assigneeFilter);
       const matchesDepartment = departmentFilter === 'all' || ticket.departmentId === departmentFilter;
-      
+
       return matchesSearch && matchesStatus && matchesPriority && matchesCategory && matchesAssignee && matchesDepartment;
     });
-  }, [tickets, searchTerm, statusFilter, priorityFilter, categoryFilter, assigneeFilter, departmentFilter]);
+  }, [allTicket, searchTerm, statusFilter, priorityFilter, categoryFilter, assigneeFilter, departmentFilter]);
 
-  const handleCreateTicket = (ticketData) => {
-    const validAssignedUserIds = normalizeAssignedTo(ticketData.assignedTo);
+  // const handleCreateTicket = (ticketData) => {
+  //   const validAssignedUserIds = normalizeAssignedTo(ticketData.assignedTo);
 
-    const normalizedTicketData = {
-      ...ticketData,
-      assignedTo: validAssignedUserIds,
-      id: Date.now().toString(),
-      ticketNumber: `TKT-${String(Date.now()).slice(-6)}`,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      createdBy: 'u1',
-      comments: [],
-    };
+  //   const normalizedTicketData = {
+  //     ...ticketData,
+  //     assignedTo: validAssignedUserIds,
+  //     id: Date.now().toString(),
+  //     ticketNumber: `TKT-${String(Date.now()).slice(-6)}`,
+  //     createdAt: new Date().toISOString(),
+  //     updatedAt: new Date().toISOString(),
+  //     createdBy: 'u1',
+  //     comments: [],
+  //   };
 
-    // Update tickets state with immediate synchronization
-    setTickets(prev => {
-      const newTickets = [normalizedTicketData, ...prev];
-      // Force localStorage update
-      localStorage.setItem('tickets', JSON.stringify(newTickets));
-      return newTickets;
-    });
-    
-    // Send notifications to all assigned employees
-    validAssignedUserIds.forEach(userId => {
-      createTicketAssignedNotification(normalizedTicketData.id, normalizedTicketData.ticketNumber, normalizedTicketData.title, userId);
-    });
-    
-    toast({ 
-      title: "Ticket Created! 🎫", 
-      description: `New ticket assigned to ${validAssignedUserIds.length} employee${validAssignedUserIds.length > 1 ? 's' : ''} and notifications sent.` 
-    });
-  };
+  //   // Update tickets state with immediate synchronization
+  //   setTickets(prev => {
+  //     const newTickets = [normalizedTicketData, ...prev];
+  //     // Force localStorage update
+  //     localStorage.setItem('tickets', JSON.stringify(newTickets));
+  //     return newTickets;
+  //   });
 
-  const handleEditTicket = (ticketData) => {
-    const validAssignedUserIds = normalizeAssignedTo(ticketData.assignedTo);
-    const oldTicket = tickets.find(t => t.id === ticketData.id);
+  //   // Send notifications to all assigned employees
+  //   validAssignedUserIds.forEach(userId => {
+  //     createTicketAssignedNotification(normalizedTicketData.id, normalizedTicketData.ticketNumber, normalizedTicketData.title, userId);
+  //   });
 
-    const normalizedTicketData = {
-      ...ticketData,
-      assignedTo: validAssignedUserIds,
-      updatedAt: new Date().toISOString(),
-    };
+  //   toast({ 
+  //     title: "Ticket Created! 🎫", 
+  //     description: `New ticket assigned to ${validAssignedUserIds.length} employee${validAssignedUserIds.length > 1 ? 's' : ''} and notifications sent.` 
+  //   });
+  // };
 
-    // Update tickets state with immediate synchronization
-    setTickets(prev => {
-      const newTickets = prev.map(t => t.id === ticketData.id ? normalizedTicketData : t);
-      // Force localStorage update
-      localStorage.setItem('tickets', JSON.stringify(newTickets));
-      return newTickets;
-    });
-    
-    // Handle reassignment notifications
-    if (oldTicket) {
-      const oldAssignees = normalizeAssignedTo(oldTicket.assignedTo);
-      const newAssignees = validAssignedUserIds;
-      
-      // Find newly assigned users
-      const newlyAssigned = newAssignees.filter(userId => !oldAssignees.includes(userId));
-      
-      // Send assignment notifications to newly assigned users
-      newlyAssigned.forEach(userId => {
-        createTicketAssignedNotification(normalizedTicketData.id, normalizedTicketData.ticketNumber, normalizedTicketData.title, userId);
-      });
-      
-      // Send status change notifications to all current assignees if status changed
-      if (oldTicket.status !== normalizedTicketData.status) {
-        newAssignees.forEach(userId => {
-          createTicketStatusNotification(normalizedTicketData.id, normalizedTicketData.ticketNumber, normalizedTicketData.status, userId);
-        });
-      }
-    }
-    
-    setEditingTicket(null);
-    toast({ 
-      title: "Ticket Updated! ✨", 
-      description: "Ticket details have been updated and notifications sent to assignees." 
-    });
-  };
+  // const handleEditTicket = (ticketData) => {
+  //   const validAssignedUserIds = normalizeAssignedTo(ticketData.assignedTo);
+  //   const oldTicket = tickets.find(t => t.id === ticketData.id);
+
+  //   const normalizedTicketData = {
+  //     ...ticketData,
+  //     assignedTo: validAssignedUserIds,
+  //     updatedAt: new Date().toISOString(),
+  //   };
+
+  //   // Update tickets state with immediate synchronization
+  //   setTickets(prev => {
+  //     const newTickets = prev.map(t => t.id === ticketData.id ? normalizedTicketData : t);
+  //     // Force localStorage update
+  //     localStorage.setItem('tickets', JSON.stringify(newTickets));
+  //     return newTickets;
+  //   });
+
+  //   // Handle reassignment notifications
+  //   if (oldTicket) {
+  //     const oldAssignees = normalizeAssignedTo(oldTicket.assignedTo);
+  //     const newAssignees = validAssignedUserIds;
+
+  //     // Find newly assigned users
+  //     const newlyAssigned = newAssignees.filter(userId => !oldAssignees.includes(userId));
+
+  //     // Send assignment notifications to newly assigned users
+  //     newlyAssigned.forEach(userId => {
+  //       createTicketAssignedNotification(normalizedTicketData.id, normalizedTicketData.ticketNumber, normalizedTicketData.title, userId);
+  //     });
+
+  //     // Send status change notifications to all current assignees if status changed
+  //     if (oldTicket.status !== normalizedTicketData.status) {
+  //       newAssignees.forEach(userId => {
+  //         createTicketStatusNotification(normalizedTicketData.id, normalizedTicketData.ticketNumber, normalizedTicketData.status, userId);
+  //       });
+  //     }
+  //   }
+
+  //   setEditingTicket(null);
+  //   toast({ 
+  //     title: "Ticket Updated! ✨", 
+  //     description: "Ticket details have been updated and notifications sent to assignees." 
+  //   });
+  // };
 
   const handleDeleteTicket = (ticketId) => {
-    // Remove ticket from state with immediate synchronization
-    setTickets(prev => {
-      const newTickets = prev.filter(t => t.id !== ticketId);
-      // Force localStorage update
-      localStorage.setItem('tickets', JSON.stringify(newTickets));
-      return newTickets;
-    });
-    
-    toast({ 
-      title: "Ticket Deleted! 🗑️", 
-      description: "Ticket has been removed from all dashboards." 
-    });
+   if(window.confirm("are you sure you want to delete ticket?")){
+     DeleteTicket(ticketId)
+   }
   };
 
   const handleEditClick = (ticket) => {
@@ -190,7 +183,7 @@ const AdminDashboard = () => {
           <h1 className="text-3xl font-bold text-white mb-2">Ticket Management Dashboard</h1>
           <p className="text-gray-400 mb-8">Oversee and manage all tickets across the team.</p>
         </motion.div>
-        
+
         <TicketStats />
         <TicketFilters
           searchTerm={searchTerm} setSearchTerm={setSearchTerm}
@@ -215,17 +208,17 @@ const AdminDashboard = () => {
           <AnimatePresence mode="wait">
             {filteredTickets.length > 0 ? (
               filteredTickets.map((ticket) => (
-                <TicketCard 
-                  key={`admin-ticket-${ticket.id}-${ticket.updatedAt}`} 
-                  ticket={ticket} 
-                  onEdit={handleEditClick} 
-                  onDelete={handleDeleteTicket} 
+                <TicketCard
+                  key={`admin-ticket-${ticket._id}-${ticket.updatedAt}`}
+                  ticket={ticket}
+                  onEdit={handleEditClick}
+                  onDelete={() => handleDeleteTicket(ticket._id)}
                 />
               ))
             ) : (
-              <motion.div 
-                initial={{ opacity: 0 }} 
-                animate={{ opacity: 1 }} 
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 className="col-span-full text-center py-16"
               >
@@ -244,7 +237,7 @@ const AdminDashboard = () => {
         <TicketForm
           isOpen={isFormOpen}
           onClose={handleCloseForm}
-          onSubmit={editingTicket ? handleEditTicket : handleCreateTicket}
+          // onSubmit={editingTicket ? handleEditTicket : handleCreateTicket}
           ticket={editingTicket}
           users={allUsers.filter(u => u.role === 'employee')}
           departments={departmentFilters}
