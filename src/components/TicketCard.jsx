@@ -7,10 +7,15 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Edit, Trash2, Calendar, Clock, Flag, User, Briefcase, MessageSquare, Eye, Users } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { users, departments, ticketStatuses } from '@/data';
+import {   ticketStatuses } from '@/data';
+import { useAuthContext } from '../context/AuthContext2';
+import { departmentFilters } from '../context/AuthContext2';
+
+
 
 const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
-  const { user: currentUser } = useAuth();
+  // const { user: currentUser } = useAuth();
+  const {user:currentUser,allUsers} = useAuthContext()
   const navigate = useNavigate();
   
   // Helper function to safely get assigned users
@@ -19,7 +24,7 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
     
     // Ensure assignedTo is always treated as an array
     const assignedUserIds = Array.isArray(ticket.assignedTo) ? ticket.assignedTo : [ticket.assignedTo];
-    return users.filter(u => assignedUserIds.includes(u.id));
+    return allUsers.filter(u => assignedUserIds.includes(u.id));
   };
 
   // Helper function to check if current user is assigned
@@ -31,7 +36,8 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
   };
 
   const assignedUsers = getAssignedUsers();
-  const department = departments.find(d => d.id === ticket.departmentId);
+  const department = departmentFilters.find(d => d.value === ticket?.department) || { label: 'N/A' };
+
   const status = ticketStatuses.find(s => s.id === ticket.status);
 
   const getPriorityColor = (priority) => {
@@ -116,7 +122,7 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
             </Badge>
             <Badge variant="secondary" className="bg-blue-500/20 text-blue-300 border-blue-500/30">
               <Briefcase className="w-3 h-3 mr-1" />
-              {department?.name || 'N/A'}
+              {department.label}
             </Badge>
             {ticket.comments && ticket.comments.length > 0 && (
               <Badge variant="secondary" className="bg-green-500/20 text-green-300 border-green-500/30">

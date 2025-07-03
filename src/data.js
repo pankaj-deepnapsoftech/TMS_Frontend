@@ -1,8 +1,9 @@
 export const departments = [
-  { id: 'd1', name: 'Engineering' },
-  { id: 'd2', name: 'Marketing' },
-  { id: 'd3', name: 'Design' },
-  { id: 'd4', name: 'Sales' },
+  { name: 'Engineering' },
+  { name: 'Marketing' },
+  { name: 'Design' },
+  { name: 'Sales' },
+  {name:'Developer'}
 ];
 
 export const users = [
