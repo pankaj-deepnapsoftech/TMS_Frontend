@@ -6,13 +6,13 @@
 // import { Badge } from '@/components/ui/badge';
 // import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 // import { CheckSquare, LogOut, Bell, BellRing } from 'lucide-react';
-// import { motion } from 'framer-motion'; 
+// import { motion } from 'framer-motion';
 // import { useNavigate } from 'react-router-dom';
 // import { useAuthContext } from '../context/AuthContext2';
 
 // const Header = () => {
 //   // const { user, logout } = useAuth();
-//   const {user,LogOut}  = useAuthContext() 
+//   const {user,LogOut}  = useAuthContext()
 // //   const { getUserNotifications, getUnreadCount, markAsRead, markAllAsRead } = useNotifications();
 // //   const [showNotifications, setShowNotifications] = useState(false);
 // //   const navigate = useNavigate();
@@ -53,7 +53,7 @@
 //     <header className="bg-slate-900/50 backdrop-blur-lg border-b border-purple-500/20 sticky top-0 z-40">
 //       <div className="max-w-7xl mx-auto px-4 lg:px-8">
 //         <div className="flex items-center justify-between h-20">
-//           <motion.div 
+//           <motion.div
 //             initial={{ opacity: 0, x: -20 }}
 //             animate={{ opacity: 1, x: 0 }}
 //             className="flex items-center gap-3"
@@ -65,7 +65,7 @@
 //           </motion.div>
 
 //           {user && (
-//             <motion.div 
+//             <motion.div
 //               initial={{ opacity: 0, x: 20 }}
 //               animate={{ opacity: 1, x: 0 }}
 //               className="flex items-center gap-4"
@@ -145,19 +145,90 @@
 // };
 
 // export default Header;
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { CheckSquare, LogOut, LogOutIcon } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { useAuthContext } from '../context/AuthContext2';
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { CheckSquare, LogOutIcon } from "lucide-react";
+import { motion } from "framer-motion";
+import { useAuthContext } from "../context/AuthContext2";
+import { useProfile } from "@/context/UserProfileUpdateContext";
+
 
 const Header = () => {
   const { user, Logout } = useAuthContext();
+  const {
+    editName,
+    setEditName,
+    editDepartment,
+    setEditDepartment,
+    editRole,
+    editEmail,
+    loading,
+    error,
+    dialogOpen,
+    setDialogOpen,
+    handleProfileSave,
+  } = useProfile();
 
-  // const hadandleLogout = () => {
-  //    LogOut()
-  // }
+  // useEffect(() => {
+  //   if (dialogOpen) {
+  //     fetchProfile();
+  //   }
+  // }, [dialogOpen]);
+
+  // const fetchProfile = async () => {
+  //   setError("");
+  //   try {
+  //     const token = localStorage.getItem("authToken");
+  //     const res = await axiosHandler.get("/auth/profile", {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+  //     const u = res.data.user || res.data;
+  //     setEditName(u.name || "");
+  //     setEditDepartment(u.department || "");
+  //     setEditRole(u.role || "");
+  //     setEditEmail(u.email || "");
+  //   } catch (err) {
+  //     setError("Failed to fetch profile");
+  //   }
+  // };
+
+  // const handleProfileSave = async (e) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+  //   setError("");
+  //   try {
+  //     const token = localStorage.getItem("authToken");
+  //     const res = await axiosHandler.put(
+  //       `/auth/profile`,
+  //       {
+  //         name: editName,
+  //         department: editDepartment,
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+  //     setEditName(res.data.name || editName);
+  //     setEditDepartment(res.data.department || editDepartment);
+  //     setDialogOpen(false);
+  //   } catch (err) {
+  //     setError(err?.response?.data?.message || "Failed to update profile");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <section className="bg-slate-900/50 backdrop-blur-lg border-b border-purple-500/20 sticky top-0 z-40">
@@ -182,16 +253,94 @@ const Header = () => {
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center gap-4"
             >
-              <div className="flex items-center gap-3">
+              <div
+                className="flex items-center gap-3 cursor-pointer group"
+                onClick={() => setDialogOpen(true)}
+              >
                 <Avatar>
-                  <AvatarImage src={user.avatarUrl || ''} alt={user.name} />
+                  <AvatarImage src={user.avatarUrl || ""} alt={user.name} />
                   <AvatarFallback>{user.name?.[0]}</AvatarFallback>
                 </Avatar>
                 <div className="text-right">
-                  <p className="font-semibold text-white">{user.name}</p>
-                  <p className="text-xs text-purple-300 capitalize">{user.role}</p>
+                  <p className="font-semibold text-white group-hover:underline">
+                    {user.name}
+                  </p>
+                  <p className="text-xs text-purple-300 capitalize">
+                    {user.role}
+                  </p>
                 </div>
               </div>
+              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogContent className="bg-slate-900 border-purple-500/30">
+                  <DialogHeader>
+                    <DialogTitle>Edit Profile</DialogTitle>
+                  </DialogHeader>
+                  <form onSubmit={handleProfileSave} className="space-y-4">
+                    {error && (
+                      <div className="text-red-400 text-sm">{error}</div>
+                    )}
+                    <div>
+                      <label className="block text-sm text-purple-300 mb-1">
+                        Name
+                      </label>
+                      <Input
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                        className="bg-slate-800 text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-purple-300 mb-1">
+                        Email
+                      </label>
+                      <Input
+                        value={editEmail}
+                        disabled
+                        className="bg-slate-800 text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-purple-300 mb-1">
+                        Role
+                      </label>
+                      <Input
+                        value={editRole}
+                        disabled
+                        className="bg-slate-800 text-white"
+                      />
+                    </div>
+                    {user.department && (
+                      <div>
+                        <label className="block text-sm text-purple-300 mb-1">
+                          Department
+                        </label>
+                        <Input
+                          value={editDepartment}
+                          onChange={(e) => setEditDepartment(e.target.value)}
+                          className="bg-slate-800 text-white"
+                        />
+                      </div>
+                    )}
+
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() => setDialogOpen(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        type="submit"
+                        variant="default"
+                        disabled={loading}
+                      >
+                        {loading ? "Saving..." : "Save"}
+                      </Button>
+                    </div>
+                  </form>
+                </DialogContent>
+              </Dialog>
               <Button
                 variant="ghost"
                 size="icon"
