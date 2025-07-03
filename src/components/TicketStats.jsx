@@ -12,19 +12,28 @@ import { axiosHandler } from "../config/axiosConfig";
 
 
 const TicketStats = () => {
-  const [statsData, setStatsData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [statsData, setStatsData] = useState({
+    total: 0,
+    open: 0,
+    inProgress: 0,
+    resolved: 0,
+  });
+  const [error, setError] = useState(null);
 
   const fetchStats = async () => {
-    setLoading(true);
     setError(null);
     try {
-      const res = await axiosHandler.get("/dashboard");
-      setStatsData(res?.data);
+      const token = localStorage.getItem("authToken");
+      const res = await axiosHandler.get("/dashboard", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setStatsData(res.data);
+      console.log("dashboard response:", res.data);
     } catch (error) {
       console.log(error);
-    } finally {
-      setLoading(false);
+      setError("Failed to fetch stats");
     }
   };
 
@@ -62,13 +71,7 @@ const TicketStats = () => {
       bgColor: "bg-green-500/20",
     },
   ];
-
-  if (loading) {
-    return <div className="text-gray-400">Loading ticket stats...</div>;
-  }
-  if (error) {
-    return <div className="text-red-400">{error}</div>;
-  }
+  
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-8">
       {stats.map((stat, index) => (

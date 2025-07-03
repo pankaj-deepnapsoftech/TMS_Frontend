@@ -86,7 +86,7 @@ const AuthContextProvider = ({ children }) => {
         localStorage.removeItem('authToken');
         localStorage.removeItem('authUser');
         navigate('/login');
-        toast.info("Logged out successfully");
+        toast.success("Logged out successfully");
     };
 
     // console.log(user)

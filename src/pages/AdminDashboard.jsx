@@ -13,6 +13,7 @@ import { Plus, Ticket } from 'lucide-react';
 import {  departments, initialTickets } from '@/data';
 import { useAuthContext } from '../context/AuthContext2';
 import { departmentFilters } from '../context/AuthContext2';
+import TicketStats from '../components/TicketStats';
 
 
 
