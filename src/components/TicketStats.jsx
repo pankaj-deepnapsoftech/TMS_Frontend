@@ -30,7 +30,7 @@ const TicketStats = () => {
         },
       });
       setStatsData(res.data);
-      console.log("dashboard response:", res.data);
+      // console.log("dashboard response:", res.data);
     } catch (error) {
       console.log(error);
       setError("Failed to fetch stats");
