@@ -42,7 +42,7 @@
 // //     const date = new Date(dateString);
 // //     const now = new Date();
 // //     const diffInMinutes = Math.floor((now - date) / (1000 * 60));
-    
+
 // //     if (diffInMinutes < 1) return 'Just now';
 // //     if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
 // //     if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
@@ -63,7 +63,7 @@
 //             </div>
 //             <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">ITSYBIZZ TMS</span>
 //           </motion.div>
-          
+
 //           {user && (
 //             <motion.div 
 //               initial={{ opacity: 0, x: 20 }}
@@ -153,7 +153,11 @@ import { motion } from 'framer-motion';
 import { useAuthContext } from '../context/AuthContext2';
 
 const Header = () => {
-  const { user, LogOut } = useAuthContext();
+  const { user, Logout } = useAuthContext();
+
+  // const hadandleLogout = () => {
+  //    LogOut()
+  // }
 
   return (
     <section className="bg-slate-900/50 backdrop-blur-lg border-b border-purple-500/20 sticky top-0 z-40">
@@ -191,10 +195,10 @@ const Header = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={LogOut}
+                onClick={Logout}
                 className="text-purple-400 hover:text-red-400 hover:bg-red-500/10"
               >
-                <LogOutIcon className="h-5 w-5" /> 
+                <LogOutIcon className="h-5 w-5" />
               </Button>
             </motion.div>
           )}
