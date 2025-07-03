@@ -51,7 +51,7 @@ function App() {
             path="/"
             element={
               token
-                ? (user.role === 'admin' ? <Navigate to="/admin" /> : <Navigate to="/employee" />)
+                ? (user?.role === 'admin' ? <Navigate to="/admin" /> : <Navigate to="/employee" />)
                 : <Navigate to="/login" />
             }
           />
