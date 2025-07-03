@@ -11,11 +11,16 @@ import TicketCard from '@/components/TicketCard';
 import TicketStats from '@/components/TicketStats';
 import TicketFilters from '@/components/TicketFilters';
 import { Plus, Ticket } from 'lucide-react';
-import { users, departments, initialTickets } from '@/data';
+import {  departments, initialTickets } from '@/data';
+import { useAuthContext } from '../context/AuthContext2';
+import { departmentFilters } from '../context/AuthContext2';
+
+
 
 const AdminDashboard = () => {
   const { toast } = useToast();
-  const { createTicketAssignedNotification, createTicketStatusNotification, cleanupNotificationsForDeletedTickets } = useNotifications();
+  const { allUsers } = useAuthContext()
+  // const { createTicketAssignedNotification, createTicketStatusNotification, cleanupNotificationsForDeletedTickets } = useNotifications();
   const [tickets, setTickets] = useLocalStorage('tickets', initialTickets);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTicket, setEditingTicket] = useState(null);
@@ -26,11 +31,11 @@ const AdminDashboard = () => {
   const [assigneeFilter, setAssigneeFilter] = useState('all');
   const [departmentFilter, setDepartmentFilter] = useState('all');
 
-  // Clean up notifications when tickets are deleted
-  useEffect(() => {
-    const existingTicketIds = tickets.map(t => t.id);
-    cleanupNotificationsForDeletedTickets(existingTicketIds);
-  }, [tickets, cleanupNotificationsForDeletedTickets]);
+  // // Clean up notifications when tickets are deleted
+  // useEffect(() => {
+  //   const existingTicketIds = tickets.map(t => t.id);
+  //   cleanupNotificationsForDeletedTickets(existingTicketIds);
+  // }, [tickets, cleanupNotificationsForDeletedTickets]);
 
   // Helper function to normalize assignment data
   const normalizeAssignedTo = (assignedTo) => {
@@ -195,8 +200,8 @@ const AdminDashboard = () => {
           assigneeFilter={assigneeFilter} setAssigneeFilter={setAssigneeFilter}
           departmentFilter={departmentFilter} setDepartmentFilter={setDepartmentFilter}
           onClearFilters={handleClearFilters}
-          users={users.filter(u => u.role === 'employee')}
-          departments={departments}
+          users={allUsers.filter(u => u.role === 'employee')}
+          departments={departmentFilters}
         />
 
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex justify-center mb-8">
@@ -241,8 +246,8 @@ const AdminDashboard = () => {
           onClose={handleCloseForm}
           onSubmit={editingTicket ? handleEditTicket : handleCreateTicket}
           ticket={editingTicket}
-          users={users.filter(u => u.role === 'employee')}
-          departments={departments}
+          users={allUsers.filter(u => u.role === 'employee')}
+          departments={departmentFilters}
         />
       </div>
       <Toaster />

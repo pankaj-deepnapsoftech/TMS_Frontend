@@ -186,14 +186,14 @@ const TicketForm = ({ isOpen, onClose, onSubmit, ticket = null, users = [], depa
                         <div className="flex-1 min-w-0">
                           <p className="font-medium text-white text-sm truncate">{user.name}</p>
                           <p className="text-xs text-gray-400 truncate">
-                            {departments.find(d => d.id === user.departmentId)?.name || 'No Department'}
+                            {departments.find(d => d.values === user.department)?.department || 'No Department'}
                           </p>
                         </div>
                         <Button
                           type="button"
                           variant="ghost"
                           size="icon"
-                          onClick={() => removeAssignee(user.id)}
+                          onClick={() => removeAssignee(user._id)}
                           className="h-8 w-8 text-red-400 hover:text-red-300 hover:bg-red-500/20"
                         >
                           <X className="w-4 h-4" />
@@ -229,9 +229,9 @@ const TicketForm = ({ isOpen, onClose, onSubmit, ticket = null, users = [], depa
                       <SelectValue placeholder="Filter by Department" />
                     </SelectTrigger>
                     <SelectContent className="bg-slate-800 border-purple-500/30">
-                      <SelectItem value="all">All Departments</SelectItem>
+                      {/* <SelectItem value="all">All Departments</SelectItem> */}
                       {departments.map(d => (
-                        <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>
+                        <SelectItem key={d.value} value={d.value}>{d.label}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
