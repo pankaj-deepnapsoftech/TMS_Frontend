@@ -7,17 +7,20 @@ import App from '@/App';
 import '@/index.css';
 import { ToastContainer } from 'react-toastify';
 import AuthContextProvider from './context/AuthContext2';
+import { ProfileProvider } from './context/UserProfileUpdateContext';
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
       <ToastContainer />
       {/* <AuthProvider> */}
-        <AuthContextProvider>
+      <AuthContextProvider>
+        <ProfileProvider>
           {/* <NotificationProvider> */}
-            <App />
+          <App />
           {/* </NotificationProvider> */}
-        </AuthContextProvider>
+        </ProfileProvider>
+      </AuthContextProvider>
       {/* </AuthProvider> */}
     </BrowserRouter>
   </React.StrictMode>
