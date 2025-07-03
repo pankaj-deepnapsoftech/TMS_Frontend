@@ -19,7 +19,6 @@ const AdminDashboard = () => {
   const [tickets, setTickets] = useLocalStorage('tickets', initialTickets);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTicket, setEditingTicket] = useState(null);
-  
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [priorityFilter, setPriorityFilter] = useState('all');

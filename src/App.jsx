@@ -15,7 +15,7 @@ function App() {
   const {user,token } = useAuthContext()
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />    
+     { token && <Header />    }
       <main className="flex-grow">
         <Routes>
           <Route path="/login" element={<LoginPage />} />
