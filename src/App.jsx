@@ -23,18 +23,18 @@ function App() {
           <Route
             path="/admin"
             element={
-              // <ProtectedRoute allowedRoles={['admin']}>
+              <ProtectedRoute allowedRoles={['admin']}>
                 <AdminDashboard />
-              // </ProtectedRoute>
+               </ProtectedRoute>
             }
           />
 
           <Route
             path="/employee"
             element={
-              // <ProtectedRoute allowedRoles={['employee']}>
+              <ProtectedRoute allowedRoles={['employee']}>
                 <EmployeeDashboard />
-              // </ProtectedRoute>
+              </ProtectedRoute>
             }
           />
 

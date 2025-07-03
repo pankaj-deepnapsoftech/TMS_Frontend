@@ -148,7 +148,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { CheckSquare, LogOut } from 'lucide-react';
+import { CheckSquare, LogOut, LogOutIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuthContext } from '../context/AuthContext2';
 
@@ -194,7 +194,7 @@ const Header = () => {
                 onClick={LogOut}
                 className="text-purple-400 hover:text-red-400 hover:bg-red-500/10"
               >
-                <LogOut className="h-5 w-5" />
+                <LogOutIcon className="h-5 w-5" /> 
               </Button>
             </motion.div>
           )}
