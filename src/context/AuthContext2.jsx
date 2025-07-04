@@ -23,6 +23,7 @@ export const departmentFilters = [
   { label: "Developer", value: "Developer" },
 ];
 
+
 const AuthContextProvider = ({ children }) => {
   const [token, setToken] = useState(() => localStorage.getItem("authToken"));
   const [allUsers, setAllUsers] = useState([]);

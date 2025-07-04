@@ -38,11 +38,12 @@ const TicketDetailHeader = ({ ticket, status, user, isAssignedToCurrentUser, get
                     <Flag className="w-3 h-3 mr-1" />
                     {ticket.priority.charAt(0).toUpperCase() + ticket.priority.slice(1)}
                   </Badge>
-                  {isAssignedToCurrentUser() && (
+                  {isAssignedToCurrentUser && (
                     <Badge className="bg-green-500/20 text-green-300 border-green-500/30">
                       Assigned to You
                     </Badge>
                   )}
+
                 </div>
                 <CardTitle className="text-2xl text-white mb-2">{ticket.title}</CardTitle>
                 {ticket.description && (

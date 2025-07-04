@@ -7,7 +7,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Edit, Trash2, Calendar, Clock, Flag, User, Briefcase, MessageSquare, Eye, Users } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import {   ticketStatuses } from '@/data';
 import { useAuthContext } from '../context/AuthContext2';
 import { departmentFilters } from '../context/AuthContext2';
 
@@ -27,7 +26,7 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
     return allUsers.filter(u => assignedUserIds.includes(u.id));
   };
 
-  // Helper function to check if current user is assigned
+  // Helper function to check if current user is assigned 
   const isAssignedToCurrentUser = () => {
     if (!ticket.assignedTo || !currentUser?.id) return false;
     
@@ -38,7 +37,7 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
   const assignedUsers = getAssignedUsers();
   const department = departmentFilters.find(d => d.value === ticket?.department) || { label: 'N/A' };
 
-  const status = ticketStatuses.find(s => s.id === ticket.status);
+  const status = allUsers.find(s => s._id === ticket.status);
 
   const getPriorityColor = (priority) => {
     switch (priority) {
@@ -61,7 +60,7 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
   };
 
   const handleViewTicket = () => {
-    navigate(`/ticket/${ticket.id}`);
+    navigate(`/ticket/${ticket._id}/comment`);
   };
 
   const getInitials = (name) => {

@@ -5,8 +5,6 @@ import { useAuthContext } from "./AuthContext2";
 
 
 
-
-
 const TicketCreateContext = createContext();
 
 export const useTicketCreate = () => useContext(TicketCreateContext)
@@ -23,7 +21,7 @@ const TicketCreateProvider = ({ children }) => {
                     Authorization: `Bearer ${token}`
                 }
             });
-
+            GetAllTicket()
             toast.success(res?.data?.message)
             console.log(res?.data)
         } catch (error) {
@@ -65,6 +63,24 @@ const TicketCreateProvider = ({ children }) => {
         }
     }
 
+   const UpdatedTicket = async(_id,formData) => {
+    console.log(_id,formData)
+    try {
+        const res = await axiosHandler.put(`/tickets/${_id}`,formData,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        )
+        toast.success(res?.data?.message)
+        GetAllTicket()
+        console.log(res?.data)
+    } catch (error) {
+        console.log(error)
+    }
+   }
+
     useEffect(() => {
         if (token) {
             GetAllTicket()
@@ -72,7 +88,7 @@ const TicketCreateProvider = ({ children }) => {
     }, [])
 
     return (
-        <TicketCreateContext.Provider value={{ TicketCreate, allTicket, DeleteTicket }}>
+        <TicketCreateContext.Provider value={{ TicketCreate, allTicket, DeleteTicket, UpdatedTicket }}>  
             {children}
         </TicketCreateContext.Provider>
     )
