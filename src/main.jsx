@@ -17,10 +17,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <ToastContainer />
       <AuthContextProvider>
         <ProfileProvider>
-
           <TicketCreateProvider>
-            {/* <NotificationProvider> */}
-            <App />
+              {/* <NotificationProvider> */}
+              <App />
             {/* </NotificationProvider> */}
           </TicketCreateProvider>
         </ProfileProvider>
