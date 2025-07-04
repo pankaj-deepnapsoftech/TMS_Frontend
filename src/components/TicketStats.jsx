@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -8,72 +8,54 @@ import {
   Target,
   Ticket,
 } from "lucide-react";
-import { axiosHandler } from "../config/axiosConfig";
-
+import { useTicketCreate } from "../context/TicketCreateContext";
 
 const TicketStats = () => {
-  const [statsData, setStatsData] = useState({
-    total: 0,
-    open: 0,
-    inProgress: 0,
-    resolved: 0,
-  });
-  const [error, setError] = useState(null);
-
-  const fetchStats = async () => {
-    setError(null);
-    try {
-      const token = localStorage.getItem("authToken");
-      const res = await axiosHandler.get("/dashboard", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setStatsData(res.data);
-      // console.log("dashboard response:", res.data);
-    } catch (error) {
-      console.log(error);
-      setError("Failed to fetch stats");
-    }
-  };
+  const { ticketStats, fetchTicketStats, statsError } = useTicketCreate();
 
   useEffect(() => {
-    fetchStats();
+    fetchTicketStats();
+    // eslint-disable-next-line
   }, []);
 
   const stats = [
     {
       title: "Total Tickets",
-      value: statsData.total,
-      icon: Ticket,
+      value: ticketStats.total,
+      icon: Ticket, 
       color: "from-blue-500 to-cyan-500",
       bgColor: "bg-blue-500/20",
     },
     {
       title: "Open",
-      value: statsData.open,
+      value: ticketStats.open,
       icon: Target,
       color: "from-purple-500 to-pink-500",
       bgColor: "bg-purple-500/20",
     },
     {
       title: "In Progress",
-      value: statsData.inProgress,
+      value: ticketStats.inProgress,
       icon: Clock,
       color: "from-yellow-500 to-orange-500",
       bgColor: "bg-yellow-500/20",
     },
     {
       title: "Resolved",
-      value: statsData.resolved,
+      value: ticketStats.resolved,
       icon: CheckCircle,
       color: "from-green-500 to-emerald-500",
       bgColor: "bg-green-500/20",
     },
   ];
-  
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-8">
+      {statsError && (
+        <div className="col-span-full text-red-500 text-center">
+          {statsError}
+        </div>
+      )}
       {stats.map((stat, index) => (
         <motion.div
           key={stat.title}

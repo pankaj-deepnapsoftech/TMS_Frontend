@@ -1,6 +1,7 @@
 // EmployeeDashboard.jsx — Fixed filter logic for API response format
 
 import React, { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { motion, AnimatePresence } from "framer-motion";
 import { Toaster } from "@/components/ui/toaster";
@@ -14,13 +15,14 @@ import { useTicketCreate } from "../context/TicketCreateContext";
 const EmployeeDashboard = () => {
   const { user } = useAuthContext();
   const { myTickets } = useTicketCreate();
+  const navigate = useNavigate();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [priorityFilter, setPriorityFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
 
-  const ticketsArray = Array.isArray(myTickets) ? myTickets : [];
+  // const ticketsArray = Array.isArray(myTickets) ? myTickets : [];
 
   const normalizeTicket = (ticket) => ({
     ...ticket,
@@ -30,7 +32,7 @@ const EmployeeDashboard = () => {
   });
 
   const filteredTickets = useMemo(() => {
-    return ticketsArray.map(normalizeTicket).filter((ticket) => {
+    return myTickets?.map(normalizeTicket).filter((ticket) => {
       const matchesSearch =
         ticket.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         ticket.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -47,7 +49,7 @@ const EmployeeDashboard = () => {
         matchesSearch && matchesStatus && matchesPriority && matchesCategory
       );
     });
-  }, [ticketsArray, searchTerm, statusFilter, priorityFilter, categoryFilter]);
+  }, [myTickets, searchTerm, statusFilter, priorityFilter, categoryFilter]);
 
   const handleClearFilters = () => {
     setSearchTerm("");
@@ -55,7 +57,7 @@ const EmployeeDashboard = () => {
     setPriorityFilter("all");
     setCategoryFilter("all");
   };
-
+ console.log(filteredTickets);
   return (
     <>
       <Helmet>
@@ -96,7 +98,7 @@ const EmployeeDashboard = () => {
             {filteredTickets.length > 0 ? (
               filteredTickets.map((ticket) => (
                 <TicketCard
-                  key={`ticket-${ticket._id || ticket.id}-${ticket.updatedAt}`}
+                  key={`ticket-${ticket._id || ticket.id}`}
                   ticket={ticket}
                 />
               ))

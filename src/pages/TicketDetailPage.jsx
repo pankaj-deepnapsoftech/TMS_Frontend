@@ -14,9 +14,10 @@ import { departmentFilters } from '@/context/AuthContext2';
 
 const TicketDetailPage = () => {
   const { ticketId } = useParams();
+  console.log(ticketId)
   const navigate = useNavigate();
   const { user, allUsers } = useAuthContext();
-  const { allTicket, updateTicket } = useTicketCreate(); // Assuming updateTicket is available
+  const { allTicket, updateTicket,myTickets } = useTicketCreate(); // Assuming updateTicket is available
   const { toast } = useToast();
   // const { createTicketCommentNotification, createTicketStatusNotification } = useNotifications();
 
@@ -28,15 +29,15 @@ const TicketDetailPage = () => {
 
     if (user?.role === 'employee') {
       const assigned = Array.isArray(ticket.assignedTo)
-        ? ticket.assignedTo.includes(user._id)
-        : ticket.assignedTo === user._id;
+        ? ticket.assignedTo.includes(user.id)
+        : ticket.assignedTo === user.id;
 
-      if (!assigned) {
-        navigate('/employee');
-      }
-    }
+        // if (!assigned) {
+          //   navigate('/employee');
+          // }
+          console.log(assigned)
+        }
   }, [ticket, user, navigate]);
-
   if (!ticket) {
     return (
       <div className="p-8 text-center">
@@ -54,19 +55,19 @@ const TicketDetailPage = () => {
   // Helpers
 
     const assignedIds = Array.isArray(ticket?.assignedTo)
-      ? ticket.assignedTo
-      : [ticket.assignedTo];
+      ? ticket?.assignedTo
+      : [ticket?.assignedTo];
     
 
 
   const isAssignedToCurrentUser = useMemo(() => {
     const assignedIds = Array.isArray(ticket?.assignedTo)
-      ? ticket.assignedTo
-      : [ticket.assignedTo];
-    return assignedIds.includes(user._id);
+      ? ticket?.assignedTo
+      : [ticket?.assignedTo];
+    return assignedIds.includes(user.id);
   }, [ticket, user]);
   
-
+ console.log(user)
   // const assignedUsers = getAssignedUsers();
   const createdByUser = allUsers.find(u => u._id === ticket.createdBy);
   const department = departmentFilters.find(d => d.value === ticket.department);
