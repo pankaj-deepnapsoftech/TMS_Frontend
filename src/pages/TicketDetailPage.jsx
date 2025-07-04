@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
 import { useToast } from '@/components/ui/use-toast';
-import { useNotifications } from '@/context/NotificationContext';
+// import { useNotifications } from '@/context/NotificationContext';
 import TicketDetailHeader from '@/components/TicketDetailHeader';
 import TicketComments from '@/components/TicketComments';
 import TicketDetailSidebar from '@/components/TicketDetailSidebar';
@@ -70,7 +70,7 @@ const TicketDetailPage = () => {
   // const assignedUsers = getAssignedUsers();
   const createdByUser = allUsers.find(u => u._id === ticket.createdBy);
   const department = departmentFilters.find(d => d.value === ticket.department);
-  const status = user?.status?.find(s => s.id === ticket.status);
+  const status = user?.status?.find(s => s._id === ticket.status);
 
   const getPriorityColor = (priority) => {
     switch (priority) {
@@ -105,38 +105,35 @@ const TicketDetailPage = () => {
       .join('')
       .toUpperCase();
   };
-
   const handleAddComment = (content) => {
-    const comment = {
-      id: Date.now().toString(),
-      userId: user.id,
-      content,
-      createdAt: new Date().toISOString()
+    const newComment = {
+      _id: ticket._id,
+      text: content,
+      timestamp: new Date().toISOString(),
+      author: {
+        _id: user.id,
+        name: user.name,
+        email: user.email,
+       
+      }
     };
+    console.log("User posting comment:", user);
 
     const updatedTicket = {
       ...ticket,
-      comments: [...(ticket.comments || []), comment],
+      comments: [...(ticket.comments || []), newComment],
       updatedAt: new Date().toISOString()
     };
 
-    updateTicket(ticket.id, updatedTicket);
-
-    const notifyUsers = Array.isArray(ticket.assignedTo)
-      ? ticket.assignedTo
-      : [ticket.assignedTo];
-
-    notifyUsers.forEach(userId => {
-      if (userId !== user.id) {
-        createTicketCommentNotification(ticket.id, ticket.ticketNumber, user.name, userId);
-      }
-    });
-
+    updateTicket(ticket._id, updatedTicket);
     toast({
-      title: 'Comment Added! 💬',
-      description: 'Your comment has been posted and notifications sent.'
+      title: 'Comment Added 💬',
+      description: 'Your comment was posted.'
     });
   };
+  
+  
+  
 
   const handleStatusChange = (newStatus) => {
     const updatedTicket = {
@@ -147,13 +144,13 @@ const TicketDetailPage = () => {
 
     updateTicket(ticket.id, updatedTicket);
 
-    const notifyUsers = Array.isArray(ticket.assignedTo)
-      ? ticket.assignedTo
-      : [ticket.assignedTo];
+    // const notifyUsers = Array.isArray(ticket.assignedTo)
+    //   ? ticket.assignedTo
+    //   : [ticket.assignedTo];
 
-    notifyUsers.forEach(userId => {
-      createTicketStatusNotification(ticket.id, ticket.ticketNumber, newStatus, userId);
-    });
+    // notifyUsers.forEach(userId => {
+    //   createTicketStatusNotification(ticket.id, ticket.ticketNumber, newStatus, userId);
+    // });
 
     const newStatusName = user?.status?.find(s => s.id === newStatus)?.name || newStatus;
 

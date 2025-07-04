@@ -58,7 +58,8 @@ const TicketCreateProvider = ({ children }) => {
       console.log(error);
     }
   };
-    const UpdatedTicket = async (_id, formData) => {
+   const updateTicket = async (_id, formData) => {
+    
       console.log(_id, formData)
       try {
         const res = await axiosHandler.put(`/tickets/${_id}`, formData,
@@ -105,7 +106,7 @@ const TicketCreateProvider = ({ children }) => {
         GetMyTicket,
         myTickets,
         setMyTickets,
-        UpdatedTicket
+        updateTicket
       }}
     >
       {children}
