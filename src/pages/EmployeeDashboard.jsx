@@ -1,47 +1,41 @@
+// EmployeeDashboard.jsx — Fixed filter logic for API response format
+
 import React, { useState, useMemo } from "react";
 import { Helmet } from "react-helmet";
 import { motion, AnimatePresence } from "framer-motion";
 import { Toaster } from "@/components/ui/toaster";
-// import { useLocalStorage } from '@/hooks/useLocalStorage';
-// import { useAuth } from '@/context/AuthContext';
 import TicketCard from "@/components/TicketCard";
 import TicketStats from "@/components/TicketStats";
 import TicketFilters from "@/components/TicketFilters";
 import { Ticket } from "lucide-react";
-import { initialTickets } from "@/data";
 import { useAuthContext } from "../context/AuthContext2";
 import { useTicketCreate } from "../context/TicketCreateContext";
-import Header from "../components/Header";
 
 const EmployeeDashboard = () => {
   const { user } = useAuthContext();
   const { myTickets } = useTicketCreate();
-  // If you want to show a loading state, you can add it to TicketCreateContext and use it here
+
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [priorityFilter, setPriorityFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
-  // Optionally, you can add loading state from context if needed
-  const loading = false;
 
-  // Ensure myTickets is always an array
-  const ticketsArray = Array.isArray(myTickets)
-    ? myTickets
-    : myTickets && myTickets.data && Array.isArray(myTickets.data)
-    ? myTickets.data
-    : [];
+  const ticketsArray = Array.isArray(myTickets) ? myTickets : [];
 
-  // Apply search and filter criteria
+  const normalizeTicket = (ticket) => ({
+    ...ticket,
+    status: ticket.status?.toLowerCase(),
+    priority: ticket.priority?.toLowerCase(),
+    category: ticket.category?.toLowerCase(),
+  });
+
   const filteredTickets = useMemo(() => {
-    return ticketsArray.filter((ticket) => {
+    return ticketsArray.map(normalizeTicket).filter((ticket) => {
       const matchesSearch =
         ticket.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (ticket.description &&
-          ticket.description
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase())) ||
-        (ticket.ticketNumber &&
-          ticket.ticketNumber.toLowerCase().includes(searchTerm.toLowerCase()));
+        ticket.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        ticket.ticketNumber?.toLowerCase().includes(searchTerm.toLowerCase());
+
       const matchesStatus =
         statusFilter === "all" || ticket.status === statusFilter;
       const matchesPriority =
@@ -64,7 +58,6 @@ const EmployeeDashboard = () => {
 
   return (
     <>
-      {/* <Header /> */}
       <Helmet>
         <title>My Tickets - ITSYBIZZ TMS</title>
         <meta
@@ -83,7 +76,9 @@ const EmployeeDashboard = () => {
             to you. Let's get them resolved!
           </p>
         </motion.div>
-        <TicketStats tickets={ticketsArray} />
+
+        <TicketStats tickets={filteredTickets} />
+
         <TicketFilters
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
@@ -95,13 +90,10 @@ const EmployeeDashboard = () => {
           setCategoryFilter={setCategoryFilter}
           onClearFilters={handleClearFilters}
         />
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <AnimatePresence mode="wait">
-            {loading ? (
-              <div className="col-span-full text-center py-16 text-gray-400">
-                Loading tickets...
-              </div>
-            ) : filteredTickets.length > 0 ? (
+            {filteredTickets.length > 0 ? (
               filteredTickets.map((ticket) => (
                 <TicketCard
                   key={`ticket-${ticket._id || ticket.id}-${ticket.updatedAt}`}

@@ -1,27 +1,44 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { Search, X } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
-import { ticketStatuses } from '@/data';
-import { useAuthContext } from '../context/AuthContext2';
+import React from "react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Search, X } from "lucide-react";
+import { useAuthContext } from "../context/AuthContext2";
+import { ticketStatuses } from "@/data";
 
-const TicketFilters = ({ 
-  searchTerm, setSearchTerm, 
-  statusFilter, setStatusFilter, 
-  priorityFilter, setPriorityFilter, 
-  categoryFilter, setCategoryFilter,
-  assigneeFilter, setAssigneeFilter,
-  departmentFilter, setDepartmentFilter,
+const TicketFilters = ({
+  searchTerm,
+  setSearchTerm,
+  statusFilter,
+  setStatusFilter,
+  priorityFilter,
+  setPriorityFilter,
+  categoryFilter,
+  setCategoryFilter,
+  assigneeFilter,
+  setAssigneeFilter,
+  departmentFilter,
+  setDepartmentFilter,
   onClearFilters,
   users = [],
-  departments = []
+  departments = [],
 }) => {
-  // const { user } = useAuth();
-  const {user} = useAuthContext();
-  const hasActiveFilters = statusFilter !== 'all' || priorityFilter !== 'all' || categoryFilter !== 'all' || searchTerm || (user && user.role === 'admin' && (assigneeFilter !== 'all' || departmentFilter !== 'all'));
+  const { user } = useAuthContext();
+  const hasActiveFilters =
+    statusFilter !== "all" ||
+    priorityFilter !== "all" ||
+    categoryFilter !== "all" ||
+    searchTerm ||
+    (user &&
+      user.role === "admin" &&
+      (assigneeFilter !== "all" || departmentFilter !== "all"));
 
   return (
     <motion.div
@@ -82,6 +99,7 @@ const TicketFilters = ({
                   ))}
                 </SelectContent>
               </Select>
+
               <Select
                 value={departmentFilter}
                 onValueChange={setDepartmentFilter}

@@ -1,156 +1,104 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { Helmet } from 'react-helmet';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Toaster } from '@/components/ui/toaster';
-import { useToast } from '@/components/ui/use-toast';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
-import { useNotifications } from '@/context/NotificationContext';
-import TicketForm from '@/components/TicketForm';
-import TicketCard from '@/components/TicketCard';
-import TicketFilters from '@/components/TicketFilters';
-import { Plus, Ticket } from 'lucide-react';
-import { departments, initialTickets } from '@/data';
-import { useAuthContext } from '../context/AuthContext2';
-import { departmentFilters } from '../context/AuthContext2';
-import TicketStats from '../components/TicketStats';
-import { useTicketCreate } from '../context/TicketCreateContext';
+// AdminDashboard.jsx — Fully Fixed and Now Compatible with API Data
 
-
+import React, { useState, useMemo, useEffect } from "react";
+import { Helmet } from "react-helmet";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/toaster";
+import { useToast } from "@/components/ui/use-toast";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useAuthContext } from "../context/AuthContext2";
+import { useTicketCreate } from "../context/TicketCreateContext";
+import TicketForm from "@/components/TicketForm";
+import TicketCard from "@/components/TicketCard";
+import TicketFilters from "@/components/TicketFilters";
+import TicketStats from "@/components/TicketStats";
+import { Plus, Ticket } from "lucide-react";
+import { departmentFilters } from "../context/AuthContext2";
 
 const AdminDashboard = () => {
   const { toast } = useToast();
-  const { allUsers } = useAuthContext()
-  const { allTicket, DeleteTicket } = useTicketCreate()
-  // const { createTicketAssignedNotification, createTicketStatusNotification, cleanupNotificationsForDeletedTickets } = useNotifications();
-  const [tickets, setTickets] = useLocalStorage('tickets', initialTickets);
+  const { allUsers } = useAuthContext();
+  const { allTicket, DeleteTicket } = useTicketCreate();
+
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTicket, setEditingTicket] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [priorityFilter, setPriorityFilter] = useState('all');
-  const [categoryFilter, setCategoryFilter] = useState('all');
-  const [assigneeFilter, setAssigneeFilter] = useState('all');
-  const [departmentFilter, setDepartmentFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [priorityFilter, setPriorityFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [assigneeFilter, setAssigneeFilter] = useState("all");
+  const [departmentFilter, setDepartmentFilter] = useState("all");
 
-  // // Clean up notifications when tickets are deleted
-  // useEffect(() => {
-  //   const existingTicketIds = tickets.map(t => t.id);
-  //   cleanupNotificationsForDeletedTickets(existingTicketIds);
-  // }, [tickets, cleanupNotificationsForDeletedTickets]);
-
-  // Helper function to normalize assignment data
-  const normalizeAssignedTo = (assignedTo) => {
+  const normalizeAssignedTo = (assignedTo, users) => {
     if (!assignedTo) return [];
     const assignedArray = Array.isArray(assignedTo) ? assignedTo : [assignedTo];
-    return assignedArray.filter(id => users.some(user => user.id === id));
+    return assignedArray.filter((id) => users.some((user) => user.id === id));
   };
 
-  // Helper function to check if a ticket matches assignee filter
-  const ticketMatchesAssigneeFilter = (ticket, assigneeFilter) => {
-    if (assigneeFilter === 'all') return true;
-    const assignedUserIds = normalizeAssignedTo(ticket.assignedTo);
+  const ticketMatchesAssigneeFilter = (ticket, assigneeFilter, users) => {
+    if (assigneeFilter === "all") return true;
+    const assignedUserIds = normalizeAssignedTo(ticket.assignedTo, users);
     return assignedUserIds.includes(assigneeFilter);
   };
+  
+  const normalizeTicket = (ticket) => ({
+    ...ticket,
+    id: ticket._id,
+    status: ticket.status?.toLowerCase(),
+    priority: ticket.priority?.toLowerCase(),
+    category: ticket.category?.toLowerCase(),
+    departmentId:
+      departmentFilters.find((d) => d.label === ticket.department)?.value ??
+      "unknown",
+    assignedTo: (ticket.assignedTo || []).map((user) => user._id),
+  });
 
   const filteredTickets = useMemo(() => {
-    return allTicket.filter(ticket => {
-      const matchesSearch = ticket.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (ticket.description && ticket.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        ticket.ticketNumber.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesStatus = statusFilter === 'all' || ticket.status === statusFilter;
-      const matchesPriority = priorityFilter === 'all' || ticket.priority === priorityFilter;
-      const matchesCategory = categoryFilter === 'all' || ticket.category === categoryFilter;
-      const matchesAssignee = ticketMatchesAssigneeFilter(ticket, assigneeFilter);
-      const matchesDepartment = departmentFilter === 'all' || ticket.departmentId === departmentFilter;
+    return allTicket.map(normalizeTicket).filter((ticket) => {
+      const matchesSearch =
+        ticket.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        ticket.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        ticket.ticketNumber?.toLowerCase().includes(searchTerm.toLowerCase());
 
-      return matchesSearch && matchesStatus && matchesPriority && matchesCategory && matchesAssignee && matchesDepartment;
+      const matchesStatus =
+        statusFilter === "all" || ticket.status === statusFilter;
+      const matchesPriority =
+        priorityFilter === "all" || ticket.priority === priorityFilter;
+      const matchesCategory =
+        categoryFilter === "all" || ticket.category === categoryFilter;
+      const matchesAssignee = ticketMatchesAssigneeFilter(
+        ticket,
+        assigneeFilter,
+        allUsers
+      );
+      const matchesDepartment =
+        departmentFilter === "all" || ticket.departmentId === departmentFilter;
+
+      return (
+        matchesSearch &&
+        matchesStatus &&
+        matchesPriority &&
+        matchesCategory &&
+        matchesAssignee &&
+        matchesDepartment
+      );
     });
-  }, [allTicket, searchTerm, statusFilter, priorityFilter, categoryFilter, assigneeFilter, departmentFilter]);
-
-  // const handleCreateTicket = (ticketData) => {
-  //   const validAssignedUserIds = normalizeAssignedTo(ticketData.assignedTo);
-
-  //   const normalizedTicketData = {
-  //     ...ticketData,
-  //     assignedTo: validAssignedUserIds,
-  //     id: Date.now().toString(),
-  //     ticketNumber: `TKT-${String(Date.now()).slice(-6)}`,
-  //     createdAt: new Date().toISOString(),
-  //     updatedAt: new Date().toISOString(),
-  //     createdBy: 'u1',
-  //     comments: [],
-  //   };
-
-  //   // Update tickets state with immediate synchronization
-  //   setTickets(prev => {
-  //     const newTickets = [normalizedTicketData, ...prev];
-  //     // Force localStorage update
-  //     localStorage.setItem('tickets', JSON.stringify(newTickets));
-  //     return newTickets;
-  //   });
-
-  //   // Send notifications to all assigned employees
-  //   validAssignedUserIds.forEach(userId => {
-  //     createTicketAssignedNotification(normalizedTicketData.id, normalizedTicketData.ticketNumber, normalizedTicketData.title, userId);
-  //   });
-
-  //   toast({ 
-  //     title: "Ticket Created! 🎫", 
-  //     description: `New ticket assigned to ${validAssignedUserIds.length} employee${validAssignedUserIds.length > 1 ? 's' : ''} and notifications sent.` 
-  //   });
-  // };
-
-  // const handleEditTicket = (ticketData) => {
-  //   const validAssignedUserIds = normalizeAssignedTo(ticketData.assignedTo);
-  //   const oldTicket = tickets.find(t => t.id === ticketData.id);
-
-  //   const normalizedTicketData = {
-  //     ...ticketData,
-  //     assignedTo: validAssignedUserIds,
-  //     updatedAt: new Date().toISOString(),
-  //   };
-
-  //   // Update tickets state with immediate synchronization
-  //   setTickets(prev => {
-  //     const newTickets = prev.map(t => t.id === ticketData.id ? normalizedTicketData : t);
-  //     // Force localStorage update
-  //     localStorage.setItem('tickets', JSON.stringify(newTickets));
-  //     return newTickets;
-  //   });
-
-  //   // Handle reassignment notifications
-  //   if (oldTicket) {
-  //     const oldAssignees = normalizeAssignedTo(oldTicket.assignedTo);
-  //     const newAssignees = validAssignedUserIds;
-
-  //     // Find newly assigned users
-  //     const newlyAssigned = newAssignees.filter(userId => !oldAssignees.includes(userId));
-
-  //     // Send assignment notifications to newly assigned users
-  //     newlyAssigned.forEach(userId => {
-  //       createTicketAssignedNotification(normalizedTicketData.id, normalizedTicketData.ticketNumber, normalizedTicketData.title, userId);
-  //     });
-
-  //     // Send status change notifications to all current assignees if status changed
-  //     if (oldTicket.status !== normalizedTicketData.status) {
-  //       newAssignees.forEach(userId => {
-  //         createTicketStatusNotification(normalizedTicketData.id, normalizedTicketData.ticketNumber, normalizedTicketData.status, userId);
-  //       });
-  //     }
-  //   }
-
-  //   setEditingTicket(null);
-  //   toast({ 
-  //     title: "Ticket Updated! ✨", 
-  //     description: "Ticket details have been updated and notifications sent to assignees." 
-  //   });
-  // };
+  }, [
+    allTicket,
+    searchTerm,
+    statusFilter,
+    priorityFilter,
+    categoryFilter,
+    assigneeFilter,
+    departmentFilter,
+    allUsers,
+  ]);
 
   const handleDeleteTicket = (ticketId) => {
-   if(window.confirm("are you sure you want to delete ticket?")){
-     DeleteTicket(ticketId)
-   }
+    if (window.confirm("Are you sure you want to delete ticket?")) {
+      DeleteTicket(ticketId);
+    }
   };
 
   const handleEditClick = (ticket) => {
@@ -164,41 +112,66 @@ const AdminDashboard = () => {
   };
 
   const handleClearFilters = () => {
-    setSearchTerm('');
-    setStatusFilter('all');
-    setPriorityFilter('all');
-    setCategoryFilter('all');
-    setAssigneeFilter('all');
-    setDepartmentFilter('all');
+    setSearchTerm("");
+    setStatusFilter("all");
+    setPriorityFilter("all");
+    setCategoryFilter("all");
+    setAssigneeFilter("all");
+    setDepartmentFilter("all");
   };
 
   return (
     <>
       <Helmet>
         <title>Admin Dashboard - ITSYBIZZ TMS</title>
-        <meta name="description" content="Manage all team tickets from the admin dashboard." />
+        <meta
+          name="description"
+          content="Manage all team tickets from the admin dashboard."
+        />
       </Helmet>
       <div className="p-4 lg:p-8">
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-3xl font-bold text-white mb-2">Ticket Management Dashboard</h1>
-          <p className="text-gray-400 mb-8">Oversee and manage all tickets across the team.</p>
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <h1 className="text-3xl font-bold text-white mb-2">
+            Ticket Management Dashboard
+          </h1>
+          <p className="text-gray-400 mb-8">
+            Oversee and manage all tickets across the team.
+          </p>
         </motion.div>
 
-        <TicketStats />
+        <TicketStats tickets={allTicket} />
+
         <TicketFilters
-          searchTerm={searchTerm} setSearchTerm={setSearchTerm}
-          statusFilter={statusFilter} setStatusFilter={setStatusFilter}
-          priorityFilter={priorityFilter} setPriorityFilter={setPriorityFilter}
-          categoryFilter={categoryFilter} setCategoryFilter={setCategoryFilter}
-          assigneeFilter={assigneeFilter} setAssigneeFilter={setAssigneeFilter}
-          departmentFilter={departmentFilter} setDepartmentFilter={setDepartmentFilter}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          statusFilter={statusFilter}
+          setStatusFilter={setStatusFilter}
+          priorityFilter={priorityFilter}
+          setPriorityFilter={setPriorityFilter}
+          categoryFilter={categoryFilter}
+          setCategoryFilter={setCategoryFilter}
+          assigneeFilter={assigneeFilter}
+          setAssigneeFilter={setAssigneeFilter}
+          departmentFilter={departmentFilter}
+          setDepartmentFilter={setDepartmentFilter}
           onClearFilters={handleClearFilters}
-          users={allUsers.filter(u => u.role === 'employee')}
+          users={allUsers.filter((u) => u.role === "employee")}
           departments={departmentFilters}
         />
 
-        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex justify-center mb-8">
-          <Button onClick={() => setIsFormOpen(true)} size="lg" className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="flex justify-center mb-8"
+        >
+          <Button
+            onClick={() => setIsFormOpen(true)}
+            size="lg"
+            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+          >
             <Plus className="w-5 h-5 mr-2" />
             Create & Assign Ticket
           </Button>
@@ -209,10 +182,10 @@ const AdminDashboard = () => {
             {filteredTickets.length > 0 ? (
               filteredTickets.map((ticket) => (
                 <TicketCard
-                  key={`admin-ticket-${ticket._id}-${ticket.updatedAt}`}
+                  key={`admin-ticket-${ticket._id || ticket.id}`}
                   ticket={ticket}
                   onEdit={handleEditClick}
-                  onDelete={() => handleDeleteTicket(ticket._id)}
+                  onDelete={() => handleDeleteTicket(ticket._id || ticket.id)}
                 />
               ))
             ) : (
@@ -226,8 +199,12 @@ const AdminDashboard = () => {
                   <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 flex items-center justify-center">
                     <Ticket className="w-12 h-12 text-purple-400" />
                   </div>
-                  <h3 className="text-2xl font-semibold text-gray-300 mb-2">No tickets match your filters</h3>
-                  <p className="text-gray-400">Try adjusting your search or filter criteria.</p>
+                  <h3 className="text-2xl font-semibold text-gray-300 mb-2">
+                    No tickets match your filters
+                  </h3>
+                  <p className="text-gray-400">
+                    Try adjusting your search or filter criteria.
+                  </p>
                 </div>
               </motion.div>
             )}
@@ -237,9 +214,8 @@ const AdminDashboard = () => {
         <TicketForm
           isOpen={isFormOpen}
           onClose={handleCloseForm}
-          // onSubmit={editingTicket ? handleEditTicket : handleCreateTicket}
           ticket={editingTicket}
-          users={allUsers.filter(u => u.role === 'employee')}
+          users={allUsers.filter((u) => u.role === "employee")}
           departments={departmentFilters}
         />
       </div>
