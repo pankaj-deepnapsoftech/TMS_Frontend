@@ -1,4 +1,3 @@
-// AdminDashboard.jsx — Fully Fixed and Now Compatible with API Data
 
 import React, { useState, useMemo, useEffect } from "react";
 import { Helmet } from "react-helmet";
@@ -30,18 +29,6 @@ const AdminDashboard = () => {
   const [assigneeFilter, setAssigneeFilter] = useState("all");
   const [departmentFilter, setDepartmentFilter] = useState("all");
 
-  const normalizeAssignedTo = (assignedTo, users) => {
-    if (!assignedTo) return [];
-    const assignedArray = Array.isArray(assignedTo) ? assignedTo : [assignedTo];
-    return assignedArray.filter((id) => users.some((user) => user.id === id));
-  };
-
-  const ticketMatchesAssigneeFilter = (ticket, assigneeFilter, users) => {
-    if (assigneeFilter === "all") return true;
-    const assignedUserIds = normalizeAssignedTo(ticket?.assignedTo, users);
-    return assignedUserIds.includes(assigneeFilter);
-  };
-  
   const normalizeTicket = (ticket) => ({
     ...ticket,
     id: ticket._id,
@@ -51,15 +38,22 @@ const AdminDashboard = () => {
     departmentId:
       departmentFilters.find((d) => d.label === ticket.department)?.value ??
       "unknown",
-    assignedTo: (ticket.assignedTo || []).map((user) => user._id),
   });
+
+  const ticketMatchesAssigneeFilter = (ticket, assigneeFilter) => {
+    if (assigneeFilter === "all") return true;
+    return (
+      Array.isArray(ticket.assignedTo) &&
+      ticket.assignedTo.some((user) => user._id === assigneeFilter)
+    );
+  };
 
   const filteredTickets = useMemo(() => {
     return allTicket.map(normalizeTicket).filter((ticket) => {
       const matchesSearch =
         ticket.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        ticket.description?.toLowerCase().includes(searchTerm.toLowerCase()) 
-        // ticket.ticketNumber?.toLowerCase().includes(searchTerm.toLowerCase());
+        ticket.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        ticket.ticketNumber?.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesStatus =
         statusFilter === "all" || ticket.status === statusFilter;
@@ -69,8 +63,7 @@ const AdminDashboard = () => {
         categoryFilter === "all" || ticket.category === categoryFilter;
       const matchesAssignee = ticketMatchesAssigneeFilter(
         ticket,
-        assigneeFilter,
-        allUsers
+        assigneeFilter
       );
       const matchesDepartment =
         departmentFilter === "all" || ticket.departmentId === departmentFilter;
@@ -92,7 +85,6 @@ const AdminDashboard = () => {
     categoryFilter,
     assigneeFilter,
     departmentFilter,
-    allUsers,
   ]);
 
   const handleDeleteTicket = (ticketId) => {
