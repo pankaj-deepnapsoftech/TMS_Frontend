@@ -39,7 +39,7 @@ function App() {
           />
 
           <Route
-            path="/ticket/:ticketId"
+            path="/ticket/:ticketId/comment"
             element={
               <ProtectedRoute allowedRoles={['admin', 'employee']}>
                 <TicketDetailPage />

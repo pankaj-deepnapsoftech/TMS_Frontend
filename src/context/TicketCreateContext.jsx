@@ -13,19 +13,21 @@ const TicketCreateProvider = ({ children }) => {
   const [myTickets, setMyTickets] = useState([]);
 
   const TicketCreate = async (formData) => {
-    try {
-      const res = await axiosHandler.post("/tickets", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      toast.success(res?.data?.message);
-      // console.log(res?.data)
-    } catch (error) {
-      console.log(error);
+   
+        try {
+            const res = await axiosHandler.post('/tickets', formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            GetAllTicket()
+            toast.success(res?.data?.message)
+            console.log(res?.data)
+        } catch (error) {
+            console.log(error)
+        }
     }
-  };
+  
 
   const GetAllTicket = async () => {
     try {
@@ -56,7 +58,23 @@ const TicketCreateProvider = ({ children }) => {
       console.log(error);
     }
   };
-
+    const UpdatedTicket = async (_id, formData) => {
+      console.log(_id, formData)
+      try {
+        const res = await axiosHandler.put(`/tickets/${_id}`, formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        )
+        toast.success(res?.data?.message)
+        GetAllTicket()
+        console.log(res?.data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
   const GetMyTicket = async () => {
     try {
       const response = await axiosHandler("/tickets/my", {
@@ -87,7 +105,7 @@ const TicketCreateProvider = ({ children }) => {
         GetMyTicket,
         myTickets,
         setMyTickets,
-
+        UpdatedTicket
       }}
     >
       {children}

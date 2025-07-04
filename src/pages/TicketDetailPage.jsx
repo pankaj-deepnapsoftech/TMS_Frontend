@@ -1,46 +1,38 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
 import { useToast } from '@/components/ui/use-toast';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
-import { useAuth } from '@/context/AuthContext';
 import { useNotifications } from '@/context/NotificationContext';
 import TicketDetailHeader from '@/components/TicketDetailHeader';
 import TicketComments from '@/components/TicketComments';
 import TicketDetailSidebar from '@/components/TicketDetailSidebar';
-import { users, departments, ticketStatuses, initialTickets } from '@/data';
+import { useAuthContext } from '@/context/AuthContext2';
+import { useTicketCreate } from '@/context/TicketCreateContext';
+import { departmentFilters } from '@/context/AuthContext2';
 
 const TicketDetailPage = () => {
   const { ticketId } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, allUsers } = useAuthContext();
+  const { allTicket, updateTicket } = useTicketCreate(); // Assuming updateTicket is available
   const { toast } = useToast();
-  const { createTicketCommentNotification, createTicketStatusNotification } = useNotifications();
-  const [tickets, setTickets] = useLocalStorage('tickets', initialTickets);
+  // const { createTicketCommentNotification, createTicketStatusNotification } = useNotifications();
 
-  const ticket = useMemo(() => {
-    return tickets.find(t => t.id === ticketId);
-  }, [tickets, ticketId]);
+  const ticket = useMemo(() => allTicket.find(t => t._id === ticketId), [allTicket, ticketId]);
 
-  // Redirect if ticket doesn't exist or user is not assigned (for employees)
+  // Redirect if ticket not found or employee lacks access
   useEffect(() => {
-    if (!ticket) {
-      return;
-    }
-    
-    // If user is an employee and not assigned to this ticket, redirect to their dashboard
+    if (!ticket) return;
+
     if (user?.role === 'employee') {
-      const isAssigned = ticket.assignedTo && (
-        Array.isArray(ticket.assignedTo) 
-          ? ticket.assignedTo.includes(user.id)
-          : ticket.assignedTo === user.id
-      );
-      
-      if (!isAssigned) {
+      const assigned = Array.isArray(ticket.assignedTo)
+        ? ticket.assignedTo.includes(user._id)
+        : ticket.assignedTo === user._id;
+
+      if (!assigned) {
         navigate('/employee');
-        return;
       }
     }
   }, [ticket, user, navigate]);
@@ -49,7 +41,9 @@ const TicketDetailPage = () => {
     return (
       <div className="p-8 text-center">
         <h1 className="text-2xl font-bold text-white mb-4">Ticket Not Found</h1>
-        <p className="text-gray-400 mb-4">This ticket may have been deleted or you don't have access to it.</p>
+        <p className="text-gray-400 mb-4">
+          This ticket may have been deleted or you don't have access to it.
+        </p>
         <Button onClick={() => navigate(-1)} className="bg-purple-500 hover:bg-purple-600">
           Go Back
         </Button>
@@ -57,50 +51,59 @@ const TicketDetailPage = () => {
     );
   }
 
-  // Helper function to safely get assigned users
-  const getAssignedUsers = () => {
-    if (!ticket.assignedTo) return [];
-    
-    const assignedUserIds = Array.isArray(ticket.assignedTo) ? ticket.assignedTo : [ticket.assignedTo];
-    return users.filter(u => assignedUserIds.includes(u.id));
-  };
+  // Helpers
 
-  // Helper function to check if current user is assigned
-  const isAssignedToCurrentUser = () => {
-    if (!ticket.assignedTo || !user?.id) return false;
+    const assignedIds = Array.isArray(ticket?.assignedTo)
+      ? ticket.assignedTo
+      : [ticket.assignedTo];
     
-    const assignedUserIds = Array.isArray(ticket.assignedTo) ? ticket.assignedTo : [ticket.assignedTo];
-    return assignedUserIds.includes(user.id);
-  };
 
-  const assignedUsers = getAssignedUsers();
-  const createdByUser = users.find(u => u.id === ticket.createdBy);
-  const department = departments.find(d => d.id === ticket.departmentId);
-  const status = ticketStatuses.find(s => s.id === ticket.status);
+
+  const isAssignedToCurrentUser = useMemo(() => {
+    const assignedIds = Array.isArray(ticket?.assignedTo)
+      ? ticket.assignedTo
+      : [ticket.assignedTo];
+    return assignedIds.includes(user._id);
+  }, [ticket, user]);
+  
+
+  // const assignedUsers = getAssignedUsers();
+  const createdByUser = allUsers.find(u => u._id === ticket.createdBy);
+  const department = departmentFilters.find(d => d.value === ticket.department);
+  const status = user?.status?.find(s => s.id === ticket.status);
 
   const getPriorityColor = (priority) => {
     switch (priority) {
-      case 'high': return 'bg-red-500/20 text-red-300 border-red-500/30';
-      case 'medium': return 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30';
-      case 'low': return 'bg-green-500/20 text-green-300 border-green-500/30';
-      default: return 'bg-gray-500/20 text-gray-300 border-gray-500/30';
+      case 'high':
+        return 'bg-red-500/20 text-red-300 border-red-500/30';
+      case 'medium':
+        return 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30';
+      case 'low':
+        return 'bg-green-500/20 text-green-300 border-green-500/30';
+      default:
+        return 'bg-gray-500/20 text-gray-300 border-gray-500/30';
     }
   };
-
-  const formatDate = (dateString) => {
-    if (!dateString) return null;
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric', 
+ 
+  
+  const formatDate = (dateStr) => {
+    if (!dateStr) return null;
+    const date = new Date(dateStr);
+    return date.toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
       year: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
     });
   };
 
-  const getInitials = (name) => {
-    return name.split(' ').map(n => n[0]).join('');
+  const getInitials = (name = '') => {
+    return name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .toUpperCase();
   };
 
   const handleAddComment = (content) => {
@@ -108,49 +111,63 @@ const TicketDetailPage = () => {
       id: Date.now().toString(),
       userId: user.id,
       content,
-      createdAt: new Date().toISOString(),
+      createdAt: new Date().toISOString()
     };
 
-    setTickets(prev => prev.map(t => 
-      t.id === ticketId 
-        ? { ...t, comments: [...(t.comments || []), comment], updatedAt: new Date().toISOString() }
-        : t
-    ));
+    const updatedTicket = {
+      ...ticket,
+      comments: [...(ticket.comments || []), comment],
+      updatedAt: new Date().toISOString()
+    };
 
-    // Send notifications to all assigned users except the commenter
-    const assignedUserIds = Array.isArray(ticket.assignedTo) ? ticket.assignedTo : [ticket.assignedTo];
-    assignedUserIds.forEach(userId => {
+    updateTicket(ticket.id, updatedTicket);
+
+    const notifyUsers = Array.isArray(ticket.assignedTo)
+      ? ticket.assignedTo
+      : [ticket.assignedTo];
+
+    notifyUsers.forEach(userId => {
       if (userId !== user.id) {
         createTicketCommentNotification(ticket.id, ticket.ticketNumber, user.name, userId);
       }
     });
 
-    toast({ title: "Comment Added! 💬", description: "Your comment has been posted and notifications sent." });
+    toast({
+      title: 'Comment Added! 💬',
+      description: 'Your comment has been posted and notifications sent.'
+    });
   };
 
   const handleStatusChange = (newStatus) => {
-    setTickets(prev => prev.map(t => 
-      t.id === ticketId 
-        ? { ...t, status: newStatus, updatedAt: new Date().toISOString() }
-        : t
-    ));
+    const updatedTicket = {
+      ...ticket,
+      status: newStatus,
+      updatedAt: new Date().toISOString()
+    };
 
-    // Send notifications to all assigned users
-    const assignedUserIds = Array.isArray(ticket.assignedTo) ? ticket.assignedTo : [ticket.assignedTo];
-    assignedUserIds.forEach(userId => {
+    updateTicket(ticket.id, updatedTicket);
+
+    const notifyUsers = Array.isArray(ticket.assignedTo)
+      ? ticket.assignedTo
+      : [ticket.assignedTo];
+
+    notifyUsers.forEach(userId => {
       createTicketStatusNotification(ticket.id, ticket.ticketNumber, newStatus, userId);
     });
 
-    toast({ 
-      title: "Status Updated! 📋", 
-      description: `Ticket status changed to ${ticketStatuses.find(s => s.id === newStatus)?.name} and notifications sent.` 
+    const newStatusName = user?.status?.find(s => s.id === newStatus)?.name || newStatus;
+
+    toast({
+      title: 'Status Updated! 📋',
+      description: `Ticket status changed to ${newStatusName} and notifications sent.`
     });
   };
 
   const isOverdue = (dueDate) => {
-    if (!dueDate) return false;
-    return new Date(dueDate) < new Date() && ticket.status !== 'resolved' && ticket.status !== 'closed';
+    return dueDate && new Date(dueDate) < new Date() && !['resolved', 'closed'].includes(ticket.status);
   };
+
+
 
   return (
     <>
@@ -158,10 +175,11 @@ const TicketDetailPage = () => {
         <title>{`${ticket.ticketNumber} - ${ticket.title} - ITSYBIZZ TMS`}</title>
         <meta name="description" content={`Ticket details for ${ticket.ticketNumber}: ${ticket.title}`} />
       </Helmet>
+
       <div className="p-4 lg:p-8 max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            <TicketDetailHeader 
+            <TicketDetailHeader
               ticket={ticket}
               status={status}
               user={user}
@@ -169,7 +187,7 @@ const TicketDetailPage = () => {
               getPriorityColor={getPriorityColor}
             />
 
-            <TicketComments 
+            <TicketComments
               ticket={ticket}
               user={user}
               onAddComment={handleAddComment}
@@ -178,10 +196,11 @@ const TicketDetailPage = () => {
             />
           </div>
 
-          <TicketDetailSidebar 
+          <TicketDetailSidebar
             ticket={ticket}
             user={user}
-            assignedUsers={assignedUsers}
+            status={status}
+            assignedIds={assignedIds}
             department={department}
             createdByUser={createdByUser}
             isAssignedToCurrentUser={isAssignedToCurrentUser}
@@ -192,6 +211,7 @@ const TicketDetailPage = () => {
           />
         </div>
       </div>
+
       <Toaster />
     </>
   );

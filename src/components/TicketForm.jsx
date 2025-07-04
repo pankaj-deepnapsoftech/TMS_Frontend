@@ -396,7 +396,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '
 import { departmentFilters } from '../context/AuthContext2';
 
 const TicketForm = ({ ticket, users, onClose, isOpen }) => {
-  const { TicketCreate } = useTicketCreate();
+  const { TicketCreate, UpdatedTicket } = useTicketCreate();
   const [selectedUsers, setSelectedUsers] = useState(
     users.filter(user => ticket?.assignedTo?.includes(user._id)) || []
   );
@@ -430,6 +430,7 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
       status: Yup.string().oneOf(['Open', 'In Progress', 'Under Review', 'Resolved', 'Closed']).required(),
       dueDate: Yup.date().required('Due date is required'),
     }),
+    enableReinitialize:true,
     onSubmit: (values) => {
       const departmentObj = departmentFilters.find(d => d.value === values.departmentId);
       const payload = {
@@ -441,7 +442,12 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
         dueDate: values.dueDate,
         assignedTo: selectedUsers.map(u => u._id),
       };
-      TicketCreate(payload);
+     if(ticket){
+       UpdatedTicket(ticket._id,payload)
+     }else{
+       TicketCreate(payload);
+     }
+      onClose()
     },
   });
 
