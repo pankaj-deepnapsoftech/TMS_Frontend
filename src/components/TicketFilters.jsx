@@ -40,6 +40,9 @@ const TicketFilters = ({
       user.role === "admin" &&
       (assigneeFilter !== "all" || departmentFilter !== "all"));
 
+
+
+
   return (
     <motion.div
       initial={{ opacity: 0, y: -20 }}
@@ -93,7 +96,7 @@ const TicketFilters = ({
                 <SelectContent className="bg-slate-800 border-purple-500/30">
                   <SelectItem value="all">All Assignees</SelectItem>
                   {users.map((u) => (
-                    <SelectItem key={u.id} value={u.id}>
+                    <SelectItem key={u._id} value={u._id}>
                       {u.name}
                     </SelectItem>
                   ))}

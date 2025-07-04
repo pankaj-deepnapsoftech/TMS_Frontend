@@ -38,7 +38,7 @@ const AdminDashboard = () => {
 
   const ticketMatchesAssigneeFilter = (ticket, assigneeFilter, users) => {
     if (assigneeFilter === "all") return true;
-    const assignedUserIds = normalizeAssignedTo(ticket.assignedTo, users);
+    const assignedUserIds = normalizeAssignedTo(ticket?.assignedTo, users);
     return assignedUserIds.includes(assigneeFilter);
   };
   
@@ -58,8 +58,8 @@ const AdminDashboard = () => {
     return allTicket.map(normalizeTicket).filter((ticket) => {
       const matchesSearch =
         ticket.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        ticket.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        ticket.ticketNumber?.toLowerCase().includes(searchTerm.toLowerCase());
+        ticket.description?.toLowerCase().includes(searchTerm.toLowerCase()) 
+        // ticket.ticketNumber?.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesStatus =
         statusFilter === "all" || ticket.status === statusFilter;
