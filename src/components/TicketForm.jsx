@@ -383,7 +383,7 @@ import { motion } from 'framer-motion';
 //   Input, Textarea, Button, Select, SelectTrigger, SelectValue, SelectContent, SelectItem, DialogFooter,
 //   Avatar, AvatarImage, AvatarFallback, Card, CardContent
 // } from '@/components/ui'; // Replace with your paths
-import { Plus, Users, X, Search, Calendar, UserPlus, Ticket } from 'lucide-react';
+import { Plus, Users, X, Search, UserPlus, Ticket } from 'lucide-react';
 import { useTicketCreate } from '../context/TicketCreateContext';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
@@ -618,7 +618,6 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
                   onChange={formik.handleChange}
                   className="bg-slate-800/50 border-purple-500/30 text-white"
                 />
-                <Calendar className="absolute right-3 top-3 h-4 w-4 text-purple-400 pointer-events-none" />
               </div>
             </div>
           </div>
