@@ -73,6 +73,7 @@ const TicketCreateProvider = ({ children }) => {
       });
       // console.log(res?.data)
       GetAllTicket();
+      fetchTicketStats();
       toast.success(res?.data?.message);
     } catch (error) {
       console.log(error);
@@ -116,7 +117,7 @@ const TicketCreateProvider = ({ children }) => {
   useEffect(() => {
     fetchTicketStats();
     GetMyTicket();
-  },[]);
+  }, []);
   return (
     <TicketCreateContext.Provider
       value={{
