@@ -19,7 +19,6 @@ const AdminDashboard = () => {
   const { toast } = useToast();
   const { allUsers } = useAuthContext();
   const { allTicket, DeleteTicket } = useTicketCreate();
-
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTicket, setEditingTicket] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");

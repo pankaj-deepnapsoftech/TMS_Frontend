@@ -40,11 +40,11 @@ function App() {
 
           <Route
             path="/ticket/:ticketId/comment"
-            element={
+            element={ 
               <ProtectedRoute allowedRoles={['admin', 'employee']}>
                 <TicketDetailPage />
               </ProtectedRoute>
-            }
+            } 
           />
 
           <Route

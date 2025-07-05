@@ -1,107 +1,47 @@
-import React, { createContext, useContext } from 'react';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
-import { useAuth } from '@/context/AuthContext';
-import { initialNotifications } from '@/data';
+import { axiosHandler } from "@/config/axiosConfig";
+import { createContext, useContext, useState, useEffect } from "react";
+import { useAuthContext } from "./AuthContext2";
 
-const NotificationContext = createContext();
+const NotificationsContext = createContext();
 
-export function useNotifications() {
-  return useContext(NotificationContext);
-}
+export const useNotifications = () => useContext(NotificationsContext);
 
-export function NotificationProvider({ children }) {
-  const { user } = useAuth();
-  const [notifications, setNotifications] = useLocalStorage('notifications', initialNotifications);
+const NotificationProvider = ({ children }) => {
+    const [notifications, setNotifications] = useState([]);
+    const [loading, setLoading] = useState(false);
+ console.log(notifications)
+    const { token } = useAuthContext();
 
-  const addNotification = (notification) => {
-    const newNotification = {
-      ...notification,
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString(),
-      read: false,
+    const fetchNotifications = async () => {
+        setLoading(true);
+        try {
+            const response = await axiosHandler.get('/notifications', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setNotifications(response?.data?.data);
+        } catch (error) {
+            console.error('Error fetching notifications:', error);
+        } finally {
+            setLoading(false);
+        }
     };
-    setNotifications(prev => [newNotification, ...prev]);
-  };
 
-  const markAsRead = (notificationId) => {
-    setNotifications(prev => 
-      prev.map(n => n.id === notificationId ? { ...n, read: true } : n)
+    useEffect(() => {
+        if (token) {
+            fetchNotifications();
+            // Optional: auto-refresh notifications
+            // const intervalId = setInterval(fetchNotifications, 30000);
+            // return () => clearInterval(intervalId);
+        }
+    }, [token]); // fetch again if token changes
+
+    return (
+        <NotificationsContext.Provider value={{ notifications, fetchNotifications, loading }}>
+            {children}
+        </NotificationsContext.Provider>
     );
-  };
+};
 
-  const markAllAsRead = (userId) => {
-    setNotifications(prev => 
-      prev.map(n => n.userId === userId ? { ...n, read: true } : n)
-    );
-  };
-
-  const getUserNotifications = (userId) => {
-    return notifications.filter(n => n.userId === userId);
-  };
-
-  const getUnreadCount = (userId) => {
-    return notifications.filter(n => n.userId === userId && !n.read).length;
-  };
-
-  const createTicketAssignedNotification = (ticketId, ticketNumber, ticketTitle, assignedUserId) => {
-    addNotification({
-      userId: assignedUserId,
-      type: 'ticket_assigned',
-      title: 'New Ticket Assigned',
-      message: `You have been assigned ticket ${ticketNumber}: ${ticketTitle}`,
-      ticketId,
-    });
-  };
-
-  const createTicketCommentNotification = (ticketId, ticketNumber, commenterName, assignedUserId) => {
-    if (assignedUserId) {
-      addNotification({
-        userId: assignedUserId,
-        type: 'ticket_comment',
-        title: 'New Comment',
-        message: `${commenterName} commented on ticket ${ticketNumber}`,
-        ticketId,
-      });
-    }
-  };
-
-  const createTicketStatusNotification = (ticketId, ticketNumber, newStatus, assignedUserId) => {
-    if (assignedUserId) {
-      addNotification({
-        userId: assignedUserId,
-        type: 'ticket_status',
-        title: 'Ticket Status Updated',
-        message: `Ticket ${ticketNumber} status changed to ${newStatus}`,
-        ticketId,
-      });
-    }
-  };
-
-  // Clean up notifications for deleted tickets
-  const cleanupNotificationsForDeletedTickets = (existingTicketIds) => {
-    setNotifications(prev => 
-      prev.filter(notification => 
-        !notification.ticketId || existingTicketIds.includes(notification.ticketId)
-      )
-    );
-  };
-
-  const value = {
-    notifications,
-    addNotification,
-    markAsRead,
-    markAllAsRead,
-    getUserNotifications,
-    getUnreadCount,
-    createTicketAssignedNotification,
-    createTicketCommentNotification,
-    createTicketStatusNotification,
-    cleanupNotificationsForDeletedTickets,
-  };
-
-  return (
-    <NotificationContext.Provider value={value}>
-      {children}
-    </NotificationContext.Provider>
-  );
-}
+export default NotificationProvider;

@@ -63,10 +63,14 @@ console.log(department)
                           {assignedUser._id === user?._id ? 'You' : assignedUser.name}
                         </p>
                         <p className="text-xs text-gray-400">
-                          {Array.isArray(department)
-                            ? (department.find(d => d.value === assignedUser.department)?.label || 'No Department')
-                            : 'No Department'}
+                          {/* {Array.isArray(department)
+                            ? (department.find(
+                              d => d.value.toLowerCase() === assignedUser.department?.toLowerCase()
+                            )?.label || 'No Department')
+                            : 'No Department'} */}
+                            {department?.label}
                         </p>
+
 
                       </div>
                     </motion.div>

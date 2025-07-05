@@ -145,7 +145,7 @@
 // };
 
 // export default Header;
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -155,14 +155,17 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { CheckSquare, LogOutIcon } from "lucide-react";
+import { BellIcon, CheckSquare, LogOutIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuthContext } from "../context/AuthContext2";
 import { useProfile } from "@/context/UserProfileUpdateContext";
+import { useNotifications } from "@/context/NotificationContext";
 
 
 const Header = () => {
   const { user, Logout } = useAuthContext();
+  const [notificationOpen, setNotificationOpen] = useState(false);
+  const { notifications } = useNotifications()
   const {
     editName,
     setEditName,
@@ -177,58 +180,7 @@ const Header = () => {
     handleProfileSave,
   } = useProfile();
 
-  // useEffect(() => {
-  //   if (dialogOpen) {
-  //     fetchProfile();
-  //   }
-  // }, [dialogOpen]);
 
-  // const fetchProfile = async () => {
-  //   setError("");
-  //   try {
-  //     const token = localStorage.getItem("authToken");
-  //     const res = await axiosHandler.get("/auth/profile", {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
-  //     const u = res.data.user || res.data;
-  //     setEditName(u.name || "");
-  //     setEditDepartment(u.department || "");
-  //     setEditRole(u.role || "");
-  //     setEditEmail(u.email || "");
-  //   } catch (err) {
-  //     setError("Failed to fetch profile");
-  //   }
-  // };
-
-  // const handleProfileSave = async (e) => {
-  //   e.preventDefault();
-  //   setLoading(true);
-  //   setError("");
-  //   try {
-  //     const token = localStorage.getItem("authToken");
-  //     const res = await axiosHandler.put(
-  //       `/auth/profile`,
-  //       {
-  //         name: editName,
-  //         department: editDepartment,
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-  //     setEditName(res.data.name || editName);
-  //     setEditDepartment(res.data.department || editDepartment);
-  //     setDialogOpen(false);
-  //   } catch (err) {
-  //     setError(err?.response?.data?.message || "Failed to update profile");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   return (
     <section className="bg-slate-900/50 backdrop-blur-lg border-b border-purple-500/20 sticky top-0 z-40">
@@ -243,7 +195,7 @@ const Header = () => {
               <CheckSquare className="w-6 h-6 text-purple-400" />
             </div>
             <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-              ITSYBIZZ TMS
+              ITSYBIZZ TMS 
             </span>
           </motion.div>
 
@@ -253,6 +205,37 @@ const Header = () => {
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center gap-4"
             >
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setNotificationOpen(true)}
+                className="text-purple-400 hover:text-white relative"
+              >
+                <BellIcon className="h-5 w-5" />
+                {notifications.length > 0 && (
+                  <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full animate-ping" />
+                )}
+              </Button>
+
+              <Dialog open={notificationOpen} onOpenChange={setNotificationOpen}>
+                <DialogContent className="bg-slate-900 border-purple-500/30 max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Notifications</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-3 max-h-64 overflow-y-auto">
+                    {notifications.length > 0 ? (
+                      notifications.map((note) => (
+                        <div key={note._id} className="p-3 bg-slate-800 rounded-lg">
+                          <p className="text-sm font-semibold text-purple-300">{note.message}</p>
+                          <p className="text-xs text-white">{note.description}</p>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-sm text-white">No new notifications.</p>
+                    )}
+                  </div>
+                </DialogContent>
+              </Dialog>
               <div
                 className="flex items-center gap-3 cursor-pointer group"
                 onClick={() => setDialogOpen(true)}

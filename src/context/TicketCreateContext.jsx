@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { axiosHandler } from "../config/axiosConfig";
 import { toast } from "react-toastify";
 import { useAuthContext } from "./AuthContext2";
+import { useNotifications } from "./NotificationContext";
 
 const TicketCreateContext = createContext();
 
@@ -11,6 +12,7 @@ const TicketCreateProvider = ({ children }) => {
   const { token } = useAuthContext();
   const [allTicket, setAllTicket] = useState([]);
   const [myTickets, setMyTickets] = useState([]);
+  // const { fetchNotifications } = useNotifications()
 
   const TicketCreate = async (formData) => {
    
@@ -21,6 +23,7 @@ const TicketCreateProvider = ({ children }) => {
                 }
             });
             GetAllTicket()
+          // fetchNotifications(); 
             toast.success(res?.data?.message)
             console.log(res?.data)
         } catch (error) {
@@ -37,6 +40,7 @@ const TicketCreateProvider = ({ children }) => {
         },
       });
       setAllTicket(res?.data?.data);
+      // fetchNotifications(); 
       // console.log(res?.data?.data)
     } catch (error) {
       console.log(error);
@@ -53,24 +57,26 @@ const TicketCreateProvider = ({ children }) => {
       });
       // console.log(res?.data)
       GetAllTicket();
+      // fetchNotifications(); 
       toast.success(res?.data?.message);
     } catch (error) {
       console.log(error);
     }
   };
-   const updateTicket = async (_id, formData) => {
-    
-      console.log(_id, formData)
-      try {
-        const res = await axiosHandler.put(`/tickets/${_id}`, formData,
+  const UpdatedTicket = async (id, payload) => {
+
+      console.log(id, payload)
+      try { 
+        const res = await axiosHandler.put(`/tickets/${id}`, payload,
           {
             headers: {
               Authorization: `Bearer ${token}`
             }
           }
-        )
+        ) 
         toast.success(res?.data?.message)
         GetAllTicket()
+        // fetchNotifications(); 
         console.log(res?.data)
       } catch (error) {
         console.log(error)
@@ -106,7 +112,7 @@ const TicketCreateProvider = ({ children }) => {
         GetMyTicket,
         myTickets,
         setMyTickets,
-        updateTicket
+        UpdatedTicket 
       }}
     >
       {children}

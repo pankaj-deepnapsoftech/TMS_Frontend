@@ -16,7 +16,7 @@ const TicketDetailPage = () => {
   const { ticketId } = useParams();
   const navigate = useNavigate();
   const { user, allUsers } = useAuthContext();
-  const { allTicket, updateTicket } = useTicketCreate(); // Assuming updateTicket is available
+  const { allTicket, UpdatedTicket } = useTicketCreate(); // Assuming updateTicket is available
   const { toast } = useToast();
   // const { createTicketCommentNotification, createTicketStatusNotification } = useNotifications();
 
@@ -31,9 +31,9 @@ const TicketDetailPage = () => {
         ? ticket.assignedTo.includes(user._id)
         : ticket.assignedTo === user._id;
 
-      if (!assigned) {
-        navigate('/employee');
-      }
+      // if (!assigned) {
+      //   navigate('/employee');
+      // }
     }
   }, [ticket, user, navigate]);
 
@@ -125,7 +125,7 @@ const TicketDetailPage = () => {
       updatedAt: new Date().toISOString()
     };
 
-    updateTicket(ticket._id, updatedTicket);
+    UpdatedTicket(ticket._id, updatedTicket);
     toast({
       title: 'Comment Added 💬',
       description: 'Your comment was posted.'
@@ -142,7 +142,7 @@ const TicketDetailPage = () => {
       updatedAt: new Date().toISOString()
     };
 
-    updateTicket(ticket.id, updatedTicket);
+    UpdatedTicket(ticket.id, updatedTicket);
 
     // const notifyUsers = Array.isArray(ticket.assignedTo)
     //   ? ticket.assignedTo
@@ -152,7 +152,7 @@ const TicketDetailPage = () => {
     //   createTicketStatusNotification(ticket.id, ticket.ticketNumber, newStatus, userId);
     // });
 
-    const newStatusName = user?.status?.find(s => s.id === newStatus)?.name || newStatus;
+    const newStatusName = user?.status?.find(s => s._id === newStatus)?.name || newStatus;
 
     toast({
       title: 'Status Updated! 📋',
