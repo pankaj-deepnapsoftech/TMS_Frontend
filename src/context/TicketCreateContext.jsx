@@ -97,9 +97,9 @@ const TicketCreateProvider = ({ children }) => {
     }
   };
 
-  const updatedComments = async (id, UpdatedTicket) => {
+  const updatedComments = async (id, comment) => {
     try {
-      const res = await axiosHandler.put(`/tickets/${id}/comment`, UpdatedTicket, {
+      const res = await axiosHandler.put(`/tickets/${id}/comment`, comment, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -107,9 +107,10 @@ const TicketCreateProvider = ({ children }) => {
       toast.success(res?.data?.message);
       GetAllTicket();
     } catch (error) {
-      console.log(error);
+      console.log("Error updating comment:", error);
     }
   };
+  
 
   const GetMyTicket = async () => {
     try {

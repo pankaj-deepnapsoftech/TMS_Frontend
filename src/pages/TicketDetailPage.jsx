@@ -89,31 +89,23 @@ const TicketDetailPage = () => {
 
   const handleAddComment = (content) => {
     const newComment = {
-      _id: ticket._id,
       text: content,
       timestamp: new Date().toISOString(),
       author: {
         _id: user.id,
         name: user.name,
         email: user.email,
-      }
+      },
     };
 
-    const UpdatedTicket = {
-      ...ticket,
-      comments: [...(ticket.comments || []), newComment],
-      updatedAt: new Date().toISOString()
-    };
+    updatedComments(ticket._id, newComment); // Only send the comment
 
-    updatedComments(ticket._id, UpdatedTicket);
     toast({
       title: 'Comment Added 💬',
-      description: 'Your comment was posted.'
+      description: 'Your comment was posted.',
     });
- 
-    fetchNotifications(); 
   };
-  console.log(notifications)
+  
 
   const handleStatusChange = (newStatus) => {
     const UpdatedTicket = {

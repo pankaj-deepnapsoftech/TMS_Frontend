@@ -66,9 +66,10 @@ const Header = () => {
                 className="text-purple-400 hover:text-white relative"
               >
                 <BellIcon className="h-5 w-5" />
-                {notifications.length > 0 && (
+                {notifications.some((note) => !note.isRead) && (
                   <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full animate-ping" />
                 )}
+
               </Button>
 
               <Dialog open={notificationOpen} onOpenChange={setNotificationOpen}>
@@ -82,7 +83,7 @@ const Header = () => {
                       notifications.map((note) => (
                         <div
                           key={note._id}
-                          className={`p-3 rounded-lg ${note.isRead ? 'bg-slate-700' : 'bg-slate-800 border-l-4 border-purple-400'}`}
+                          className={`p-3 rounded-lg ${note.isRead ? 'bg-[#00000096] ' : 'bg-[#3f235d] border-l-4 border-[#7d3cbd]'}`}
                         >
                           <div className="flex justify-between items-start">
                             <div>

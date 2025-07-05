@@ -11,14 +11,13 @@ import { useNotifications } from '@/context/NotificationContext';
 const TicketComments = ({ ticket, user, onAddComment, formatDate, getInitials }) => {
   const [newComment, setNewComment] = useState('');
   const { allUsers } = useAuthContext();
-  const { fetchNotifications } = useNotifications()
   const handleAddComment = () => {
     if (!newComment.trim()) return;
     onAddComment(newComment.trim());
     setNewComment('');
-    fetchNotifications()
+    
   };
-
+  console.log()
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
