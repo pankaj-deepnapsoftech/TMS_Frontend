@@ -259,7 +259,7 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
                   onChange={formik.handleChange}
                   className="bg-slate-800/50 border-purple-500/30 text-white"
                 />
-                <Calendar className="absolute right-3 top-3 h-4 w-4 text-purple-400 pointer-events-none" />
+                
               </div>
             </div>
           </div>

@@ -47,11 +47,6 @@ const TicketDetailHeader = ({ ticket, status, user, isAssignedToCurrentUser, get
                   <p className="text-gray-300 leading-relaxed">{ticket.description}</p>
                 )}
               </div>
-              {user.role === 'admin' && (
-                <Button variant="ghost" size="icon" className="text-purple-400 hover:text-purple-300 hover:bg-purple-500/20">
-                  <Edit className="h-4 w-4" />
-                </Button>
-              )}
             </div>
           </CardHeader>
         </Card>

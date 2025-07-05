@@ -54,8 +54,10 @@ const AuthContextProvider = ({ children }) => {
 
       if (loggedInUser.role === "employee") {
         navigate("/employee");
+        window.location.reload();
       } else {
         navigate("/admin");
+        window.location.reload();
       }
     } catch (error) {
       console.error("Login error:", error);
