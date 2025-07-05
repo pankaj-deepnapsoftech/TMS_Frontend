@@ -15,9 +15,21 @@ import { departmentFilters } from '../context/AuthContext2';
 
 const TicketForm = ({ ticket, users, onClose, isOpen }) => { 
   const { TicketCreate, updatedTicket } = useTicketCreate();
-  const [selectedUsers, setSelectedUsers] = useState(
-    users.filter(user => ticket?.assignedTo?.includes(user._id)) || []
-  );
+  const [selectedUsers, setSelectedUsers] = useState([]);
+
+  useEffect(() => {
+    if (ticket?.assignedTo && users.length > 0) {
+      const assignedArr = Array.isArray(ticket.assignedTo)
+        ? ticket.assignedTo
+        : [ticket.assignedTo];
+
+      const assigned = users.filter(user =>
+        assignedArr.some(a => a === user._id || a?._id === user._id || a === user.id)
+      );
+      setSelectedUsers(assigned);
+    }
+  }, [ticket, users]);
+  
 
   const handleAssigneeToggle = (userId) => {
     const user = users.find(u => u._id === userId);
@@ -36,8 +48,15 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
       title: ticket?.title || '',
       description: ticket?.description || '',
       department: ticket?.department || 'all',
-      priority: ticket?.priority || 'Medium',
-      status: ticket?.status || 'Open',
+      priority: ticket?.priority
+        ? ticket.priority.charAt(0).toUpperCase() + ticket.priority.slice(1).toLowerCase()
+        : 'Medium',
+      status: ticket?.status
+        ? ticket.status
+          .split(' ')
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+          .join(' ')
+        : 'Open',
       dueDate: ticket?.dueDate?.split('T')[0] || '',
     },
     validationSchema: Yup.object({
@@ -48,7 +67,7 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
       status: Yup.string().oneOf(['Open', 'In Progress', 'Under Review', 'Resolved', 'Closed']).required(),
       dueDate: Yup.date().required('Due date is required'),
     }),
-    enableReinitialize: true,
+    enableReinitialize: true, 
     onSubmit: (values) => {
       const departmentObj = departmentFilters.find(d => d.value === values.department);
       const payload = {
@@ -69,12 +88,8 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
       onClose()
     },
   });
-  useEffect(() => {
-    if (ticket?.assignedTo && users.length > 0) {
-      const assigned = users.filter(user => ticket.assignedTo.includes(user.id));
-      setSelectedUsers(assigned);
-    }
-  }, [ticket, users]);
+
+
   
   
   return (
