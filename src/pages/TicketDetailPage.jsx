@@ -11,13 +11,15 @@ import TicketDetailSidebar from '@/components/TicketDetailSidebar';
 import { useAuthContext } from '@/context/AuthContext2';
 import { useTicketCreate } from '@/context/TicketCreateContext';
 import { departmentFilters } from '@/context/AuthContext2';
+import { useNotifications } from '@/context/NotificationContext';
 
 const TicketDetailPage = () => {
   const { ticketId } = useParams();
 
+  const { fetchNotifications, notifications } = useNotifications(); 
   const navigate = useNavigate();
   const { user, allUsers } = useAuthContext();
-  const { allTicket, updatedTicket } = useTicketCreate(); // Assuming updateTicket is available
+  const { allTicket, updatedTicket, updatedComments } = useTicketCreate(); // Assuming updateTicket is available
   const { toast } = useToast();
   const isLoading = !allTicket || allTicket.length === 0;
   const ticket = useMemo(() => allTicket.find(t => t._id === ticketId), [allTicket, ticketId]);
@@ -47,7 +49,7 @@ const TicketDetailPage = () => {
     return assignedIds.includes(user.id);
   }, [ticket, user]);
 
-  console.log(user);
+
   const createdByUser = ticket ? allUsers.find(u => u._id === ticket.createdBy) : null;
   const department = ticket ? departmentFilters.find(d => d.value === ticket.department) : null;
   const status = user?.status?.find(s => s._id === ticket?.status);
@@ -96,7 +98,6 @@ const TicketDetailPage = () => {
         email: user.email,
       }
     };
-    console.log("User posting comment:", user);
 
     const UpdatedTicket = {
       ...ticket,
@@ -104,12 +105,15 @@ const TicketDetailPage = () => {
       updatedAt: new Date().toISOString()
     };
 
-    updatedTicket(ticket._id, UpdatedTicket);
+    updatedComments(ticket._id, UpdatedTicket);
     toast({
       title: 'Comment Added 💬',
       description: 'Your comment was posted.'
     });
+ 
+    fetchNotifications(); 
   };
+  console.log(notifications)
 
   const handleStatusChange = (newStatus) => {
     const UpdatedTicket = {
@@ -131,7 +135,7 @@ const TicketDetailPage = () => {
   const isOverdue = (dueDate) => {
     return dueDate && new Date(dueDate) < new Date() && !['resolved', 'closed'].includes(ticket.status);
   };
-  console.log(ticket)
+
   return (
     <>
       <Helmet>

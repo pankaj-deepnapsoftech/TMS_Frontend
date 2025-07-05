@@ -49,7 +49,7 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
       (a) => a?._id === currentUser.id || a === currentUser.id
     );
   };
-
+ 
   const assignedUsers = getAssignedUsers();
   // For plain name list (if needed elsewhere):
   // const assignedNames = assignedUsers.map((u) => u.name).join(", ");
@@ -107,7 +107,7 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
       .map((n) => n[0])
       .join("");
   };
-  console.log(ticket);
+
   return (
     <motion.div
       layout

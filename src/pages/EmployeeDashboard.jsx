@@ -57,7 +57,7 @@ const EmployeeDashboard = () => {
     setPriorityFilter("all");
     setCategoryFilter("all");
   };
- console.log(filteredTickets);
+
   return (
     <>
       <Helmet>
