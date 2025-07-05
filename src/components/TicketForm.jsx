@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '
 import { departmentFilters } from '../context/AuthContext2';
 
 const TicketForm = ({ ticket, users, onClose, isOpen }) => { 
-  const { TicketCreate, UpdatedTicket } = useTicketCreate();
+  const { TicketCreate, updatedTicket } = useTicketCreate();
   const [selectedUsers, setSelectedUsers] = useState(
     users.filter(user => ticket?.assignedTo?.includes(user._id)) || []
   );
@@ -60,16 +60,22 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
         dueDate: values.dueDate,
         assignedTo: selectedUsers.map(u => u._id),
       };
+      // console.log(ticket._id, payload)
       if (ticket) {
-        UpdatedTicket(ticket._id, payload)
-        console.log(ticket._id, payload)
+        updatedTicket(ticket._id, payload)
       } else {
         TicketCreate(payload);
       }
       onClose()
     },
   });
-
+  useEffect(() => {
+    if (ticket?.assignedTo && users.length > 0) {
+      const assigned = users.filter(user => ticket.assignedTo.includes(user.id));
+      setSelectedUsers(assigned);
+    }
+  }, [ticket, users]);
+  
   
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -238,6 +244,7 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
                   onChange={formik.handleChange}
                   className="bg-slate-800/50 border-purple-500/30 text-white"
                 />
+                <Calendar className="absolute right-3 top-3 h-4 w-4 text-purple-400 pointer-events-none" />
               </div>
             </div>
           </div>

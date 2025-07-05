@@ -17,7 +17,7 @@ const TicketDetailPage = () => {
   console.log(ticketId)
   const navigate = useNavigate();
   const { user, allUsers } = useAuthContext();
-  const { allTicket, UpdatedTicket } = useTicketCreate(); // Assuming updateTicket is available
+  const { allTicket, updatedTicket } = useTicketCreate(); // Assuming updateTicket is available
   const { toast } = useToast();
   // const { createTicketCommentNotification, createTicketStatusNotification } = useNotifications();
 
@@ -119,13 +119,13 @@ const TicketDetailPage = () => {
     };
     console.log("User posting comment:", user);
 
-    const updatedTicket = {
+    const UpdatedTicket = {
       ...ticket,
       comments: [...(ticket.comments || []), newComment],
       updatedAt: new Date().toISOString()
     };
 
-    UpdatedTicket(ticket._id, updatedTicket);
+    updatedTicket(ticket._id, UpdatedTicket);
     toast({
       title: 'Comment Added 💬',
       description: 'Your comment was posted.'
