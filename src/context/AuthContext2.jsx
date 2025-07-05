@@ -35,6 +35,7 @@ const AuthContextProvider = ({ children }) => {
   const updateUser = (updatedUser) => {
     setUser(updatedUser);
     localStorage.setItem("authUser", JSON.stringify(updatedUser));
+    
   };
 
   const navigate = useNavigate();

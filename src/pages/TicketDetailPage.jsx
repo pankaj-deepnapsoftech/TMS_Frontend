@@ -14,16 +14,14 @@ import { departmentFilters } from '@/context/AuthContext2';
 
 const TicketDetailPage = () => {
   const { ticketId } = useParams();
-  console.log(ticketId)
+  console.log(ticketId);
   const navigate = useNavigate();
   const { user, allUsers } = useAuthContext();
-  const { allTicket, UpdatedTicket } = useTicketCreate(); // Assuming updateTicket is available
+  const { allTicket, UpdatedTicket } = useTicketCreate();
   const { toast } = useToast();
-  // const { createTicketCommentNotification, createTicketStatusNotification } = useNotifications();
 
   const ticket = useMemo(() => allTicket.find(t => t._id === ticketId), [allTicket, ticketId]);
 
-  // Redirect if ticket not found or employee lacks access
   useEffect(() => {
     if (!ticket) return;
 
@@ -37,27 +35,10 @@ const TicketDetailPage = () => {
       // }
     }
   }, [ticket, user, navigate]);
-  if (!ticket) {
-    return (
-      <div className="p-8 text-center">
-        <h1 className="text-2xl font-bold text-white mb-4">Ticket Not Found</h1>
-        <p className="text-gray-400 mb-4">
-          This ticket may have been deleted or you don't have access to it.
-        </p>
-        <Button onClick={() => navigate(-1)} className="bg-purple-500 hover:bg-purple-600">
-          Go Back
-        </Button>
-      </div>
-    );
-  }
 
-  // Helpers
-
-    const assignedIds = Array.isArray(ticket?.assignedTo)
-      ? ticket?.assignedTo
-      : [ticket?.assignedTo];
-    
-
+  const assignedIds = Array.isArray(ticket?.assignedTo)
+    ? ticket?.assignedTo
+    : [ticket?.assignedTo];
 
   const isAssignedToCurrentUser = useMemo(() => {
     const assignedIds = Array.isArray(ticket?.assignedTo)
@@ -65,12 +46,11 @@ const TicketDetailPage = () => {
       : [ticket?.assignedTo];
     return assignedIds.includes(user.id);
   }, [ticket, user]);
-  
- console.log(user)
-  // const assignedUsers = getAssignedUsers();
-  const createdByUser = allUsers.find(u => u._id === ticket.createdBy);
-  const department = departmentFilters.find(d => d.value === ticket.department);
-  const status = user?.status?.find(s => s._id === ticket.status);
+
+  console.log(user);
+  const createdByUser = ticket ? allUsers.find(u => u._id === ticket.createdBy) : null;
+  const department = ticket ? departmentFilters.find(d => d.value === ticket.department) : null;
+  const status = user?.status?.find(s => s._id === ticket?.status);
 
   const getPriorityColor = (priority) => {
     switch (priority) {
@@ -84,8 +64,7 @@ const TicketDetailPage = () => {
         return 'bg-gray-500/20 text-gray-300 border-gray-500/30';
     }
   };
- 
-  
+
   const formatDate = (dateStr) => {
     if (!dateStr) return null;
     const date = new Date(dateStr);
@@ -105,6 +84,7 @@ const TicketDetailPage = () => {
       .join('')
       .toUpperCase();
   };
+
   const handleAddComment = (content) => {
     const newComment = {
       _id: ticket._id,
@@ -114,7 +94,6 @@ const TicketDetailPage = () => {
         _id: user.id,
         name: user.name,
         email: user.email,
-       
       }
     };
     console.log("User posting comment:", user);
@@ -131,9 +110,6 @@ const TicketDetailPage = () => {
       description: 'Your comment was posted.'
     });
   };
-  
-  
-  
 
   const handleStatusChange = (newStatus) => {
     const updatedTicket = {
@@ -143,14 +119,6 @@ const TicketDetailPage = () => {
     };
 
     UpdatedTicket(ticket.id, updatedTicket);
-
-    // const notifyUsers = Array.isArray(ticket.assignedTo)
-    //   ? ticket.assignedTo
-    //   : [ticket.assignedTo];
-
-    // notifyUsers.forEach(userId => {
-    //   createTicketStatusNotification(ticket.id, ticket.ticketNumber, newStatus, userId);
-    // });
 
     const newStatusName = user?.status?.find(s => s._id === newStatus)?.name || newStatus;
 
@@ -164,50 +132,60 @@ const TicketDetailPage = () => {
     return dueDate && new Date(dueDate) < new Date() && !['resolved', 'closed'].includes(ticket.status);
   };
 
-
-
   return (
     <>
       <Helmet>
-        <title>{`${ticket.ticketNumber} - ${ticket.title} - ITSYBIZZ TMS`}</title>
-        <meta name="description" content={`Ticket details for ${ticket.ticketNumber}: ${ticket.title}`} />
+        <title>{ticket ? `${ticket.ticketNumber} - ${ticket.title} - ITSYBIZZ TMS` : 'Ticket Not Found - ITSYBIZZ TMS'}</title>
+        <meta name="description" content={ticket ? `Ticket details for ${ticket.ticketNumber}: ${ticket.title}` : 'Ticket not found'} />
       </Helmet>
 
-      <div className="p-4 lg:p-8 max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">
-            <TicketDetailHeader
-              ticket={ticket}
-              status={status}
-              user={user}
-              isAssignedToCurrentUser={isAssignedToCurrentUser}
-              getPriorityColor={getPriorityColor}
-            />
+      {!ticket ? (
+        <div className="p-8 text-center">
+          <h1 className="text-2xl font-bold text-white mb-4">Ticket Not Found</h1>
+          <p className="text-gray-400 mb-4">
+            This ticket may have been deleted or you don't have access to it.
+          </p>
+          <Button onClick={() => navigate(-1)} className="bg-purple-500 hover:bg-purple-600">
+            Go Back
+          </Button>
+        </div>
+      ) : (
+        <div className="p-4 lg:p-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-6">
+              <TicketDetailHeader
+                ticket={ticket}
+                status={status}
+                user={user}
+                isAssignedToCurrentUser={isAssignedToCurrentUser}
+                getPriorityColor={getPriorityColor}
+              />
 
-            <TicketComments
+              <TicketComments
+                ticket={ticket}
+                user={user}
+                onAddComment={handleAddComment}
+                formatDate={formatDate}
+                getInitials={getInitials}
+              />
+            </div>
+
+            <TicketDetailSidebar
               ticket={ticket}
               user={user}
-              onAddComment={handleAddComment}
+              status={status}
+              assignedIds={assignedIds}
+              department={department}
+              createdByUser={createdByUser}
+              isAssignedToCurrentUser={isAssignedToCurrentUser}
+              onStatusChange={handleStatusChange}
               formatDate={formatDate}
               getInitials={getInitials}
+              isOverdue={isOverdue}
             />
           </div>
-
-          <TicketDetailSidebar
-            ticket={ticket}
-            user={user}
-            status={status}
-            assignedIds={assignedIds}
-            department={department}
-            createdByUser={createdByUser}
-            isAssignedToCurrentUser={isAssignedToCurrentUser}
-            onStatusChange={handleStatusChange}
-            formatDate={formatDate}
-            getInitials={getInitials}
-            isOverdue={isOverdue}
-          />
         </div>
-      </div>
+      )}
 
       <Toaster />
     </>
