@@ -80,7 +80,6 @@ const TicketCreateProvider = ({ children }) => {
     }
   };
   const updatedTicket = async (id, payload) => {
- 
     try {
       const res = await axiosHandler.put(`/tickets/${id}`, payload, {
         headers: {
