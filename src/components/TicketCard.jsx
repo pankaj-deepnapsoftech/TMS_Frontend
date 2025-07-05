@@ -92,8 +92,14 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
   };
 
   const handleViewTicket = () => {
-    navigate(`/ticket/${ticket._id}/comment`);
+    const id = ticket?._id || ticket?.id;
+    if (!id) {
+      console.warn("Ticket ID is missing");
+      return;
+    }
+    navigate(`/ticket/${id}/comment`);
   };
+  
 
   const getInitials = (name) => {
     return name
@@ -101,7 +107,7 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
       .map((n) => n[0])
       .join("");
   };
-
+  console.log(ticket);
   return (
     <motion.div
       layout
@@ -120,12 +126,6 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
-                <Badge
-                  variant="outline"
-                  className="text-purple-300 border-purple-500/30 font-mono text-xs"
-                >
-                  {ticket.ticketNumber}
-                </Badge>
                 <Badge
                   className={
                     status?.color ||

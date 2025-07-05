@@ -12,7 +12,6 @@ const TicketCreateProvider = ({ children }) => {
   const { token } = useAuthContext();
   const [allTicket, setAllTicket] = useState([]);
   const [myTickets, setMyTickets] = useState([]);
-  // const { fetchNotifications } = useNotifications()
 
   const TicketCreate = async (formData) => {
    
@@ -23,14 +22,13 @@ const TicketCreateProvider = ({ children }) => {
                 }
             });
             GetAllTicket()
-          // fetchNotifications(); 
             toast.success(res?.data?.message)
             console.log(res?.data)
         } catch (error) {
             console.log(error)
         }
     }
-  
+  };
 
   const GetAllTicket = async () => {
     try {
@@ -57,31 +55,30 @@ const TicketCreateProvider = ({ children }) => {
       });
       // console.log(res?.data)
       GetAllTicket();
-      // fetchNotifications(); 
       toast.success(res?.data?.message);
     } catch (error) {
       console.log(error);
     }
   };
-  const UpdatedTicket = async (id, payload) => {
-
-      console.log(id, payload)
-      try { 
-        const res = await axiosHandler.put(`/tickets/${id}`, payload,
+   const updateTicket = async (_id, formData) => {
+    
+      console.log(_id, formData)
+      try {
+        const res = await axiosHandler.put(`/tickets/${_id}`, formData,
           {
             headers: {
               Authorization: `Bearer ${token}`
             }
           }
-        ) 
+        )
         toast.success(res?.data?.message)
         GetAllTicket()
-        // fetchNotifications(); 
         console.log(res?.data)
       } catch (error) {
         console.log(error)
       }
     }
+  };
   const GetMyTicket = async () => {
     try {
       const response = await axiosHandler("/tickets/my", {
@@ -90,19 +87,22 @@ const TicketCreateProvider = ({ children }) => {
         },
       });
       setMyTickets(response?.data?.data);
-    //   console.log(response?.data?.data);
+      //   console.log(response?.data?.data);
     } catch (error) {
-     console.log(error)
+      console.log(error);
     }
   };
 
   useEffect(() => {
     if (token) {
       GetAllTicket();
-      GetMyTicket();
     }
   }, [token]);
 
+  useEffect(() => {
+    fetchTicketStats();
+    GetMyTicket();
+  }, []);
   return (
     <TicketCreateContext.Provider
       value={{
@@ -112,7 +112,7 @@ const TicketCreateProvider = ({ children }) => {
         GetMyTicket,
         myTickets,
         setMyTickets,
-        UpdatedTicket 
+        updateTicket
       }}
     >
       {children}
