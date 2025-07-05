@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { axiosHandler } from "../config/axiosConfig";
 import { toast } from "react-toastify";
 import { useAuthContext } from "./AuthContext2";
+import { useNotifications } from "./NotificationContext";
 
 const TicketCreateContext = createContext();
 
@@ -18,6 +19,8 @@ const TicketCreateProvider = ({ children }) => {
     resolved: 0,
   });
   const [statsError, setStatsError] = useState(null);
+
+
 
   const fetchTicketStats = async () => {
     setStatsError(null);
@@ -43,7 +46,6 @@ const TicketCreateProvider = ({ children }) => {
       GetAllTicket();
       fetchTicketStats(); // Update stats after creating a ticket
       toast.success(res?.data?.message);
-      console.log(res?.data);
     } catch (error) {
       console.log(error);
     }
@@ -64,7 +66,7 @@ const TicketCreateProvider = ({ children }) => {
   };
 
   const DeleteTicket = async (ticketId) => {
-    console.log(ticketId);
+
     try {
       const res = await axiosHandler.delete(`/tickets/${ticketId}`, {
         headers: {
@@ -88,12 +90,26 @@ const TicketCreateProvider = ({ children }) => {
       });
       toast.success(res?.data?.message);
       GetAllTicket();
-      console.log(res?.data);
+     
+
     } catch (error) {
       console.log(error);
     }
   };
 
+  const updatedComments = async (id, UpdatedTicket) => {
+    try {
+      const res = await axiosHandler.put(`/tickets/${id}/comment`, UpdatedTicket, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toast.success(res?.data?.message);
+      GetAllTicket();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const GetMyTicket = async () => {
     try {
@@ -132,6 +148,7 @@ const TicketCreateProvider = ({ children }) => {
         ticketStats,
         fetchTicketStats,
         statsError,
+        updatedComments
       }}
     >
       {children}

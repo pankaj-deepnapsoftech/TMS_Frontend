@@ -49,7 +49,7 @@ const Header = () => {
               <CheckSquare className="w-6 h-6 text-purple-400" />
             </div>
             <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-              ITSYBIZZ TMS 
+              ITSYBIZZ TMS
             </span>
           </motion.div>
 
@@ -85,11 +85,22 @@ const Header = () => {
                           className={`p-3 rounded-lg ${note.isRead ? 'bg-slate-700' : 'bg-slate-800 border-l-4 border-purple-400'}`}
                         >
                           <div className="flex justify-between items-start">
-                            <p className="text-sm font-semibold text-purple-300">{note.message}</p>
-                            {/* Optional timestamp */}
-                            {/* <span className="text-xs text-gray-400 ml-2">{moment(note.createdAt).fromNow()}</span> */}
+                            <div>
+                              {/* Type Badge */}
+                              <span className={`text-xs px-2 py-1 rounded-full mr-2 font-medium ${note.type === 'comment' ? 'bg-blue-600 text-white' :
+                                note.type === 'message' ? 'bg-green-600 text-white' :
+                                  note.type === 'ticket' ? 'bg-red-600 text-white' :
+                                    'bg-gray-600 text-white'
+                                }`}>
+                                {note.type.charAt(0).toUpperCase() + note.type.slice(1)}
+                              </span>
+
+                              
+                              <p className="text-sm font-semibold text-purple-300 inline">
+                                {note.message}
+                              </p>
+                            </div>
                           </div>
-                          <p className="text-xs text-white mb-2">{note.description}</p>
 
                           {!note.isRead && (
                             <button
@@ -99,12 +110,12 @@ const Header = () => {
                               Mark as Read
                             </button>
                           )}
-
                         </div>
                       ))
-                    ) : (
-                      <p className="text-sm text-white">No new notifications.</p>
-                    )}
+                    )
+                      : (
+                        <p className="text-sm text-white">No new notifications.</p>
+                      )}
                   </div>
                 </DialogContent>
               </Dialog>

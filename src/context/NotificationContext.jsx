@@ -4,14 +4,13 @@ import { useAuthContext } from './AuthContext2';
 
 const NotificationsContext = createContext();
 
-// Custom hook for easy access
 export const useNotifications = () => useContext(NotificationsContext);
 
 const NotificationProvider = ({ children }) => {
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(false);
     const { token } = useAuthContext();
-
+    console.log(notifications)
     const fetchNotifications = async () => {
         setLoading(true);
         try {
@@ -21,6 +20,7 @@ const NotificationProvider = ({ children }) => {
                 },
             });
             setNotifications(res?.data?.data || []);
+            return res?.data?.data;
         } catch (err) {
             console.error('Failed to fetch notifications', err);
         } finally {
@@ -48,9 +48,11 @@ const NotificationProvider = ({ children }) => {
         if (token) fetchNotifications();
     }, [token]);
 
+    const unreadCount = notifications.filter(n => !n.isRead).length;
+
     return (
         <NotificationsContext.Provider
-            value={{ notifications, loading, fetchNotifications, handleMarkAsRead }}
+            value={{ notifications, loading, fetchNotifications, handleMarkAsRead, unreadCount }}
         >
             {children}
         </NotificationsContext.Provider>

@@ -202,7 +202,7 @@ const AdminDashboard = () => {
           </AnimatePresence>
         </div>
 
-        <TicketForm
+        <TicketForm 
           isOpen={isFormOpen}
           onClose={handleCloseForm}
           ticket={editingTicket}

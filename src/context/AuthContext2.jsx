@@ -79,7 +79,7 @@ const AuthContextProvider = ({ children }) => {
     try {
       const res = await axiosHandler.get("/auth/employees");
       setAllUsers(res?.data?.data);
-      console.log(res?.data?.data);
+     
     } catch (error) {
       console.log(error);
     }

@@ -24,7 +24,7 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
         : [ticket.assignedTo];
 
       const assigned = users.filter(user =>
-        assignedArr.some(a => a === user._id || a?._id === user._id || a === user.id)
+        assignedArr.some(a => a === user._id || a?._id === user._id || a === user._id)
       );
       setSelectedUsers(assigned);
     }
