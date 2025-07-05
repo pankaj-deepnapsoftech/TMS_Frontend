@@ -79,10 +79,10 @@ const TicketCreateProvider = ({ children }) => {
       console.log(error);
     }
   };
-  const updateTicket = async (_id, formData) => {
-    console.log(_id, formData);
+  const updatedTicket = async (id, payload) => {
+ 
     try {
-      const res = await axiosHandler.put(`/tickets/${_id}`, formData, {
+      const res = await axiosHandler.put(`/tickets/${id}`, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -94,6 +94,8 @@ const TicketCreateProvider = ({ children }) => {
       console.log(error);
     }
   };
+
+
   const GetMyTicket = async () => {
     try {
       const response = await axiosHandler("/tickets/my", {
@@ -127,7 +129,7 @@ const TicketCreateProvider = ({ children }) => {
         GetMyTicket,
         myTickets,
         setMyTickets,
-        updateTicket,
+        updatedTicket,
         ticketStats,
         fetchTicketStats,
         statsError,

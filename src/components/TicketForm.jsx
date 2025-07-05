@@ -14,10 +14,22 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '
 import { departmentFilters } from '../context/AuthContext2';
 
 const TicketForm = ({ ticket, users, onClose, isOpen }) => { 
-  const { TicketCreate, UpdatedTicket } = useTicketCreate();
-  const [selectedUsers, setSelectedUsers] = useState(
-    users.filter(user => ticket?.assignedTo?.includes(user._id)) || []
-  );
+  const { TicketCreate, updatedTicket } = useTicketCreate();
+  const [selectedUsers, setSelectedUsers] = useState([]);
+
+  useEffect(() => {
+    if (ticket?.assignedTo && users.length > 0) {
+      const assignedArr = Array.isArray(ticket.assignedTo)
+        ? ticket.assignedTo
+        : [ticket.assignedTo];
+
+      const assigned = users.filter(user =>
+        assignedArr.some(a => a === user._id || a?._id === user._id || a === user.id)
+      );
+      setSelectedUsers(assigned);
+    }
+  }, [ticket, users]);
+  
 
   const handleAssigneeToggle = (userId) => {
     const user = users.find(u => u._id === userId);
@@ -36,8 +48,15 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
       title: ticket?.title || '',
       description: ticket?.description || '',
       department: ticket?.department || 'all',
-      priority: ticket?.priority || 'Medium',
-      status: ticket?.status || 'Open',
+      priority: ticket?.priority
+        ? ticket.priority.charAt(0).toUpperCase() + ticket.priority.slice(1).toLowerCase()
+        : 'Medium',
+      status: ticket?.status
+        ? ticket.status
+          .split(' ')
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+          .join(' ')
+        : 'Open',
       dueDate: ticket?.dueDate?.split('T')[0] || '',
     },
     validationSchema: Yup.object({
@@ -48,7 +67,7 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
       status: Yup.string().oneOf(['Open', 'In Progress', 'Under Review', 'Resolved', 'Closed']).required(),
       dueDate: Yup.date().required('Due date is required'),
     }),
-    enableReinitialize: true,
+    enableReinitialize: true, 
     onSubmit: (values) => {
       const departmentObj = departmentFilters.find(d => d.value === values.department);
       const payload = {
@@ -60,9 +79,9 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
         dueDate: values.dueDate,
         assignedTo: selectedUsers.map(u => u._id),
       };
+      // console.log(ticket._id, payload)
       if (ticket) {
-        UpdatedTicket(ticket._id, payload)
-        console.log(ticket._id, payload)
+        updatedTicket(ticket._id, payload)
       } else {
         TicketCreate(payload);
       }
@@ -70,6 +89,8 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
     },
   });
 
+
+  
   
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -238,6 +259,7 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
                   onChange={formik.handleChange}
                   className="bg-slate-800/50 border-purple-500/30 text-white"
                 />
+                <Calendar className="absolute right-3 top-3 h-4 w-4 text-purple-400 pointer-events-none" />
               </div>
             </div>
           </div>

@@ -17,7 +17,7 @@ const TicketDetailPage = () => {
   console.log(ticketId);
   const navigate = useNavigate();
   const { user, allUsers } = useAuthContext();
-  const { allTicket, UpdatedTicket } = useTicketCreate();
+  const { allTicket, updatedTicket } = useTicketCreate(); // Assuming updateTicket is available
   const { toast } = useToast();
 
   const ticket = useMemo(() => allTicket.find(t => t._id === ticketId), [allTicket, ticketId]);
@@ -98,13 +98,13 @@ const TicketDetailPage = () => {
     };
     console.log("User posting comment:", user);
 
-    const updatedTicket = {
+    const UpdatedTicket = {
       ...ticket,
       comments: [...(ticket.comments || []), newComment],
       updatedAt: new Date().toISOString()
     };
 
-    UpdatedTicket(ticket._id, updatedTicket);
+    updatedTicket(ticket._id, UpdatedTicket);
     toast({
       title: 'Comment Added 💬',
       description: 'Your comment was posted.'
