@@ -28,8 +28,7 @@ const TicketCreateProvider = ({ children }) => {
             console.log(error)
         }
     }
-  };
-
+  
   const GetAllTicket = async () => {
     try {
       const res = await axiosHandler.get("/tickets", {
@@ -78,7 +77,7 @@ const TicketCreateProvider = ({ children }) => {
         console.log(error)
       }
     }
-  };
+  
   const GetMyTicket = async () => {
     try {
       const response = await axiosHandler("/tickets/my", {
