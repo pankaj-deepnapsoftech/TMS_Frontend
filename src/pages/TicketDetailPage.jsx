@@ -14,12 +14,12 @@ import { departmentFilters } from '@/context/AuthContext2';
 
 const TicketDetailPage = () => {
   const { ticketId } = useParams();
-  console.log(ticketId);
+
   const navigate = useNavigate();
   const { user, allUsers } = useAuthContext();
   const { allTicket, updatedTicket } = useTicketCreate(); // Assuming updateTicket is available
   const { toast } = useToast();
-
+  const isLoading = !allTicket || allTicket.length === 0;
   const ticket = useMemo(() => allTicket.find(t => t._id === ticketId), [allTicket, ticketId]);
 
   useEffect(() => {
@@ -112,13 +112,13 @@ const TicketDetailPage = () => {
   };
 
   const handleStatusChange = (newStatus) => {
-    const updatedTicket = {
+    const UpdatedTicket = {
       ...ticket,
       status: newStatus,
       updatedAt: new Date().toISOString()
     };
 
-    UpdatedTicket(ticket.id, updatedTicket);
+    updatedTicket(ticket._id, UpdatedTicket);
 
     const newStatusName = user?.status?.find(s => s._id === newStatus)?.name || newStatus;
 
@@ -131,7 +131,7 @@ const TicketDetailPage = () => {
   const isOverdue = (dueDate) => {
     return dueDate && new Date(dueDate) < new Date() && !['resolved', 'closed'].includes(ticket.status);
   };
-
+  console.log(ticket)
   return (
     <>
       <Helmet>
@@ -139,52 +139,57 @@ const TicketDetailPage = () => {
         <meta name="description" content={ticket ? `Ticket details for ${ticket.ticketNumber}: ${ticket.title}` : 'Ticket not found'} />
       </Helmet>
 
-      {!ticket ? (
+      {isLoading ? (
         <div className="p-8 text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">Ticket Not Found</h1>
-          <p className="text-gray-400 mb-4">
-            This ticket may have been deleted or you don't have access to it.
-          </p>
-          <Button onClick={() => navigate(-1)} className="bg-purple-500 hover:bg-purple-600">
-            Go Back
-          </Button>
+          <h1 className="text-2xl font-bold text-white mb-4">Loading Ticket...</h1>
+          <p className="text-gray-400 mb-4">Please wait while we load the ticket details.</p>
         </div>
+      ) : !ticket ? (
+      <div className="p-8 text-center">
+        <h1 className="text-2xl font-bold text-white mb-4">Ticket Not Found</h1>
+        <p className="text-gray-400 mb-4">
+          This ticket may have been deleted or you don't have access to it.
+        </p>
+        <Button onClick={() => navigate(-1)} className="bg-purple-500 hover:bg-purple-600">
+          Go Back
+        </Button>
+      </div>
       ) : (
-        <div className="p-4 lg:p-8 max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 space-y-6">
-              <TicketDetailHeader
-                ticket={ticket}
-                status={status}
-                user={user}
-                isAssignedToCurrentUser={isAssignedToCurrentUser}
-                getPriorityColor={getPriorityColor}
-              />
+      <div className="p-4 lg:p-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6">
+            <TicketDetailHeader
+              ticket={ticket}
+              status={status}
+              user={user}
+              isAssignedToCurrentUser={isAssignedToCurrentUser}
+              getPriorityColor={getPriorityColor}
+            />
 
-              <TicketComments
-                ticket={ticket}
-                user={user}
-                onAddComment={handleAddComment}
-                formatDate={formatDate}
-                getInitials={getInitials}
-              />
-            </div>
-
-            <TicketDetailSidebar
+            <TicketComments
               ticket={ticket}
               user={user}
-              status={status}
-              assignedIds={assignedIds}
-              department={department}
-              createdByUser={createdByUser}
-              isAssignedToCurrentUser={isAssignedToCurrentUser}
-              onStatusChange={handleStatusChange}
+              onAddComment={handleAddComment}
               formatDate={formatDate}
               getInitials={getInitials}
-              isOverdue={isOverdue}
             />
           </div>
+
+          <TicketDetailSidebar
+            ticket={ticket}
+            user={user}
+            status={status}
+            assignedIds={assignedIds}
+            department={department}
+            createdByUser={createdByUser}
+            isAssignedToCurrentUser={isAssignedToCurrentUser}
+            onStatusChange={handleStatusChange}
+            formatDate={formatDate}
+            getInitials={getInitials}
+            isOverdue={isOverdue}
+          />
         </div>
+      </div>
       )}
 
       <Toaster />

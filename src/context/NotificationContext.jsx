@@ -1,44 +1,57 @@
-import { axiosHandler } from "@/config/axiosConfig";
-import { createContext, useContext, useState, useEffect } from "react";
-import { useAuthContext } from "./AuthContext2";
+import { createContext, useContext, useState, useEffect } from 'react';
+import { axiosHandler } from '@/config/axiosConfig';
+import { useAuthContext } from './AuthContext2';
 
 const NotificationsContext = createContext();
 
+// Custom hook for easy access
 export const useNotifications = () => useContext(NotificationsContext);
 
 const NotificationProvider = ({ children }) => {
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(false);
- console.log(notifications)
     const { token } = useAuthContext();
 
     const fetchNotifications = async () => {
         setLoading(true);
         try {
-            const response = await axiosHandler.get('/notifications', {
+            const res = await axiosHandler.get('/notifications', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            setNotifications(response?.data?.data);
-        } catch (error) {
-            console.error('Error fetching notifications:', error);
+            setNotifications(res?.data?.data || []);
+        } catch (err) {
+            console.error('Failed to fetch notifications', err);
         } finally {
             setLoading(false);
         }
     };
 
-    useEffect(() => {
-        if (token) {
-            fetchNotifications();
-            // Optional: auto-refresh notifications
-            // const intervalId = setInterval(fetchNotifications, 30000);
-            // return () => clearInterval(intervalId);
+    const handleMarkAsRead = async (id) => {
+        try {
+            await axiosHandler.put(`/notifications/${id}/read`, {}, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            setNotifications((prev) =>
+                prev.map((n) => (n._id === id ? { ...n, isRead: true } : n))
+            );
+        } catch (err) {
+            console.error('Failed to mark as read', err);
         }
-    }, [token]); // fetch again if token changes
+    };
+
+    useEffect(() => {
+        if (token) fetchNotifications();
+    }, [token]);
 
     return (
-        <NotificationsContext.Provider value={{ notifications, fetchNotifications, loading }}>
+        <NotificationsContext.Provider
+            value={{ notifications, loading, fetchNotifications, handleMarkAsRead }}
+        >
             {children}
         </NotificationsContext.Provider>
     );

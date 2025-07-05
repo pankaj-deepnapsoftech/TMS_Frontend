@@ -6,15 +6,17 @@ import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { MessageSquare, Send } from 'lucide-react';
 import { useAuthContext } from '@/context/AuthContext2';
+import { useNotifications } from '@/context/NotificationContext';
 
 const TicketComments = ({ ticket, user, onAddComment, formatDate, getInitials }) => {
   const [newComment, setNewComment] = useState('');
   const { allUsers } = useAuthContext();
-
+  const { fetchNotifications } = useNotifications()
   const handleAddComment = () => {
     if (!newComment.trim()) return;
     onAddComment(newComment.trim());
     setNewComment('');
+    fetchNotifications()
   };
 
   return (
