@@ -6,6 +6,7 @@ import { useAuthContext } from "../context/AuthContext2";
 import { useForgetPass } from "../context/ForgetPassContext";
 
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -57,7 +58,7 @@ const LoginPage = () => {
       setForgotEmail("");
       setOtp("");
       setNewPassword("");
-      alert("Password reset successful! Please login.");
+      toast.success("Password reset successful! Please login.");
     } catch (e) {
       console.log(e);
     }
