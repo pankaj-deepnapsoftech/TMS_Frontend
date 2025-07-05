@@ -2,7 +2,6 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { axiosHandler } from "../config/axiosConfig";
 import { toast } from "react-toastify";
 import { useAuthContext } from "./AuthContext2";
-import { useNotifications } from "./NotificationContext";
 
 const TicketCreateContext = createContext();
 
@@ -12,23 +11,44 @@ const TicketCreateProvider = ({ children }) => {
   const { token } = useAuthContext();
   const [allTicket, setAllTicket] = useState([]);
   const [myTickets, setMyTickets] = useState([]);
+  const [ticketStats, setTicketStats] = useState({
+    total: 0,
+    open: 0,
+    inProgress: 0,
+    resolved: 0,
+  });
+  const [statsError, setStatsError] = useState(null);
 
-  const TicketCreate = async (formData) => {
-   
-        try {
-            const res = await axiosHandler.post('/tickets', formData, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            GetAllTicket()
-            toast.success(res?.data?.message)
-            console.log(res?.data)
-        } catch (error) {
-            console.log(error)
-        }
+  const fetchTicketStats = async () => {
+    setStatsError(null);
+    try {
+      const res = await axiosHandler.get("/dashboard", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setTicketStats(res.data);
+    } catch (error) {
+      setStatsError("Failed to fetch stats");
+      console.log(error);
     }
-  
+  };
+  const TicketCreate = async (formData) => {
+    try {
+      const res = await axiosHandler.post("/tickets", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      GetAllTicket();
+      fetchTicketStats(); // Update stats after creating a ticket
+      toast.success(res?.data?.message);
+      console.log(res?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const GetAllTicket = async () => {
     try {
       const res = await axiosHandler.get("/tickets", {
@@ -37,7 +57,6 @@ const TicketCreateProvider = ({ children }) => {
         },
       });
       setAllTicket(res?.data?.data);
-      // fetchNotifications(); 
       // console.log(res?.data?.data)
     } catch (error) {
       console.log(error);
@@ -54,30 +73,27 @@ const TicketCreateProvider = ({ children }) => {
       });
       // console.log(res?.data)
       GetAllTicket();
+      fetchTicketStats();
       toast.success(res?.data?.message);
     } catch (error) {
       console.log(error);
     }
   };
-   const updateTicket = async (_id, formData) => {
-    
-      console.log(_id, formData)
-      try {
-        const res = await axiosHandler.put(`/tickets/${_id}`, formData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
-        )
-        toast.success(res?.data?.message)
-        GetAllTicket()
-        console.log(res?.data)
-      } catch (error) {
-        console.log(error)
-      }
+  const updateTicket = async (_id, formData) => {
+    console.log(_id, formData);
+    try {
+      const res = await axiosHandler.put(`/tickets/${_id}`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toast.success(res?.data?.message);
+      GetAllTicket();
+      console.log(res?.data);
+    } catch (error) {
+      console.log(error);
     }
-  
+  };
   const GetMyTicket = async () => {
     try {
       const response = await axiosHandler("/tickets/my", {
@@ -111,7 +127,10 @@ const TicketCreateProvider = ({ children }) => {
         GetMyTicket,
         myTickets,
         setMyTickets,
-        updateTicket
+        updateTicket,
+        ticketStats,
+        fetchTicketStats,
+        statsError,
       }}
     >
       {children}
