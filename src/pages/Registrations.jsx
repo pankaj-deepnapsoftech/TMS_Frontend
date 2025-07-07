@@ -11,7 +11,7 @@ const Registrations = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [confirmError, setConfirmError] = useState("");
   const { PostUserData, user } = useAuthContext();
-  
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -205,7 +205,7 @@ const Registrations = () => {
                 {departmentFilters.map((filter) => (
                   <option
                     key={filter.value}
-                    value={filter.label}
+                    value={filter.value}
                     className="text-white"
                   >
                     {filter.label}
