@@ -69,6 +69,7 @@ const AuthContextProvider = ({ children }) => {
     try {
       const res = await axiosHandler.post("/auth/register", values);
       toast.success(res?.data?.message);
+      console.log(res?.data);
     } catch (error) {
       console.error("Registration error:", error);
       toast.error(error?.response?.data?.message || "Registration failed");
