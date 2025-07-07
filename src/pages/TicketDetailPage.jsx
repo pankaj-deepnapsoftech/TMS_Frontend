@@ -66,6 +66,23 @@ const TicketDetailPage = () => {
     }
   };
 
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Open":
+        return "bg-blue-500/20 text-blue-300  border-blue-500/30";
+      case "In Progress":
+        return "bg-yellow-500/20 text-yellow-300 border-yellow-500/30";
+      case "Under Review":
+        return "bg-purple-500/20 text-purple-300 border-purple-500/30";
+      case "Resolved":
+        return "bg-green-500/20 text-green-300 border-green-500/30";
+      case "Closed":
+        return "bg-gray-500/20 text-gray-300 border-gray-500/30";
+      default:
+        return "bg-gray-500/20 text-gray-300 border-gray-500/30";
+    }
+  };
+
   const formatDate = (dateStr) => {
     if (!dateStr) return null;
     const date = new Date(dateStr);
@@ -130,61 +147,82 @@ const TicketDetailPage = () => {
   return (
     <>
       <Helmet>
-        <title>{ticket ? `${ticket.ticketNumber} - ${ticket.title} - ITSYBIZZ TMS` : 'Ticket Not Found - ITSYBIZZ TMS'}</title>
-        <meta name="description" content={ticket ? `Ticket details for ${ticket.ticketNumber}: ${ticket.title}` : 'Ticket not found'} />
+        <title>
+          {ticket
+            ? `${ticket.ticketNumber} - ${ticket.title} - ITSYBIZZ TMS`
+            : "Ticket Not Found - ITSYBIZZ TMS"}
+        </title>
+        <meta
+          name="description"
+          content={
+            ticket
+              ? `Ticket details for ${ticket.ticketNumber}: ${ticket.title}`
+              : "Ticket not found"
+          }
+        />
       </Helmet>
 
       {isLoading ? (
         <div className="p-8 text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">Loading Ticket...</h1>
-          <p className="text-gray-400 mb-4">Please wait while we load the ticket details.</p>
+          <h1 className="text-2xl font-bold text-white mb-4">
+            Loading Ticket...
+          </h1>
+          <p className="text-gray-400 mb-4">
+            Please wait while we load the ticket details.
+          </p>
         </div>
       ) : !ticket ? (
-      <div className="p-8 text-center">
-        <h1 className="text-2xl font-bold text-white mb-4">Ticket Not Found</h1>
-        <p className="text-gray-400 mb-4">
-          This ticket may have been deleted or you don't have access to it.
-        </p>
-        <Button onClick={() => navigate(-1)} className="bg-purple-500 hover:bg-purple-600">
-          Go Back
-        </Button>
-      </div>
+        <div className="p-8 text-center">
+          <h1 className="text-2xl font-bold text-white mb-4">
+            Ticket Not Found
+          </h1>
+          <p className="text-gray-400 mb-4">
+            This ticket may have been deleted or you don't have access to it.
+          </p>
+          <Button
+            onClick={() => navigate(-1)}
+            className="bg-purple-500 hover:bg-purple-600"
+          >
+            Go Back
+          </Button>
+        </div>
       ) : (
-      <div className="p-4 lg:p-8 max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">
-            <TicketDetailHeader
-              ticket={ticket}
-              status={status}
-              user={user}
-              isAssignedToCurrentUser={isAssignedToCurrentUser}
-              getPriorityColor={getPriorityColor}
-            />
+        <div className="p-4 lg:p-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-6">
+              <TicketDetailHeader
+                ticket={ticket}
+                status={status}
+                user={user}
+                isAssignedToCurrentUser={isAssignedToCurrentUser}
+                getPriorityColor={getPriorityColor}
+                getStatusColor={getStatusColor}
+              />
 
-            <TicketComments
+              <TicketComments
+                ticket={ticket}
+                user={user}
+                onAddComment={handleAddComment}
+                formatDate={formatDate}
+                getInitials={getInitials}
+              />
+            </div>
+
+            <TicketDetailSidebar
               ticket={ticket}
               user={user}
-              onAddComment={handleAddComment}
+              status={status}
+              assignedIds={assignedIds}
+              department={department}
+              createdByUser={createdByUser}
+              isAssignedToCurrentUser={isAssignedToCurrentUser}
+              onStatusChange={handleStatusChange}
               formatDate={formatDate}
               getInitials={getInitials}
+              isOverdue={isOverdue}
             />
           </div>
-
-          <TicketDetailSidebar
-            ticket={ticket}
-            user={user}
-            status={status}
-            assignedIds={assignedIds}
-            department={department}
-            createdByUser={createdByUser}
-            isAssignedToCurrentUser={isAssignedToCurrentUser}
-            onStatusChange={handleStatusChange}
-            formatDate={formatDate}
-            getInitials={getInitials}
-            isOverdue={isOverdue}
-          />
         </div>
-      </div>
       )}
 
       <Toaster />

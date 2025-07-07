@@ -93,6 +93,7 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
     }),
     enableReinitialize: true,
     onSubmit: (values) => {
+      console.log("Submitting ticket form", values, selectedUsers);
       const departmentObj = departmentFilters.find(
         (d) => d.value === values.department
       );
@@ -110,8 +111,8 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
       } else {
         TicketCreate(payload);
       }
-      onClose()
-      formik.resetForm()
+      onClose();
+      formik.resetForm();
     },
   });
 
@@ -397,7 +398,13 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
             </Button>
             <Button
               type="submit"
-              disabled={!formik.values.title || selectedUsers.length === 0}
+              disabled={
+                !formik.values.title ||
+                selectedUsers.length === 0 ||
+                Object.keys(formik.errors).length > 0 ||
+                !formik.values.dueDate ||
+                formik.values.department === "all"
+              }
               className="bg-gradient-to-r from-purple-500 to-pink-500 text-white disabled:opacity-50"
             >
               <Plus className="w-4 h-4 mr-2" />
