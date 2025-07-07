@@ -148,3 +148,26 @@ body {
     @apply bg-background text-foreground;
   }
 }
+@layer components {
+  .form-input {
+    @apply bg-muted text-foreground border border-input rounded-md px-3 py-2 text-sm w-full;
+  }
+
+  input[type="date"] {
+    @apply form-input;
+    appearance: none;
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    /* background-color: hsl(var(--primary)); */
+    border-radius: 50%;
+    padding: 5px;
+    cursor: pointer;
+    filter: invert(100%);
+  }
+
+  input[type="date"]::-webkit-inner-spin-button,
+  input[type="date"]::-webkit-clear-button {
+    display: none;
+  }
+}

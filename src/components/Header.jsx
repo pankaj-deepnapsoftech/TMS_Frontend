@@ -14,7 +14,7 @@ import { motion } from "framer-motion";
 import { useAuthContext } from "../context/AuthContext2";
 import { useProfile } from "@/context/UserProfileUpdateContext";
 import { useNotifications } from "@/context/NotificationContext";
-
+import { departmentFilters } from "../context/AuthContext2";
 
 const Header = () => {
   const { user, Logout } = useAuthContext();
@@ -72,7 +72,7 @@ const Header = () => {
 
               </Button>
 
-              <Dialog open={notificationOpen} onOpenChange={setNotificationOpen}>
+              <Dialog  open={notificationOpen} onOpenChange={setNotificationOpen}>
                 <DialogContent className="bg-slate-900 border-purple-500/30 max-w-md">
                   <DialogHeader>
                     <DialogTitle>Notifications</DialogTitle>
@@ -87,7 +87,7 @@ const Header = () => {
                         >
                           <div className="flex justify-between items-start">
                             <div>
-                              {/* Type Badge */}
+                             
                               <span className={`text-xs px-2 py-1 rounded-full mr-2 font-medium ${note.type === 'comment' ? 'bg-blue-600 text-white' :
                                 note.type === 'message' ? 'bg-green-600 text-white' :
                                   note.type === 'ticket' ? 'bg-red-600 text-white' :
@@ -182,13 +182,22 @@ const Header = () => {
                         <label className="block text-sm text-purple-300 mb-1">
                           Department
                         </label>
-                        <Input
+                        <select
                           value={editDepartment}
                           onChange={(e) => setEditDepartment(e.target.value)}
-                          className="bg-slate-800 text-white"
-                        />
+                          className="bg-slate-800 text-white px-3 py-2 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        >
+                          {departmentFilters
+                            .filter((dept) => dept.value !== "all")
+                            .map((dept) => (
+                              <option key={dept.value} value={dept.value}>
+                                {dept.label}
+                              </option>
+                            ))}
+                        </select>
                       </div>
                     )}
+
 
                     <div className="flex justify-end gap-2">
                       <Button
