@@ -19,7 +19,7 @@ import { departmentFilters } from "../context/AuthContext2";
 const Header = () => {
   const { user, Logout } = useAuthContext();
   const [notificationOpen, setNotificationOpen] = useState(false);
-  const { notifications, handleMarkAsRead } = useNotifications()
+  const { notifications, handleMarkAsRead } = useNotifications();
   const {
     editName,
     setEditName,
@@ -34,7 +34,8 @@ const Header = () => {
     handleProfileSave,
   } = useProfile();
 
-
+  console.log(departmentFilters); // Check the list of departments
+  console.log(editDepartment); // Check the value of editDepartment
 
   return (
     <section className="bg-slate-900/50 backdrop-blur-lg border-b border-purple-500/20 sticky top-0 z-40">
@@ -69,10 +70,12 @@ const Header = () => {
                 {notifications.some((note) => !note.isRead) && (
                   <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full animate-ping" />
                 )}
-
               </Button>
 
-              <Dialog  open={notificationOpen} onOpenChange={setNotificationOpen}>
+              <Dialog
+                open={notificationOpen}
+                onOpenChange={setNotificationOpen}
+              >
                 <DialogContent className="bg-slate-900 border-purple-500/30 max-w-md">
                   <DialogHeader>
                     <DialogTitle>Notifications</DialogTitle>
@@ -83,20 +86,29 @@ const Header = () => {
                       notifications.map((note) => (
                         <div
                           key={note._id}
-                          className={`p-3 rounded-lg ${note.isRead ? 'bg-[#00000096] ' : 'bg-[#3f235d] border-l-4 border-[#7d3cbd]'}`}
+                          className={`p-3 rounded-lg ${
+                            note.isRead
+                              ? "bg-[#00000096] "
+                              : "bg-[#3f235d] border-l-4 border-[#7d3cbd]"
+                          }`}
                         >
                           <div className="flex justify-between items-start">
                             <div>
-                             
-                              <span className={`text-xs px-2 py-1 rounded-full mr-2 font-medium ${note.type === 'comment' ? 'bg-blue-600 text-white' :
-                                note.type === 'message' ? 'bg-green-600 text-white' :
-                                  note.type === 'ticket' ? 'bg-red-600 text-white' :
-                                    'bg-gray-600 text-white'
-                                }`}>
-                                {note.type.charAt(0).toUpperCase() + note.type.slice(1)}
+                              <span
+                                className={`text-xs px-2 py-1 rounded-full mr-2 font-medium ${
+                                  note.type === "comment"
+                                    ? "bg-blue-600 text-white"
+                                    : note.type === "message"
+                                    ? "bg-green-600 text-white"
+                                    : note.type === "ticket"
+                                    ? "bg-red-600 text-white"
+                                    : "bg-gray-600 text-white"
+                                }`}
+                              >
+                                {note.type.charAt(0).toUpperCase() +
+                                  note.type.slice(1)}
                               </span>
 
-                              
                               <p className="text-sm font-semibold text-purple-300 inline">
                                 {note.message}
                               </p>
@@ -113,10 +125,11 @@ const Header = () => {
                           )}
                         </div>
                       ))
-                    )
-                      : (
-                        <p className="text-sm text-white">No new notifications.</p>
-                      )}
+                    ) : (
+                      <p className="text-sm text-white">
+                        No new notifications.
+                      </p>
+                    )}
                   </div>
                 </DialogContent>
               </Dialog>
@@ -183,7 +196,7 @@ const Header = () => {
                           Department
                         </label>
                         <select
-                          value={editDepartment}
+                          value={editDepartment }
                           onChange={(e) => setEditDepartment(e.target.value)}
                           className="bg-slate-800 text-white px-3 py-2 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-purple-500"
                         >
@@ -197,7 +210,6 @@ const Header = () => {
                         </select>
                       </div>
                     )}
-
 
                     <div className="flex justify-end gap-2">
                       <Button

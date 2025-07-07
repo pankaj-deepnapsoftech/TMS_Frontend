@@ -4,7 +4,7 @@ import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext2";
-
+import { departmentFilters } from "../context/AuthContext2";
 const Registrations = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [confirmShowPassword, setConfirmShowPassword] = useState(false);
@@ -202,21 +202,15 @@ const Registrations = () => {
                 <option value="" disabled>
                   Select your department
                 </option>
-                <option value="Engineering" className="text-white">
-                  Engineering
-                </option>
-                <option value="Marketing" className="text-white">
-                  Marketing
-                </option>
-                <option value="Sales" className="text-white">
-                  Sales
-                </option>
-                <option value="Design" className="text-white">
-                  Design
-                </option>
-                <option value="Developer" className="text-white">
-                  Developer
-                </option>
+                {departmentFilters.map((filter) => (
+                  <option
+                    key={filter.value}
+                    value={filter.label}
+                    className="text-white"
+                  >
+                    {filter.label}
+                  </option>
+                ))}
               </select>
               {formik.touched.role && formik.errors.role && (
                 <p className="text-sm text-red-400 mt-1">
