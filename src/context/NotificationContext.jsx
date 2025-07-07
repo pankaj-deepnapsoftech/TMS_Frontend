@@ -10,7 +10,7 @@ const NotificationProvider = ({ children }) => {
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(false);
     const { token } = useAuthContext();
-    console.log(notifications)
+ 
     const fetchNotifications = async () => {
         setLoading(true);
         try {

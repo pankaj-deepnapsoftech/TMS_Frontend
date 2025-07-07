@@ -14,11 +14,13 @@ import { useAuthContext } from "../context/AuthContext2";
 import { useProfile } from "@/context/UserProfileUpdateContext";
 import { useNotifications } from "@/context/NotificationContext";
 import { departmentFilters } from "../context/AuthContext2";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const { user, Logout } = useAuthContext();
   const [notificationOpen, setNotificationOpen] = useState(false);
   const { notifications, handleMarkAsRead } = useNotifications();
+  console.log(notifications)
   const {
     editName,
     setEditName,
@@ -33,14 +35,16 @@ const Header = () => {
     handleProfileSave,
   } = useProfile();
 
+  const navigation = useNavigate()
+  const closeNotificationPanel = () => {
+    setNotificationOpen(false); 
+  };
 
 
   return (
     <section className="bg-slate-900/50 backdrop-blur-lg border-b border-purple-500/20 sticky top-0 z-40">
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex  md:flex-row items-center justify-between h-auto md:h-20 py-3 md:py-0 gap-4 md:gap-0">
-
-
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -73,7 +77,7 @@ const Header = () => {
                 )}
               </Button>
 
-            
+
               <Dialog open={notificationOpen} onOpenChange={setNotificationOpen}>
                 <DialogContent className="bg-slate-900 border-purple-500/30 max-w-md">
                   <DialogHeader>
@@ -84,13 +88,18 @@ const Header = () => {
                       notifications.map((note) => (
                         <div
                           key={note._id}
-                          className={`p-3 rounded-lg ${note.isRead
+                          onClick={() => {
+                            navigation(`/ticket/${note.ticket}/comment`);
+                            closeNotificationPanel();
+                          }}
+                          className={`cursor-pointer p-3 rounded-lg ${note.isRead
                             ? "bg-[#00000096]"
                             : "bg-[#3f235d] border-l-4 border-[#7d3cbd]"
                             }`}
                         >
                           <div className="flex justify-between items-start">
                             <div>
+                              {/* Type Badge */}
                               <span
                                 className={`text-xs px-2 py-1 rounded-full mr-2 font-medium ${note.type === "comment"
                                   ? "bg-blue-600 text-white"
@@ -101,20 +110,34 @@ const Header = () => {
                                       : "bg-gray-600 text-white"
                                   }`}
                               >
-                                {note.type.charAt(0).toUpperCase() +
-                                  note.type.slice(1)}
+                                {note.type.charAt(0).toUpperCase() + note.type.slice(1)}
                               </span>
 
+                              {/* Message */}
                               <p className="text-sm font-semibold text-purple-300 inline">
                                 {note.message}
+                              </p>
+
+                              {/* Sender */}
+                              <p className="text-xs text-gray-300 mt-1">
+                                From: {note.sender?.name}
+                              </p>
+
+                              {/* Timestamp */}
+                              <p className="text-xs text-gray-400">
+                                {new Date(note.createdAt).toLocaleString()}
                               </p>
                             </div>
                           </div>
 
+                          {/* Mark as Read Button */}
                           {!note.isRead && (
                             <button
-                              onClick={() => handleMarkAsRead(note._id)}
-                              className="text-xs text-purple-400 hover:underline"
+                              onClick={(e) => {
+                                e.stopPropagation(); // prevent routing on button click
+                                handleMarkAsRead(note._id);
+                              }}
+                              className="text-xs text-purple-400 hover:underline mt-1"
                             >
                               Mark as Read
                             </button>
@@ -125,10 +148,12 @@ const Header = () => {
                       <p className="text-sm text-white">No new notifications.</p>
                     )}
                   </div>
+
+
                 </DialogContent>
               </Dialog>
 
-              
+
               <div
                 className="flex items-center gap-3 cursor-pointer group"
                 onClick={() => setDialogOpen(true)}
@@ -215,7 +240,7 @@ const Header = () => {
                         Cancel
                       </Button>
                       <Button
-                      className="text-white"
+                        className="text-white"
                         type="submit"
                         variant="default"
                         disabled={loading}
@@ -227,7 +252,7 @@ const Header = () => {
                 </DialogContent>
               </Dialog>
 
-           
+
               <Button
                 variant="ghost"
                 size="icon"
