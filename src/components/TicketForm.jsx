@@ -1,7 +1,7 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { motion } from "framer-motion";
-import { Plus, X, Calendar, Ticket } from "lucide-react";
+import { Plus, X, Calendar, Ticket, Search } from "lucide-react";
 import { useTicketCreate } from "../context/TicketCreateContext";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
@@ -28,11 +28,7 @@ import { departmentFilters } from "../context/AuthContext2";
 const TicketForm = ({ ticket, users, onClose, isOpen }) => {
   const { TicketCreate, updatedTicket } = useTicketCreate();
   const [selectedUsers, setSelectedUsers] = useState([]);
-
-  // Reset selected users when department changes
-  useEffect(() => {
-    setSelectedUsers([]);
-  }, [ticket?.department]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     if (ticket?.assignedTo && users.length > 0) {
@@ -118,11 +114,13 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
     },
   });
 
-  const filteredUsers =
+  const filteredUsers = (
     formik.values.department === "all"
       ? users
-      : users.filter((user) => user.department === formik.values.department);
-
+      : users.filter((user) => user.department === formik.values.department)
+  ).filter((user) =>
+    user.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -190,10 +188,9 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
             </label>
             <Select
               value={formik.values.department}
-              onValueChange={(value) => {
-                formik.setFieldValue("department", value);
-                setSelectedUsers([]); // reset assigned users
-              }}
+              onValueChange={(value) =>
+                formik.setFieldValue("department", value)
+              }
             >
               <SelectTrigger className="bg-slate-800/50 border-purple-500/30 text-white">
                 <SelectValue placeholder="Select Department" />
@@ -206,71 +203,75 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
                 ))}
               </SelectContent>
             </Select>
-            {formik.touched.department && formik.errors.department && (
-              <p className="text-xs text-red-400">{formik.errors.department}</p>
-            )}
           </motion.div>
 
-          {/* Team Assignment */}
+          {/* Team Assignment Section */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
           >
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-            >
-              <label className="text-sm font-medium text-purple-200 mb-3 block">
-                Team Assignment ({selectedUsers.length})
-              </label>
+            <label className="text-sm font-medium text-purple-200 mb-3 block">
+              Team Assignment ({selectedUsers.length})
+            </label>
 
-              {/* Assigned List */}
-              {selectedUsers.length > 0 && (
-                <Card className="mb-4 bg-slate-800/30 border-purple-500/20">
-                  <CardContent className="p-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {selectedUsers.map((user) => (
-                        <motion.div
-                          key={user._id}
-                          className="flex items-center gap-3 p-3 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-lg border border-purple-500/20"
-                        >
-                          <Avatar className="w-8 h-8">
-                            <AvatarImage src={user.avatar} alt={user.name} />
-                            <AvatarFallback>{user.name[0]}</AvatarFallback>
-                          </Avatar>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-white text-sm truncate">
-                              {user.name}
-                            </p>
-                            <p className="text-xs text-gray-400 truncate">
-                              {user.department || "No Department"}
-                            </p>
-                          </div>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => removeAssignee(user._id)}
-                          >
-                            <X className="w-4 h-4 text-red-400" />
-                          </Button>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* User Selector */}
-              <Card className="bg-slate-800/30 border-purple-500/20">
+            {/* Selected Users Display */}
+            {selectedUsers.length > 0 && (
+              <Card className="mb-4 bg-slate-800/30 border-purple-500/20">
                 <CardContent className="p-4">
-                  <div className="text-sm text-purple-400 mb-4">
-                    Select Team Members
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {selectedUsers.map((user) => (
+                      <motion.div
+                        key={user._id}
+                        className="flex items-center gap-3 p-3 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-lg border border-purple-500/20"
+                      >
+                        <Avatar className="w-8 h-8">
+                          <AvatarImage src={user.avatar} alt={user.name} />
+                          <AvatarFallback>{user.name[0]}</AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-white text-sm truncate">
+                            {user.name}
+                          </p>
+                          <p className="text-xs text-gray-400 truncate">
+                            {user.department || "No Department"}
+                          </p>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeAssignee(user._id)}
+                        >
+                          <X className="w-4 h-4 text-red-400" />
+                        </Button>
+                      </motion.div>
+                    ))}
                   </div>
-                  <div className="grid gap-2 max-h-64 overflow-y-auto">
-                    {filteredUsers.map((user) => (
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Search Box */}
+            <div className="relative mb-4">
+              <Input
+                placeholder="Search employees..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="bg-slate-800/50 border-purple-500/30 text-white pl-10"
+              />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-400 w-4 h-4" />
+            </div>
+
+            {/* User List */}
+            <Card className="bg-slate-800/30 border-purple-500/20">
+              <CardContent className="p-4">
+                <div className="text-sm text-purple-400 mb-4">
+                  Select Team Members
+                </div>
+                <div className="grid gap-2 max-h-64 overflow-y-auto">
+                  {filteredUsers.length > 0 ? (
+                    filteredUsers.map((user) => (
                       <div
                         key={user._id}
                         onClick={() => handleAssigneeToggle(user._id)}
@@ -288,17 +289,20 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
                         </div>
                         <Plus className="w-4 h-4 text-purple-400" />
                       </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+                    ))
+                  ) : (
+                    <p className="text-purple-300 text-sm">No users found.</p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
 
-              {selectedUsers.length === 0 && (
-                <p className="text-red-400 text-xs mt-2 flex items-center gap-1">
-                  Please assign at least one team member to this ticket
-                </p>
-              )}
-            </motion.div>
+            {selectedUsers.length === 0 && (
+              <p className="text-red-400 text-xs mt-2 flex items-center gap-1">
+                <X className="w-3 h-3" />
+                Please assign at least one team member to this ticket
+              </p>
+            )}
           </motion.div>
 
           {/* Priority, Status, Due Date */}
@@ -344,11 +348,21 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-slate-800 border-purple-500/30">
-                  <SelectItem value="Open">Open</SelectItem>
-                  <SelectItem value="In Progress">In Progress</SelectItem>
-                  <SelectItem value="Under Review">Under Review</SelectItem>
-                  <SelectItem value="Resolved">Resolved</SelectItem>
-                  <SelectItem value="Closed">Closed</SelectItem>
+                  <SelectItem value="Open" className="text-white">
+                    Open
+                  </SelectItem>
+                  <SelectItem value="In Progress" className="text-white">
+                    In Progress
+                  </SelectItem>
+                  <SelectItem value="Under Review" className="text-white">
+                    Under Review
+                  </SelectItem>
+                  <SelectItem value="Resolved" className="text-white">
+                    Resolved
+                  </SelectItem>
+                  <SelectItem value="Closed" className="text-white">
+                    Closed
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -358,17 +372,19 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
               <label className="text-sm font-medium text-purple-200 mb-2 block">
                 Due Date
               </label>
-              <Input
-                type="date"
-                name="dueDate"
-                value={formik.values.dueDate}
-                onChange={formik.handleChange}
-                className="bg-slate-800/50 border-purple-500/30 text-white"
-              />
+              <div className="relative">
+                <Input
+                  type="date"
+                  name="dueDate"
+                  value={formik.values.dueDate}
+                  onChange={formik.handleChange}
+                  className="bg-slate-800/50 border-purple-500/30 text-white "
+                />
+              </div>
             </div>
           </div>
 
-          {/* Footer Buttons */}
+          {/* Footer */}
           <DialogFooter className="gap-3 pt-4">
             <Button
               type="button"
@@ -380,11 +396,7 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
             </Button>
             <Button
               type="submit"
-              disabled={
-                !formik.values.title ||
-                selectedUsers.length === 0 ||
-                formik.values.department === "all"
-              }
+              disabled={!formik.values.title || selectedUsers.length === 0}
               className="bg-gradient-to-r from-purple-500 to-pink-500 text-white disabled:opacity-50"
             >
               <Plus className="w-4 h-4 mr-2" />
