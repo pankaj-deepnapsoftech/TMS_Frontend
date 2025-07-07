@@ -49,24 +49,46 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
       (a) => a?._id === currentUser.id || a === currentUser.id
     );
   };
- 
+
   const assignedUsers = getAssignedUsers();
   // For plain name list (if needed elsewhere):
   // const assignedNames = assignedUsers.map((u) => u.name).join(", ");
+  // Robust department label matching (by value or label, case-insensitive)
   const department = departmentFilters.find(
-    (d) => d.value === ticket?.department
-  ) || { label: "N/A" };
+    (d) =>
+      d.value?.toLowerCase() === String(ticket?.department).toLowerCase() ||
+      d.label?.toLowerCase() === String(ticket?.department).toLowerCase()
+  ) || { label: ticket?.department || "N/A" };
 
   const status = allUsers.find((s) => s._id === ticket.status);
 
+  // Priority color
   const getPriorityColor = (priority) => {
-    switch (priority) {
+    switch (priority?.toLowerCase()) {
       case "high":
         return "bg-red-500/20 text-red-300 border-red-500/30";
       case "medium":
         return "bg-yellow-500/20 text-yellow-300 border-yellow-500/30";
       case "low":
         return "bg-green-500/20 text-green-300 border-green-500/30";
+      default:
+        return "bg-gray-500/20 text-gray-300 border-gray-500/30";
+    }
+  };
+
+  // Status color
+  const getStatusColor = (status) => {
+    switch (status?.toLowerCase()) {
+      case "open":
+        return "bg-blue-500/20 text-blue-300 border-blue-500/30";
+      case "in progress":
+        return "bg-yellow-500/20 text-yellow-300 border-yellow-500/30";
+      case "under review":
+        return "bg-purple-500/20 text-purple-300 border-purple-500/30";
+      case "resolved":
+        return "bg-green-500/20 text-green-300 border-green-500/30";
+      case "closed":
+        return "bg-gray-500/20 text-gray-300 border-gray-500/30";
       default:
         return "bg-gray-500/20 text-gray-300 border-gray-500/30";
     }
@@ -99,7 +121,6 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
     }
     navigate(`/ticket/${id}/comment`);
   };
-  
 
   const getInitials = (name) => {
     return name
@@ -126,12 +147,7 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
-                <Badge
-                  className={
-                    status?.color ||
-                    "bg-gray-500/20 text-gray-300 border-gray-500/30"
-                  }
-                >
+                <Badge className={getStatusColor(ticket.status)}>
                   {status?.name || ticket.status}
                 </Badge>
               </div>
@@ -198,7 +214,7 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
             </Badge>
             <Badge
               variant="secondary"
-              className="bg-blue-500/20 text-blue-300 border-blue-500/30"
+              className="bg-pink-500/20 text-pink-300 border-pink-500/30"
             >
               <Briefcase className="w-3 h-3 mr-1" />
               {department.label}
