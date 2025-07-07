@@ -17,7 +17,7 @@ const TicketComments = ({ ticket, user, onAddComment, formatDate, getInitials })
     setNewComment('');
     
   };
-  console.log()
+   
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -32,53 +32,57 @@ const TicketComments = ({ ticket, user, onAddComment, formatDate, getInitials })
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {ticket.comments && ticket.comments.length > 0 ? (
-            ticket.comments.map((comment) => {
-              const commentUser =
-                allUsers.find(u => u._id === comment.author?._id || u._id === comment.author) || {
-                  name: comment.author?.name || 'Unknown',
-                  avatar: null,
-                  _id: comment.author?._id || comment.author || 'unknown',
-                };
+          {/* Scrollable comments */}
+          <div className="max-h-[300px] overflow-y-auto space-y-4 pr-2">
+            {ticket.comments && ticket.comments.length > 0 ? (
+              ticket.comments.map((comment) => {
+                const commentUser =
+                  allUsers.find(u => u._id === comment.author?._id || u._id === comment.author) || {
+                    name: comment.author?.name || 'Unknown',
+                    avatar: null,
+                    _id: comment.author?._id || comment.author || 'unknown',
+                  };
 
-              return (
-                <motion.div
-                  key={comment._id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className="flex gap-3 p-4 rounded-lg bg-slate-700/30 border border-purple-500/10"
-                >
-                  <Avatar className="w-8 h-8">
-                    <AvatarImage
-                      src={commentUser.avatar || '/default-avatar.png'}
-                      alt={commentUser.name}
-                      onError={(e) => { e.target.src = '/default-avatar.png'; }}
-                    />
-                    <AvatarFallback className="text-xs">
-                      {getInitials(commentUser.name || 'U')}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-medium text-white text-sm">
-                        {commentUser._id === user?._id ? 'You' : commentUser.name}
-                      </span>
-                      <span className="text-xs text-gray-400">
-                        {formatDate(comment.timestamp || comment.createdAt)}
-                      </span>
+                return (
+                  <motion.div
+                    key={comment._id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="flex gap-3 p-4 rounded-lg bg-slate-700/30 border border-purple-500/10"
+                  >
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage
+                        src={commentUser.avatar || '/default-avatar.png'}
+                        alt={commentUser.name}
+                        onError={(e) => { e.target.src = '/default-avatar.png'; }}
+                      />
+                      <AvatarFallback className="text-xs">
+                        {getInitials(commentUser.name || 'U')}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-medium text-white text-sm">
+                          {commentUser._id === user?._id ? 'You' : commentUser.name}
+                        </span>
+                        <span className="text-xs text-gray-400">
+                          {formatDate(comment.timestamp || comment.createdAt)}
+                        </span>
+                      </div>
+                      <p className="text-gray-300 text-sm leading-relaxed">{comment.text}</p>
                     </div>
-                    <p className="text-gray-300 text-sm leading-relaxed">{comment.text}</p>
-                  </div>
-                </motion.div>
-              );
-            })
-          ) : (
-            <div className="text-center py-8 text-gray-400">
-              <MessageSquare className="w-12 h-12 mx-auto mb-3 opacity-50" />
-              <p>No comments yet. Be the first to comment!</p>
-            </div>
-          )}
+                  </motion.div>
+                );
+              })
+            ) : (
+              <div className="text-center py-8 text-gray-400">
+                <MessageSquare className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                <p>No comments yet. Be the first to comment!</p>
+              </div>
+            )}
+          </div>
 
+          {/* Add Comment Input */}
           <div className="flex gap-3 pt-4 border-t border-purple-500/20">
             <Avatar className="w-8 h-8">
               <AvatarImage
@@ -105,6 +109,7 @@ const TicketComments = ({ ticket, user, onAddComment, formatDate, getInitials })
             </div>
           </div>
         </CardContent>
+
       </Card>
     </motion.div>
   );

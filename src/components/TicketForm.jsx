@@ -86,6 +86,7 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
         TicketCreate(payload);
       }
       onClose()
+      formik.resetForm()
     },
   });
 
@@ -94,7 +95,7 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
   
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[800px] bg-gradient-to-br from-slate-900/95 to-purple-900/95 border-purple-500/20 backdrop-blur-xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[800px] bg-gradient-to-r from-slate-900/95 to-purple-700/10 border-purple-500/20  max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent flex items-center gap-2">
             <Ticket className="w-6 h-6 text-purple-400" />

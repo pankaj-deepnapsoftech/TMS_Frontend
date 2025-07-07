@@ -34,13 +34,14 @@ const Header = () => {
     handleProfileSave,
   } = useProfile();
 
-  console.log(departmentFilters); // Check the list of departments
-  console.log(editDepartment); // Check the value of editDepartment
+
 
   return (
     <section className="bg-slate-900/50 backdrop-blur-lg border-b border-purple-500/20 sticky top-0 z-40">
-      <div className="max-w-7xl mx-auto px-4 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex  md:flex-row items-center justify-between h-auto md:h-20 py-3 md:py-0 gap-4 md:gap-0">
+
+
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -49,16 +50,17 @@ const Header = () => {
             <div className="p-2 rounded-lg bg-gradient-to-r from-purple-500/20 to-pink-500/20">
               <CheckSquare className="w-6 h-6 text-purple-400" />
             </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <span className="text-xl whitespace-nowrap sm:text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
               ITSYBIZZ TMS
             </span>
           </motion.div>
+
 
           {user && (
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-4"
+              className="flex items-center flex-wrap md:flex-nowrap justify-end gap-4 w-full md:w-auto"
             >
               <Button
                 variant="ghost"
@@ -72,38 +74,33 @@ const Header = () => {
                 )}
               </Button>
 
-              <Dialog
-                open={notificationOpen}
-                onOpenChange={setNotificationOpen}
-              >
+            
+              <Dialog open={notificationOpen} onOpenChange={setNotificationOpen}>
                 <DialogContent className="bg-slate-900 border-purple-500/30 max-w-md">
                   <DialogHeader>
                     <DialogTitle>Notifications</DialogTitle>
                   </DialogHeader>
-
                   <div className="space-y-3 max-h-64 overflow-y-auto">
                     {notifications.length > 0 ? (
                       notifications.map((note) => (
                         <div
                           key={note._id}
-                          className={`p-3 rounded-lg ${
-                            note.isRead
-                              ? "bg-[#00000096] "
-                              : "bg-[#3f235d] border-l-4 border-[#7d3cbd]"
-                          }`}
+                          className={`p-3 rounded-lg ${note.isRead
+                            ? "bg-[#00000096]"
+                            : "bg-[#3f235d] border-l-4 border-[#7d3cbd]"
+                            }`}
                         >
                           <div className="flex justify-between items-start">
                             <div>
                               <span
-                                className={`text-xs px-2 py-1 rounded-full mr-2 font-medium ${
-                                  note.type === "comment"
-                                    ? "bg-blue-600 text-white"
-                                    : note.type === "message"
+                                className={`text-xs px-2 py-1 rounded-full mr-2 font-medium ${note.type === "comment"
+                                  ? "bg-blue-600 text-white"
+                                  : note.type === "message"
                                     ? "bg-green-600 text-white"
                                     : note.type === "ticket"
-                                    ? "bg-red-600 text-white"
-                                    : "bg-gray-600 text-white"
-                                }`}
+                                      ? "bg-red-600 text-white"
+                                      : "bg-gray-600 text-white"
+                                  }`}
                               >
                                 {note.type.charAt(0).toUpperCase() +
                                   note.type.slice(1)}
@@ -126,14 +123,13 @@ const Header = () => {
                         </div>
                       ))
                     ) : (
-                      <p className="text-sm text-white">
-                        No new notifications.
-                      </p>
+                      <p className="text-sm text-white">No new notifications.</p>
                     )}
                   </div>
                 </DialogContent>
               </Dialog>
 
+              
               <div
                 className="flex items-center gap-3 cursor-pointer group"
                 onClick={() => setDialogOpen(true)}
@@ -142,7 +138,7 @@ const Header = () => {
                   <AvatarImage src={user.avatarUrl || ""} alt={user.name} />
                   <AvatarFallback>{user.name?.[0]}</AvatarFallback>
                 </Avatar>
-                <div className="text-right">
+                <div className="text-right hidden sm:block">
                   <p className="font-semibold text-white group-hover:underline">
                     {user.name}
                   </p>
@@ -151,6 +147,7 @@ const Header = () => {
                   </p>
                 </div>
               </div>
+
               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogContent className="bg-slate-900 border-purple-500/30">
                   <DialogHeader>
@@ -196,8 +193,10 @@ const Header = () => {
                           Department
                         </label>
                         <select
-                          value={editDepartment }
-                          onChange={(e) => setEditDepartment(e.target.value)}
+                          value={editDepartment}
+                          onChange={(e) =>
+                            setEditDepartment(e.target.value)
+                          }
                           className="bg-slate-800 text-white px-3 py-2 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-purple-500"
                         >
                           {departmentFilters
@@ -210,7 +209,6 @@ const Header = () => {
                         </select>
                       </div>
                     )}
-
                     <div className="flex justify-end gap-2">
                       <Button
                         type="button"
@@ -220,6 +218,7 @@ const Header = () => {
                         Cancel
                       </Button>
                       <Button
+                      className="text-white"
                         type="submit"
                         variant="default"
                         disabled={loading}
@@ -230,6 +229,8 @@ const Header = () => {
                   </form>
                 </DialogContent>
               </Dialog>
+
+           
               <Button
                 variant="ghost"
                 size="icon"
@@ -243,6 +244,7 @@ const Header = () => {
         </div>
       </div>
     </section>
+
   );
 };
 

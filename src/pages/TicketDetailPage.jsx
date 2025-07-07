@@ -11,12 +11,12 @@ import TicketDetailSidebar from '@/components/TicketDetailSidebar';
 import { useAuthContext } from '@/context/AuthContext2';
 import { useTicketCreate } from '@/context/TicketCreateContext';
 import { departmentFilters } from '@/context/AuthContext2';
-import { useNotifications } from '@/context/NotificationContext';
+
 
 const TicketDetailPage = () => {
   const { ticketId } = useParams();
 
-  const { fetchNotifications, notifications } = useNotifications(); 
+  
   const navigate = useNavigate();
   const { user, allUsers } = useAuthContext();
   const { allTicket, updatedTicket, updatedComments } = useTicketCreate(); // Assuming updateTicket is available
@@ -49,21 +49,20 @@ const TicketDetailPage = () => {
     return assignedIds.includes(user.id);
   }, [ticket, user]);
 
-
   const createdByUser = ticket ? allUsers.find(u => u._id === ticket.createdBy) : null;
   const department = ticket ? departmentFilters.find(d => d.value === ticket.department) : null;
   const status = user?.status?.find(s => s._id === ticket?.status);
 
   const getPriorityColor = (priority) => {
     switch (priority) {
-      case 'high':
-        return 'bg-red-500/20 text-red-300 border-red-500/30';
-      case 'medium':
-        return 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30';
-      case 'low':
-        return 'bg-green-500/20 text-green-300 border-green-500/30';
+      case "High":
+        return "bg-red-500/20 text-red-300 border-red-500/30";
+      case "Medium":
+        return "bg-yellow-500/20 text-yellow-300 border-yellow-500/30";
+      case "Low":
+        return "bg-green-500/20 text-green-300 border-green-500/30";
       default:
-        return 'bg-gray-500/20 text-gray-300 border-gray-500/30';
+        return "bg-gray-500/20 text-gray-300 border-gray-500/30";
     }
   };
 

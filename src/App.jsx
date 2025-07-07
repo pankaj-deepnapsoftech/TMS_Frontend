@@ -14,7 +14,7 @@
     // const { user, isAuthenticated } = useAuth();
     const {user,token } = useAuthContext()
     return (
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col  bg-gradient-to-br from-indigo-950  to-[#160a2e] text-white min-h-screen">
       { token && <Header />    }
         <main className="flex-grow">
           <Routes>

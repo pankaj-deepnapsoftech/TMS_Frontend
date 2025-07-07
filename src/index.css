@@ -32,7 +32,7 @@
 }
 
 body {
-  @apply bg-gradient-to-br from-indigo-950 via-purple-950 to-slate-950 text-white min-h-screen;
+
   font-family: "Rubik", sans-serif;
   background-attachment: fixed;
 }

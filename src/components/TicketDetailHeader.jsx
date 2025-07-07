@@ -31,10 +31,11 @@ const TicketDetailHeader = ({ ticket, status, user, isAssignedToCurrentUser, get
                   <Badge className={status?.color || 'bg-gray-500/20 text-gray-300 border-gray-500/30'}>
                     {status?.name || ticket.status}
                   </Badge>
-                  <Badge className={getPriorityColor(ticket.priority)}>
+                  <Badge className={`border ${getPriorityColor(ticket.priority)} !bg-opacity-20`}>
                     <Flag className="w-3 h-3 mr-1" />
                     {ticket.priority.charAt(0).toUpperCase() + ticket.priority.slice(1)}
                   </Badge>
+
                   {isAssignedToCurrentUser && (
                     <Badge className="bg-green-500/20 text-green-300 border-green-500/30">
                       Assigned to You

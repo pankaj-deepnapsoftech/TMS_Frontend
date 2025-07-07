@@ -128,7 +128,7 @@ const TicketDetailSidebar = ({
         </Card>
       </motion.div>
 
-      {(user.role === 'admin' || isAssignedToCurrentUser) &&  (
+      {(user.role === 'admin' || assignedIds) &&  (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
             <Card className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 border-purple-500/20 backdrop-blur-sm">
               <CardHeader>
