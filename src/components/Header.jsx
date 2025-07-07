@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -190,13 +189,13 @@ const Header = () => {
                         className="bg-slate-800 text-white"
                       />
                     </div>
-                    {user.department && (
+                    {user.department && user.role !== "admin" && (
                       <div>
                         <label className="block text-sm text-purple-300 mb-1">
                           Department
                         </label>
                         <select
-                          value={editDepartment }
+                          value={editDepartment}
                           onChange={(e) => setEditDepartment(e.target.value)}
                           className="bg-slate-800 text-white px-3 py-2 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-purple-500"
                         >
