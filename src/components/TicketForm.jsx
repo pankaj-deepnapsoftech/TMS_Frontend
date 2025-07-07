@@ -257,7 +257,7 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
                   name="dueDate"
                   value={formik.values.dueDate}
                   onChange={formik.handleChange}
-                  className="bg-slate-800/50 border-purple-500/30 text-white"
+                  className="bg-slate-800/50 border-purple-500/30 text-white "
                 />
                 
               </div>

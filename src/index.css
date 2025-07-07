@@ -161,7 +161,7 @@ body {
   input[type="date"]::-webkit-calendar-picker-indicator {
     /* background-color: hsl(var(--primary));  */
     border-radius: 50%;
-    padding: 5px;
+    padding: 100px;
     cursor: pointer;
     filter: invert(100%);
   }
