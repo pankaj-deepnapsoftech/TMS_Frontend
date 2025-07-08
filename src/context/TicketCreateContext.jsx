@@ -64,7 +64,7 @@ const TicketCreateProvider = ({ children }) => {
       console.log(error);
     }
   };
-
+  
   const DeleteTicket = async (ticketId) => {
 
     try {
