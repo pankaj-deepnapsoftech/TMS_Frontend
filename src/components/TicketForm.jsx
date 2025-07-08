@@ -124,8 +124,6 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
     user.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[800px] bg-gradient-to-r from-slate-900/95 to-purple-700/10 border-purple-500/20  max-h-[90vh] overflow-y-auto">
@@ -202,9 +200,13 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
               <SelectTrigger className="bg-slate-800/50 border-purple-500/30 text-white">
                 <SelectValue placeholder="Select Department" />
               </SelectTrigger>
-              <SelectContent className="bg-slate-800 border-purple-500/30">
+              <SelectContent className="bg-slate-800 border-purple-500/30 h-60 text-sm p-0 overflow-y-auto">
                 {departmentFilters.map((dep) => (
-                  <SelectItem key={dep.id} value={dep.value}>
+                  <SelectItem
+                    key={dep.id}
+                    value={dep.value}
+                    className="text-xs px-2 py-1 min-h-6 h-7"
+                  >
                     {dep.label}
                   </SelectItem>
                 ))}
