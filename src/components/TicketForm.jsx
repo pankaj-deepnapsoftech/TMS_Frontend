@@ -124,6 +124,8 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
     user.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[800px] bg-gradient-to-r from-slate-900/95 to-purple-700/10 border-purple-500/20  max-h-[90vh] overflow-y-auto">
@@ -148,6 +150,7 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
               name="title"
               value={formik.values.title}
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               placeholder="Enter ticket title..."
               className="bg-slate-800/50 border-purple-500/30 text-white"
             />
@@ -169,11 +172,12 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
               name="description"
               value={formik.values.description}
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               placeholder="Describe the ticket..."
               className="bg-slate-800/50 border-purple-500/30 text-white"
             />
             {formik.touched.description && formik.errors.description && (
-              <p className="text-xs text-red-400">
+              <p className="text-xs text-red-500">
                 {formik.errors.description}
               </p>
             )}
@@ -190,6 +194,7 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
             </label>
             <Select
               value={formik.values.department}
+              onBlur={formik.handleBlur}
               onValueChange={(value) =>
                 formik.setFieldValue("department", value)
               }
@@ -205,6 +210,11 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
                 ))}
               </SelectContent>
             </Select>
+            {formik.touched.department && formik.errors.department && (
+              <p className="text-xs text-red-400 mt-1">
+                {formik.errors.department}
+              </p>
+            )}
           </motion.div>
 
           {/* Team Assignment Section */}
@@ -260,6 +270,7 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
                 placeholder="Search employees..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                onBlur={formik.handleBlur}
                 className="bg-slate-800/50 border-purple-500/30 text-white pl-10"
               />
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-400 w-4 h-4" />
@@ -277,6 +288,7 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
                       <div
                         key={user._id}
                         onClick={() => handleAssigneeToggle(user._id)}
+                        onBlur={formik.handleBlur}
                         className="flex items-center gap-3 p-3 bg-slate-700/30 hover:bg-slate-700/50 rounded-lg cursor-pointer"
                       >
                         <Avatar className="w-8 h-8">
@@ -335,6 +347,11 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
                   </SelectItem>
                 </SelectContent>
               </Select>
+              {formik.touched.priority && formik.errors.priority && (
+                <p className="text-xs text-red-400 mt-1">
+                  {formik.errors.priority}
+                </p>
+              )}
             </div>
 
             {/* Status */}
@@ -367,6 +384,11 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
                   </SelectItem>
                 </SelectContent>
               </Select>
+              {formik.touched.status && formik.errors.status && (
+                <p className="text-xs text-red-400 mt-1">
+                  {formik.errors.status}
+                </p>
+              )}
             </div>
 
             {/* Due Date */}
@@ -383,6 +405,11 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
                   className="bg-slate-800/50 border-purple-500/30 text-white "
                 />
               </div>
+              {formik.touched.dueDate && formik.errors.dueDate && (
+                <p className="text-xs text-red-400 mt-1">
+                  {formik.errors.dueDate}
+                </p>
+              )}
             </div>
           </div>
 

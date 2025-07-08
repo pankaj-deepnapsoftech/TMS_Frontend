@@ -139,9 +139,10 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
       transition={{ duration: 0.2 }}
     >
       <Card
-        className={`bg-gradient-to-br from-slate-800/50 to-slate-900/50 border-purple-500/20 backdrop-blur-sm hover:border-purple-400/40 transition-all duration-300 ${
+        className={`bg-gradient-to-br from-slate-800/50 to-slate-900/50 border-purple-500/20 backdrop-blur-sm hover:border-purple-400/40 transition-all duration-300 overflow-hidden ${
           ticket.status === "closed" ? "opacity-75" : ""
         } ${isAssignedToCurrentUser() ? "ring-1 ring-purple-400/30" : ""}`}
+        style={{ wordBreak: "break-word" }}
       >
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between gap-3">
@@ -157,6 +158,7 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
                     ? "line-through text-gray-400"
                     : "text-white"
                 }`}
+                style={{ wordBreak: "break-word" }}
               >
                 {ticket.title}
               </h3>
@@ -167,6 +169,7 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
                       ? "text-gray-500"
                       : "text-gray-300"
                   }`}
+                  style={{ wordBreak: "break-word" }}
                 >
                   {ticket.description}
                 </p>
@@ -254,7 +257,7 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
                           : "bg-slate-700/30 border-purple-500/20"
                       }`}
                     >
-                      <Avatar className="w-5 h-5">
+                      <Avatar className="w-7 h-7">
                         <AvatarImage src={user.avatar} alt={user.name} />
                         <AvatarFallback className="text-xs bg-purple-500/20">
                           {getInitials(user.name)}

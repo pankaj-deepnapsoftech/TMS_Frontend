@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { axiosHandler } from "../config/axiosConfig";
 import { toast } from "react-toastify";
 import { useAuthContext } from "./AuthContext2";
-import { useNotifications } from "./NotificationContext";
+// import { useNotifications } from "./NotificationContext";
 
 const TicketCreateContext = createContext();
 
@@ -30,6 +30,7 @@ const TicketCreateProvider = ({ children }) => {
           Authorization: `Bearer ${token}`,
         },
       });
+      GetAllTicket();
       setTicketStats(res.data);
     } catch (error) {
       setStatsError("Failed to fetch stats");
@@ -44,7 +45,6 @@ const TicketCreateProvider = ({ children }) => {
         },
       });
       GetAllTicket();
-      fetchTicketStats(); // Update stats after creating a ticket
       toast.success(res?.data?.message);
     } catch (error) {
       console.log(error);
@@ -129,13 +129,14 @@ const TicketCreateProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       GetAllTicket();
+      fetchTicketStats();
+      GetMyTicket();
     }
-  }, [token]);
-
-  useEffect(() => {
-    fetchTicketStats();
-    GetMyTicket();
   }, []);
+
+  // useEffect(() => {
+    
+  // }, []);
   return (
     <TicketCreateContext.Provider
       value={{

@@ -15,8 +15,8 @@ const TicketDetailHeader = ({
   getStatusColor,
 }) => {
   const navigate = useNavigate();
- 
-console.log(ticket.status);
+
+  console.log(ticket.status);
   return (
     <>
       <motion.div
@@ -37,7 +37,10 @@ console.log(ticket.status);
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <Card className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 border-purple-500/20 backdrop-blur-sm">
+        <Card
+          className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 border-purple-500/20 backdrop-blur-sm overflow-hidden"
+          style={{ wordBreak: "break-word" }}
+        >
           <CardHeader>
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1">
@@ -61,11 +64,17 @@ console.log(ticket.status);
                     </Badge>
                   )}
                 </div>
-                <CardTitle className="text-2xl text-white mb-2">
+                <CardTitle
+                  className="text-2xl text-white mb-2"
+                  style={{ wordBreak: "break-word" }}
+                >
                   {ticket.title}
                 </CardTitle>
                 {ticket.description && (
-                  <p className="text-gray-300 leading-relaxed">
+                  <p
+                    className="text-gray-300 leading-relaxed"
+                    style={{ wordBreak: "break-word" }}
+                  >
                     {ticket.description}
                   </p>
                 )}
