@@ -44,7 +44,6 @@ const TicketCreateProvider = ({ children }) => {
         },
       });
       GetAllTicket();
-      fetchTicketStats(); // Update stats after creating a ticket
       toast.success(res?.data?.message);
     } catch (error) {
       console.log(error);

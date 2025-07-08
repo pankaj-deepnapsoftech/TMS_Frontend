@@ -8,7 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { BellIcon, CheckSquare, LogOutIcon } from "lucide-react";
+import { BellIcon, CheckSquare, LogOutIcon, UserPlus } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuthContext } from "../context/AuthContext2";
 import { useProfile } from "@/context/UserProfileUpdateContext";
@@ -19,8 +19,8 @@ import { useNavigate } from "react-router-dom";
 const Header = () => {
   const { user, Logout } = useAuthContext();
   const [notificationOpen, setNotificationOpen] = useState(false);
+  const [showAdmitDropdown, setShowAdmitDropdown] = useState(false);
   const { notifications, handleMarkAsRead } = useNotifications();
-  console.log(notifications);
   const {
     editName,
     setEditName,
@@ -39,6 +39,31 @@ const Header = () => {
   const closeNotificationPanel = () => {
     setNotificationOpen(false);
   };
+
+  // Placeholder for pending users data
+  const pendingUsers = [
+    {
+      _id: "1",
+      name: "Tanish Singhal",
+      department: "Developer"
+    },
+    {
+      _id: "2",
+      name: "Nitin Bhaiya",
+      department: "Developer",
+    },
+    {
+      _id: "3",
+      name: "Deepak",
+      department: "Sales"
+    }
+  ];
+
+  const handleAdmitUser = (userId, accept) => {
+    console.log(`User ${userId} has been ${accept ? "accepted" : "rejected"}.`);
+  };
+
+  console.log(user);
 
   return (
     <section className="bg-slate-900/50 backdrop-blur-lg border-b border-purple-500/20 sticky top-0 z-40">
@@ -63,6 +88,82 @@ const Header = () => {
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center flex-wrap md:flex-nowrap justify-end gap-4 w-full md:w-auto"
             >
+              {user.role === "admin" && (
+                <div className="relative">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="text-purple-400 border-purple-400 hover:bg-purple-900/20 hover:text-white"
+                    onClick={() => setShowAdmitDropdown((prev) => !prev)}
+                  >
+                    <UserPlus size="20" />
+                  </Button>
+                  {showAdmitDropdown && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute right-0 mt-2 w-96 max-w-xs bg-slate-900 border border-purple-500/30 rounded-lg shadow-lg z-50"
+                    >
+                      <div className="px-4 py-2 border-b border-purple-500/20 flex items-center justify-between">
+                        <span className="font-semibold text-purple-200">
+                          Pending User Requests
+                        </span>
+                        <button
+                          className="text-xs text-gray-400 hover:text-purple-400"
+                          onClick={() => setShowAdmitDropdown(false)}
+                          aria-label="Close admit user dropdown"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                      <div className="space-y-3 max-h-64 overflow-y-auto px-4 py-2">
+                        {pendingUsers && pendingUsers.length > 0 ? (
+                          pendingUsers.map((pending) => (
+                            <div
+                              key={pending._id}
+                              className="p-3 rounded-lg bg-[#00000096] flex flex-col gap-1 border border-purple-500/10"
+                            >
+                              <div className="flex items-center gap-2">
+                                <Avatar>
+                                  <AvatarFallback>{pending.name?.[0]}</AvatarFallback>
+                                </Avatar>
+                                <div>
+                                  <p className="font-semibold text-white">
+                                    {pending.name}
+                                  </p>
+                                  <p className="text-xs text-gray-400 capitalize">
+                                    {pending.department}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="flex gap-2 mt-2 justify-end">
+                                <Button
+                                  size="sm"
+                                  className="bg-green-600 text-white hover:bg-green-700"
+                                  onClick={() => handleAdmitUser(pending._id, true)}
+                                >
+                                  Accept
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  className="bg-red-600 text-white hover:bg-red-700"
+                                  onClick={() => handleAdmitUser(pending._id, false)}
+                                >
+                                  Reject
+                                </Button>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <p className="text-sm text-white">No pending requests.</p>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
+              )}
+
               {/* Notification Bell with Dropdown */}
               <div className="relative">
                 <Button

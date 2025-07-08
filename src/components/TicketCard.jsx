@@ -139,7 +139,7 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
       transition={{ duration: 0.2 }}
     >
       <Card
-        className={`bg-gradient-to-br from-slate-800/50 to-slate-900/50 border-purple-500/20 backdrop-blur-sm hover:border-purple-400/40 transition-all duration-300 ${
+        className={`bg-gradient-to-br from-slate-800/50 to-slate-900/50 border-purple-500/20 backdrop-blur-sm hover:border-purple-400/40 transition-all duration-300 overflow-hidden ${
           ticket.status === "closed" ? "opacity-75" : ""
         } ${isAssignedToCurrentUser() ? "ring-1 ring-purple-400/30" : ""}`}
       >
