@@ -128,7 +128,7 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
       .map((n) => n[0])
       .join("");
   };
-
+   
   return (
     <motion.div
       layout
