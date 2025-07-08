@@ -148,6 +148,9 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
+                <div className=" text-[10px] border border-red-500 bg-[#8b21265d] rounded-full px-4 py-1">
+                   {ticket.ticketNumber}
+                </div>
                 <Badge className={getStatusColor(ticket.status)}>
                   {status?.name || ticket.status}
                 </Badge>
