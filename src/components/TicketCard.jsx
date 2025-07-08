@@ -254,7 +254,7 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
                           : "bg-slate-700/30 border-purple-500/20"
                       }`}
                     >
-                      <Avatar className="w-5 h-5">
+                      <Avatar className="w-7 h-7">
                         <AvatarImage src={user.avatar} alt={user.name} />
                         <AvatarFallback className="text-xs bg-purple-500/20">
                           {getInitials(user.name)}
