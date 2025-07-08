@@ -20,7 +20,7 @@ const Header = () => {
   const { user, Logout } = useAuthContext();
   const [notificationOpen, setNotificationOpen] = useState(false);
   const { notifications, handleMarkAsRead } = useNotifications();
-  console.log(notifications)
+  console.log(notifications);
   const {
     editName,
     setEditName,
@@ -35,11 +35,10 @@ const Header = () => {
     handleProfileSave,
   } = useProfile();
 
-  const navigation = useNavigate()
+  const navigation = useNavigate();
   const closeNotificationPanel = () => {
-    setNotificationOpen(false); 
+    setNotificationOpen(false);
   };
-
 
   return (
     <section className="bg-slate-900/50 backdrop-blur-lg border-b border-purple-500/20 sticky top-0 z-40">
@@ -58,101 +57,120 @@ const Header = () => {
             </span>
           </motion.div>
 
-
           {user && (
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center flex-wrap md:flex-nowrap justify-end gap-4 w-full md:w-auto"
             >
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setNotificationOpen(true)}
-                className="text-purple-400 hover:text-white relative"
-              >
-                <BellIcon className="h-5 w-5" />
-                {notifications.some((note) => !note.isRead) && (
-                  <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full animate-ping" />
-                )}
-              </Button>
-
-
-              <Dialog open={notificationOpen} onOpenChange={setNotificationOpen}>
-                <DialogContent className="bg-slate-900 border-purple-500/30 max-w-md">
-                  <DialogHeader>
-                    <DialogTitle>Notifications</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-3 max-h-64 overflow-y-auto">
-                    {notifications.length > 0 ? (
-                      notifications.map((note) => (
-                        <div
-                          key={note._id}
-                          onClick={() => {
-                            navigation(`/ticket/${note.ticket}/comment`);
-                            closeNotificationPanel();
-                          }}
-                          className={`cursor-pointer p-3 rounded-lg ${note.isRead
-                            ? "bg-[#00000096]"
-                            : "bg-[#3f235d] border-l-4 border-[#7d3cbd]"
-                            }`}
-                        >
-                          <div className="flex justify-between items-start">
-                            <div>
-                              {/* Type Badge */}
-                              <span
-                                className={`text-xs px-2 py-1 rounded-full mr-2 font-medium ${note.type === "comment"
-                                  ? "bg-blue-600 text-white"
-                                  : note.type === "message"
-                                    ? "bg-green-600 text-white"
-                                    : note.type === "ticket"
+              {/* Notification Bell with Dropdown */}
+              <div className="relative">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setNotificationOpen((prev) => !prev)}
+                  className="text-purple-400 hover:text-white relative"
+                  aria-label="Show notifications"
+                >
+                  <BellIcon className="h-5 w-5" />
+                  {notifications.some((note) => !note.isRead) && (
+                    <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full animate-ping" />
+                  )}
+                </Button>
+                {/* Dropdown Panel */}
+                {notificationOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute right-0 mt-2 w-80 max-w-xs bg-slate-900 border border-purple-500/30 rounded-lg shadow-lg z-50"
+                    style={{ minWidth: "18rem" }}
+                  >
+                    <div className="px-4 py-2 border-b border-purple-500/20 flex items-center justify-between">
+                      <span className="font-semibold text-purple-200">
+                        Notifications
+                      </span>
+                      <button
+                        className="text-xs text-gray-400 hover:text-purple-400"
+                        onClick={closeNotificationPanel}
+                        aria-label="Close notifications"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                    <div className="space-y-3 max-h-64 overflow-y-auto px-4 py-2">
+                      {notifications.length > 0 ? (
+                        notifications.map((note) => (
+                          <div
+                            key={note._id}
+                            onClick={() => {
+                              navigation(`/ticket/${note.ticket}/comment`);
+                              closeNotificationPanel();
+                            }}
+                            className={`cursor-pointer p-3 rounded-lg transition-colors duration-150 ${
+                              note.isRead
+                                ? "bg-[#00000096]"
+                                : "bg-[#3f235d] border-l-4 border-[#7d3cbd]"
+                            } hover:bg-purple-800/40`}
+                          >
+                            <div className="flex justify-between items-start">
+                              <div>
+                                {/* Type Badge */}
+                                <span
+                                  className={`text-xs px-2 py-1 rounded-full mr-2 font-medium ${
+                                    note.type === "comment"
+                                      ? "bg-blue-600 text-white"
+                                      : note.type === "message"
+                                      ? "bg-green-600 text-white"
+                                      : note.type === "ticket"
                                       ? "bg-red-600 text-white"
                                       : "bg-gray-600 text-white"
                                   }`}
-                              >
-                                {note.type.charAt(0).toUpperCase() + note.type.slice(1)}
-                              </span>
+                                >
+                                  {note.type.charAt(0).toUpperCase() +
+                                    note.type.slice(1)}
+                                </span>
 
-                              {/* Message */}
-                              <p className="text-sm font-semibold text-purple-300 inline">
-                                {note.message}
-                              </p>
+                                {/* Message */}
+                                <p className="text-sm font-semibold text-purple-300 inline">
+                                  {note.message}
+                                </p>
 
-                              {/* Sender */}
-                              <p className="text-xs text-gray-300 mt-1">
-                                From: {note.sender?.name}
-                              </p>
+                                {/* Sender */}
+                                <p className="text-xs text-gray-300 mt-1">
+                                  From: {note.sender?.name}
+                                </p>
 
-                              {/* Timestamp */}
-                              <p className="text-xs text-gray-400">
-                                {new Date(note.createdAt).toLocaleString()}
-                              </p>
+                                {/* Timestamp */}
+                                <p className="text-xs text-gray-400">
+                                  {new Date(note.createdAt).toLocaleString()}
+                                </p>
+                              </div>
                             </div>
+
+                            {/* Mark as Read Button */}
+                            {!note.isRead && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation(); // prevent routing on button click
+                                  handleMarkAsRead(note._id);
+                                }}
+                                className="text-xs text-purple-400 hover:underline mt-1"
+                              >
+                                Mark as Read
+                              </button>
+                            )}
                           </div>
-
-                          {/* Mark as Read Button */}
-                          {!note.isRead && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation(); // prevent routing on button click
-                                handleMarkAsRead(note._id);
-                              }}
-                              className="text-xs text-purple-400 hover:underline mt-1"
-                            >
-                              Mark as Read
-                            </button>
-                          )}
-                        </div>
-                      ))
-                    ) : (
-                      <p className="text-sm text-white">No new notifications.</p>
-                    )}
-                  </div>
-
-
-                </DialogContent>
-              </Dialog>
-
+                        ))
+                      ) : (
+                        <p className="text-sm text-white">
+                          No new notifications.
+                        </p>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </div>
 
               <div
                 className="flex items-center gap-3 cursor-pointer group"
@@ -252,7 +270,6 @@ const Header = () => {
                 </DialogContent>
               </Dialog>
 
-
               <Button
                 variant="ghost"
                 size="icon"
@@ -266,7 +283,6 @@ const Header = () => {
         </div>
       </div>
     </section>
-
   );
 };
 
