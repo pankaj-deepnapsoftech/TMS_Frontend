@@ -37,7 +37,7 @@ console.log(ticket.status);
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <Card className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 border-purple-500/20 backdrop-blur-sm">
+        <Card className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 border-purple-500/20 backdrop-blur-sm overflow-hidden">
           <CardHeader>
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1">
