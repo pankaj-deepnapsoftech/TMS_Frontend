@@ -1,4 +1,4 @@
-  import React from 'react';
+  import React, { useEffect } from 'react';
   import { Routes, Route, Navigate } from 'react-router-dom';
   // import { useAuth } from '@/context/AuthContext';
   import ProtectedRoute from '@/router/ProtectedRoute';
@@ -9,10 +9,29 @@
   import Header from '@/components/Header';
   import Registrations from './pages/Registrations';
   import { useAuthContext } from './context/AuthContext2';
+// import { socket } from './socket';
 
   function App() {
     // const { user, isAuthenticated } = useAuth();
     const {user,token } = useAuthContext()
+    // useEffect(() => {
+    //   if (token && user?._id) {
+    //     // Register the user with their socket room
+    //     socket.emit('register', user._id);
+
+    //     // Listen for real-time notifications
+    //     socket.on('notification', (data) => {
+    //       console.log('🔔 Notification received:', data);
+    //       toast.info(data.message); // Show toast
+    //     });
+
+    //     return () => {
+    //       socket.off('notification');
+    //     };
+    //   }
+    // }, [token, user]);
+
+
     return (
       <div className="flex flex-col  bg-gradient-to-br from-indigo-950  to-[#160a2e] text-white min-h-screen">
       { token && <Header />    }

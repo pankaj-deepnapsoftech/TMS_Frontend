@@ -15,6 +15,8 @@ import { useProfile } from "@/context/UserProfileUpdateContext";
 import { useNotifications } from "@/context/NotificationContext";
 import { departmentFilters } from "../context/AuthContext2";
 import { useNavigate } from "react-router-dom";
+// import { socket } from "@/socket";
+import { useEffect } from "react";
 
 const Header = () => {
   const { user, Logout } = useAuthContext();
@@ -40,6 +42,17 @@ const Header = () => {
     setNotificationOpen(false);
   };
 
+
+  // useEffect(() => {
+  //   socket.on("notification", (data) => {
+  //     console.log("testing notification rom socket", data)
+  //   });
+
+  //   return () => {
+  //     socket.off("notification");
+  //   };
+  // }, []);
+
   // Placeholder for pending users data
   const pendingUsers = [
     {
@@ -63,7 +76,7 @@ const Header = () => {
     console.log(`User ${userId} has been ${accept ? "accepted" : "rejected"}.`);
   };
 
-  console.log(user);
+  // console.log(user);
 
   return (
     <section className="bg-slate-900/50 backdrop-blur-lg border-b border-purple-500/20 sticky top-0 z-40">
