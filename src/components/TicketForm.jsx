@@ -114,6 +114,7 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
       }
       onClose();
       formik.resetForm();
+      setSelectedUsers([]); 
     },
   });
 

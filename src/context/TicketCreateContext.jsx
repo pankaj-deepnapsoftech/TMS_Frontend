@@ -99,8 +99,6 @@ const TicketCreateProvider = ({ children }) => {
       });
       toast.success(res?.data?.message);
       GetAllTicket();
-     
-
     } catch (error) {
       console.log(error);
     }
@@ -178,7 +176,7 @@ const TicketCreateProvider = ({ children }) => {
       if (data.user === user.id){
         setNotifications((prev) => [data, ...prev])
       }
-    //  console.log(data)
+    //  console.log(data) 
     });
 
     return () => {
@@ -186,6 +184,21 @@ const TicketCreateProvider = ({ children }) => {
     };
   }, []);
 
+  useEffect(() => {
+    socket.on("UpdatedNoti", (data) => {
+      const filter = data?.filter((item) => user.id === item.user)[0]
+
+      if (filter) {
+        setNotifications((prev) => [filter, ...prev])
+      }
+    });
+
+    return () => {
+      socket.off("UpdatedNoti");
+    };
+  }, []);
+
+  
   return (
     <TicketCreateContext.Provider
       value={{
