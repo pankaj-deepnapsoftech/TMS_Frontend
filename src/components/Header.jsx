@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -19,7 +19,14 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
 const Header = () => {
-  const { user, Logout } = useAuthContext();
+  const {
+    user,
+    Logout,
+    UnapprovedUsers,
+    unapprovedUsers,
+    approveUser,
+    rejectUser,
+  } = useAuthContext();
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [showAdmitDropdown, setShowAdmitDropdown] = useState(false);
   const { notifications, handleMarkAsRead } = useNotifications();
@@ -42,41 +49,20 @@ const Header = () => {
     setNotificationOpen(false);
   };
 
-
-  // useEffect(() => {
-  //   socket.on("notification", (data) => {
-  //     console.log("testing notification rom socket", data)
-  //   });
-
-  //   return () => {
-  //     socket.off("notification");
-  //   };
-  // }, []);
-
-  // Placeholder for pending users data
-  const pendingUsers = [
-    {
-      _id: "1",
-      name: "Tanish Singhal",
-      department: "Developer"
-    },
-    {
-      _id: "2",
-      name: "Nitin Bhaiya",
-      department: "Developer",
-    },
-    {
-      _id: "3",
-      name: "Deepak",
-      department: "Sales"
+  const handleShowAdmitDropdown = () => {
+    setShowAdmitDropdown((prev) => !prev);
+    if (!showAdmitDropdown && user?.role === "admin") {
+      UnapprovedUsers();
     }
-  ];
-
-  const handleAdmitUser = (userId, accept) => {
-    console.log(`User ${userId} has been ${accept ? "accepted" : "rejected"}.`);
   };
 
-  // console.log(user);
+  const handleAdmitUser = (userId, accept) => {
+    if (accept) {
+      approveUser(userId);
+    } else {
+      rejectUser(userId);
+    }
+  };
 
   return (
     <section className="bg-slate-900/50 backdrop-blur-lg border-b border-purple-500/20 sticky top-0 z-40">
@@ -107,7 +93,7 @@ const Header = () => {
                     size="sm"
                     variant="ghost"
                     className="text-purple-400 border-purple-400 hover:bg-purple-900/20 hover:text-white"
-                    onClick={() => setShowAdmitDropdown((prev) => !prev)}
+                    onClick={handleShowAdmitDropdown}
                   >
                     <UserPlus size="20" />
                   </Button>
@@ -131,15 +117,17 @@ const Header = () => {
                         </button>
                       </div>
                       <div className="space-y-3 max-h-64 overflow-y-auto px-4 py-2">
-                        {pendingUsers && pendingUsers.length > 0 ? (
-                          pendingUsers.map((pending) => (
+                        {unapprovedUsers && unapprovedUsers.length > 0 ? (
+                          unapprovedUsers.map((pending) => (
                             <div
                               key={pending._id}
-                              className="p-3 rounded-lg bg-[#00000096] flex flex-col gap-1 border border-purple-500/10"
+                              className="p-3 rounded-lg bg-[#04083f96] flex flex-col gap-1 border border-purple-500/10"
                             >
                               <div className="flex items-center gap-2">
                                 <Avatar>
-                                  <AvatarFallback>{pending.name?.[0]}</AvatarFallback>
+                                  <AvatarFallback>
+                                    {pending.name?.[0]}
+                                  </AvatarFallback>
                                 </Avatar>
                                 <div>
                                   <p className="font-semibold text-white">
@@ -153,15 +141,19 @@ const Header = () => {
                               <div className="flex gap-2 mt-2 justify-end">
                                 <Button
                                   size="sm"
-                                  className="bg-green-600 text-white hover:bg-green-700"
-                                  onClick={() => handleAdmitUser(pending._id, true)}
+                                  className="bg-green-500/20 text-green-300 border border-green-500/30 hover:bg-green-600/30 hover:text-white transition-colors duration-150"
+                                  onClick={() =>
+                                    handleAdmitUser(pending._id, true)
+                                  }
                                 >
                                   Accept
                                 </Button>
                                 <Button
                                   size="sm"
-                                  className="bg-red-600 text-white hover:bg-red-700"
-                                  onClick={() => handleAdmitUser(pending._id, false)}
+                                  className="bg-red-500/20 text-red-300 border border-red-500/30 hover:bg-red-600/30 hover:text-white transition-colors duration-150"
+                                  onClick={() =>
+                                    handleAdmitUser(pending._id, false)
+                                  }
                                 >
                                   Reject
                                 </Button>
@@ -169,7 +161,9 @@ const Header = () => {
                             </div>
                           ))
                         ) : (
-                          <p className="text-sm text-white">No pending requests.</p>
+                          <p className="text-sm text-white">
+                            No pending requests.
+                          </p>
                         )}
                       </div>
                     </motion.div>

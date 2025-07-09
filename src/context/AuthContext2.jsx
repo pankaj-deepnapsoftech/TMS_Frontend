@@ -23,7 +23,6 @@ export const departmentFilters = [
   { label: "Developer", value: "Developer" },
 ];
 
-
 const AuthContextProvider = ({ children }) => {
   const [token, setToken] = useState(() => localStorage.getItem("authToken"));
   const [allUsers, setAllUsers] = useState([]);
@@ -31,11 +30,11 @@ const AuthContextProvider = ({ children }) => {
     const storedUser = localStorage.getItem("authUser");
     return storedUser ? JSON.parse(storedUser) : null;
   });
+  const [unapprovedUsers, setUnapprovedUsers] = useState([]);
 
   const updateUser = (updatedUser) => {
     setUser(updatedUser);
     localStorage.setItem("authUser", JSON.stringify(updatedUser));
-    
   };
 
   const navigate = useNavigate();
@@ -80,7 +79,6 @@ const AuthContextProvider = ({ children }) => {
     try {
       const res = await axiosHandler.get("/auth/employees");
       setAllUsers(res?.data?.data);
-     
     } catch (error) {
       console.log(error);
     }
@@ -95,12 +93,64 @@ const AuthContextProvider = ({ children }) => {
     toast.success("Logged out successfully");
   };
 
-  // console.log(user)
   useEffect(() => {
     if (token) {
       GtAllUsers();
     }
   }, []);
+
+  const UnapprovedUsers = async () => {
+    try {
+      const res = await axiosHandler.get("/auth/unapproved", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setUnapprovedUsers(res?.data?.data);
+    } catch (error) {
+      console.error("Error fetching unapproved users:", error);
+      toast.error("Failed to fetch unapproved users");
+    }
+  };
+
+  const approveUser = async (userId) => {
+    try {
+      const res = await axiosHandler.put(
+        `/auth/approve/${userId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      await UnapprovedUsers();
+      toast.success(res?.data?.message || "User approved successfully");
+    } catch (error) {
+      console.error("Error approving user:", error);
+      toast.error("Failed to approve user");
+    }
+  };
+
+  const rejectUser = async (userId) => {
+    try {
+      const res = await axiosHandler.put(
+        `/auth/reject/${userId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success(res?.data?.message || "User rejected successfully");
+      setUnapprovedUsers((prev) => prev.filter((u) => u._id !== userId));
+    } catch (error) {
+      console.error("Error rejecting user:", error);
+      toast.error("Failed to reject user");
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -111,6 +161,10 @@ const AuthContextProvider = ({ children }) => {
         Logout,
         allUsers,
         updateUser,
+        UnapprovedUsers,
+        unapprovedUsers,
+        approveUser,
+        rejectUser,
       }}
     >
       {children}
