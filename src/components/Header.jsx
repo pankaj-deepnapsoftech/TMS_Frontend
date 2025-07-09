@@ -15,8 +15,8 @@ import { useProfile } from "@/context/UserProfileUpdateContext";
 import { useNotifications } from "@/context/NotificationContext";
 import { departmentFilters } from "../context/AuthContext2";
 import { useNavigate } from "react-router-dom";
-// import { socket } from "@/socket";
-import { useEffect } from "react";
+// // import { socket } from "@/socket";
+// import { useEffect } from "react";
 
 const Header = () => {
   const {

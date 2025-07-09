@@ -164,7 +164,7 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
               className="bg-slate-800/50 border-purple-500/30 text-white"
             />
             {formik.touched.title && formik.errors.title && (
-              <p className="text-xs text-red-400">{formik.errors.title}</p>
+              <p className="text-md text-red-500">{formik.errors.title}</p>
             )}
           </motion.div>
 
@@ -186,7 +186,7 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
               className="bg-slate-800/50 border-purple-500/30 text-white"
             />
             {formik.touched.description && formik.errors.description && (
-              <p className="text-xs text-red-500">
+              <p className="text-md text-red-500">
                 {formik.errors.description}
               </p>
             )}
@@ -224,7 +224,7 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
               </SelectContent>
             </Select>
             {formik.touched.department && formik.errors.department && (
-              <p className="text-xs text-red-400 mt-1">
+              <p className="text-md text-red-500 mt-1">
                 {formik.errors.department}
               </p>
             )}
@@ -268,7 +268,7 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
                           size="icon"
                           onClick={() => removeAssignee(user._id)}
                         >
-                          <X className="w-4 h-4 text-red-400" />
+                          <X className="w-4 hmd text-red-500" />
                         </Button>
                       </motion.div>
                     ))}
@@ -325,7 +325,7 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
             </Card>
 
             {selectedUsers.length === 0 && (
-              <p className="text-red-400 text-xs mt-2 flex items-center gap-1">
+              <p className="text-red-500 text-xs mt-2 flex items-center gap-1">
                 <X className="w-3 h-3" />
                 Please assign at least one team member to this ticket
               </p>
@@ -355,13 +355,13 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
                   <SelectItem value="Medium" className="text-yellow-400">
                     Medium
                   </SelectItem>
-                  <SelectItem value="High" className="text-red-400">
+                  <SelectItem value="High" className="text-red-500">
                     High
                   </SelectItem>
                 </SelectContent>
               </Select>
               {formik.touched.priority && formik.errors.priority && (
-                <p className="text-xs text-red-400 mt-1">
+                <p className="text-md text-red-500 mt-1">
                   {formik.errors.priority}
                 </p>
               )}
@@ -398,7 +398,7 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
                 </SelectContent>
               </Select>
               {formik.touched.status && formik.errors.status && (
-                <p className="text-xs text-red-400 mt-1">
+                <p className="text-md text-red-500 mt-1">
                   {formik.errors.status}
                 </p>
               )}
@@ -419,7 +419,7 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
                 />
               </div>
               {formik.touched.dueDate && formik.errors.dueDate && (
-                <p className="text-xs text-red-400 mt-1">
+                <p className="text-md text-red-500 mt-1">
                   {formik.errors.dueDate}
                 </p>
               )}
@@ -438,13 +438,13 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
             </Button>
             <Button
               type="submit"
-              disabled={
-                !formik.values.title ||
-                selectedUsers.length === 0 ||
-                Object.keys(formik.errors).length > 0 ||
-                !formik.values.dueDate ||
-                formik.values.department === "all"
-              }
+              // disabled={
+              //   !formik.values.title ||
+              //   selectedUsers.length === 0 ||
+              //   Object.keys(formik.errors).length > 0 ||
+              //   !formik.values.dueDate ||
+              //   formik.values.department === "all"
+              // }
               className="bg-gradient-to-r from-purple-500 to-pink-500 text-white disabled:opacity-50"
             >
               <Plus className="w-4 h-4 mr-2" />
