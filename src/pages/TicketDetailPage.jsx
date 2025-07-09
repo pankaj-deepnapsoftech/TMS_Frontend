@@ -108,13 +108,13 @@ const TicketDetailPage = () => {
       text: content,
       timestamp: new Date().toISOString(),
       author: {
-        _id: user.id,
-        name: user.name,
-        email: user.email,
+        _id: user?.id,
+        name: user?.name,
+        email: user?.email,
       },
     };
 
-    updatedComments(ticket._id, newComment); // Only send the comment
+    updatedComments(ticket._id, newComment); 
 
     toast({
       title: 'Comment Added 💬',

@@ -155,28 +155,7 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
                   {status?.name || ticket.status}
                 </Badge>
               </div>
-              <h3
-                className={`font-semibold text-lg leading-tight ${
-                  ticket.status === "closed"
-                    ? "line-through text-gray-400"
-                    : "text-white"
-                }`}
-                style={{ wordBreak: "break-word" }}
-              >
-                {ticket.title}
-              </h3>
-              {ticket.description && (
-                <p
-                  className={`text-sm mt-1 line-clamp-2 ${
-                    ticket.status === "closed"
-                      ? "text-gray-500"
-                      : "text-gray-300"
-                  }`}
-                  style={{ wordBreak: "break-word" }}
-                >
-                  {ticket.description}
-                </p>
-              )}
+             
             </div>
             <div className="flex gap-1">
               <Button
@@ -236,8 +215,29 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
               </Badge>
             )}
           </div>
-
-          <div className="flex flex-col gap-3 text-sm text-gray-400">
+          <div>
+            <h3
+              className={`font-semibold text-lg leading-tight ${ticket.status === "closed"
+                  ? "line-through text-gray-400"
+                  : "text-white"
+                }`}
+              style={{ wordBreak: "break-word" }}
+            >
+              {ticket.title}
+            </h3>
+            {ticket.description && (
+              <p
+                className={`text-sm mt-1 line-clamp-2 ${ticket.status === "closed"
+                    ? "text-gray-500"
+                    : "text-gray-300"
+                  }`}
+                style={{ wordBreak: "break-word" }}
+              >
+                {ticket.description}
+              </p>
+            )}
+          </div>
+          <div className="flex justify-between gap-3 items-end text-sm text-gray-400">
             {assignedUsers.length > 0 && (
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
@@ -248,7 +248,7 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
                   )}
                   <span>Assigned to ({assignedUsers.length}):</span>
                 </div>
-                <div className="flex flex-wrap gap-2 ml-6">
+                <div className="flex flex-wrap gap-2 ">
                   {assignedUsers.slice(0, 3).map((user) => (
                     <motion.div
                       key={user.id}

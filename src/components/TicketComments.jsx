@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MessageSquare, Send } from "lucide-react";
 import { useAuthContext } from "@/context/AuthContext2";
-import { useNotifications } from "@/context/NotificationContext";
+import { socket } from "@/socket";
 
 const TicketComments = ({
   ticket,
@@ -15,8 +15,35 @@ const TicketComments = ({
   formatDate,
   getInitials,
 }) => {
+  const [comments, setComments] = useState(ticket.comments || []);
   const [newComment, setNewComment] = useState("");
   const { allUsers } = useAuthContext();
+  const commentRef = useRef();
+
+  useEffect(() => {
+    setComments(ticket.comments || []);
+  }, [ticket.comments]);
+
+  useEffect(() => {
+    socket.on("ticket", (data) => {
+      if (data?.comments) {
+        setComments(data.comments);
+      } else if (data?.comment) {
+        setComments((prev) => [...prev, data.comment]);
+      }
+    });
+
+    return () => {
+      socket.off("ticket");
+    };
+  }, []);
+
+  useEffect(() => {
+    if (commentRef.current && comments.length > 0) {
+      commentRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [comments]);
+
   const handleAddComment = () => {
     if (!newComment.trim()) return;
     onAddComment(newComment.trim());
@@ -29,32 +56,30 @@ const TicketComments = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.1 }}
     >
-      <Card
-        className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 border-purple-500/20 backdrop-blur-sm"
-        style={{ wordBreak: "break-word" }}
-      >
+      <Card className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 border-purple-500/20 backdrop-blur-sm" style={{ wordBreak: "break-word" }}>
         <CardHeader>
           <CardTitle className="text-lg text-white flex items-center gap-2">
             <MessageSquare className="w-5 h-5 text-purple-400" />
-            Comments ({ticket.comments?.length || 0})
+            Comments ({comments.length})
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Scrollable comments */}
           <div className="max-h-[300px] overflow-y-auto space-y-4 pr-2">
-            {ticket.comments && ticket.comments.length > 0 ? (
-              ticket.comments.map((comment) => {
-                const commentUser = allUsers.find(
-                  (u) =>
-                    u._id === comment.author?._id || u._id === comment.author
-                ) || {
-                  name: comment.author?.name || "Unknown",
-                  avatar: null,
-                  _id: comment.author?._id || comment.author || "unknown",
-                };
+            {comments.length > 0 ? (
+              comments.map((comment, index) => {
+                const commentUser =
+                  allUsers.find(
+                    (u) =>
+                      u._id === comment.author?._id || u._id === comment.author
+                  ) || {
+                    name: comment.author?.name || user?.name || "Unknown",
+                    avatar: null,
+                    _id: comment.author?._id || comment.author || "unknown",
+                  };
 
                 return (
                   <motion.div
+                    ref={index === comments.length - 1 ? commentRef : null}
                     key={comment._id}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -83,10 +108,7 @@ const TicketComments = ({
                           {formatDate(comment.timestamp || comment.createdAt)}
                         </span>
                       </div>
-                      <p
-                        className="text-gray-300 text-sm leading-relaxed"
-                        style={{ wordBreak: "break-word" }}
-                      >
+                      <p className="text-gray-300 text-sm leading-relaxed" style={{ wordBreak: "break-word" }}>
                         {comment.text}
                       </p>
                     </div>
@@ -124,7 +146,6 @@ const TicketComments = ({
               />
               <Button
                 onClick={handleAddComment}
-                disabled={!newComment.trim()}
                 className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
               >
                 <Send className="w-4 h-4" />

@@ -24,6 +24,7 @@ import {
   DialogTitle,
 } from "./ui/dialog";
 import { departmentFilters } from "../context/AuthContext2";
+import { socket } from "@/socket";
 
 const TicketForm = ({ ticket, users, onClose, isOpen }) => {
   const { TicketCreate, updatedTicket } = useTicketCreate();
@@ -116,6 +117,16 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
     },
   });
 
+   useEffect(() => {
+     socket.on("notification", (data) => {
+       console.log("testing notification rom socket",data)
+     });
+ 
+     return () => {
+       socket.off("notification");
+     };
+   }, []);
+
   const filteredUsers = (
     formik.values.department === "all"
       ? users
@@ -200,12 +211,12 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
               <SelectTrigger className="bg-slate-800/50 border-purple-500/30 text-white">
                 <SelectValue placeholder="Select Department" />
               </SelectTrigger>
-              <SelectContent className="bg-slate-800 border-purple-500/30 h-60 text-sm p-0 overflow-y-auto">
+              <SelectContent className="bg-slate-800 border-purple-500/30 h-64 p-0 overflow-y-auto ">
                 {departmentFilters.map((dep) => (
                   <SelectItem
                     key={dep.id}
                     value={dep.value}
-                    className="text-xs px-2 py-1 min-h-6 h-7"
+                    className="text-[15px] px-2 py-1 min-h-6 h-7"
                   >
                     {dep.label}
                   </SelectItem>
