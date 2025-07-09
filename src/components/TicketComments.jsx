@@ -7,6 +7,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MessageSquare, Send } from "lucide-react";
 import { useAuthContext } from "@/context/AuthContext2";
 import { socket } from "@/socket";
+import { useNotifications } from "@/context/NotificationContext";
+import { useTicketCreate } from "@/context/TicketCreateContext";
 
 const TicketComments = ({
   ticket,
@@ -15,28 +17,19 @@ const TicketComments = ({
   formatDate,
   getInitials,
 }) => {
-  const [comments, setComments] = useState(ticket.comments || []);
+  // const [comments, setComments] = useState(ticket.comments || []);
   const [newComment, setNewComment] = useState("");
   const { allUsers } = useAuthContext();
   const commentRef = useRef();
+ 
+  const { comments } = useTicketCreate() 
+  
 
-  useEffect(() => {
-    setComments(ticket.comments || []);
-  }, [ticket.comments]);
+  // useEffect(() => {
+  //   setComments(ticket.comments || []);
+  // }, [ticket.comments]);
 
-  useEffect(() => {
-    socket.on("ticket", (data) => {
-      if (data?.comments) {
-        setComments(data.comments);
-      } else if (data?.comment) {
-        setComments((prev) => [...prev, data.comment]);
-      }
-    });
 
-    return () => {
-      socket.off("ticket");
-    };
-  }, []);
 
   useEffect(() => {
     if (commentRef.current && comments.length > 0) {
@@ -141,6 +134,12 @@ const TicketComments = ({
               <Textarea
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault(); 
+                    handleAddComment();
+                  }
+                }}
                 placeholder="Add a comment..."
                 className="bg-slate-800/50 border-purple-500/30 text-white placeholder:text-gray-400 focus:border-purple-400 min-h-[80px]"
               />
@@ -151,6 +150,7 @@ const TicketComments = ({
                 <Send className="w-4 h-4" />
               </Button>
             </div>
+
           </div>
         </CardContent>
       </Card>

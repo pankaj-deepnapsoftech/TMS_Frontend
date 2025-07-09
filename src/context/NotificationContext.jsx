@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { axiosHandler } from '@/config/axiosConfig';
 import { useAuthContext } from './AuthContext2';
+import { socket } from '@/socket';
 
 const NotificationsContext = createContext();
 
@@ -8,6 +9,7 @@ export const useNotifications = () => useContext(NotificationsContext);
 
 const NotificationProvider = ({ children }) => {
     const [notifications, setNotifications] = useState([]);
+    // console.log("this is notifictaion",notifications)
     const [loading, setLoading] = useState(false);
     const { token } = useAuthContext();
  
@@ -52,7 +54,7 @@ const NotificationProvider = ({ children }) => {
 
     return (
         <NotificationsContext.Provider
-            value={{ notifications, loading, fetchNotifications, handleMarkAsRead, unreadCount }}
+            value={{ notifications, loading, fetchNotifications, handleMarkAsRead, unreadCount, setNotifications }}
         >
             {children}
         </NotificationsContext.Provider>

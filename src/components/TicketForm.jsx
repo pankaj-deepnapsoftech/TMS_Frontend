@@ -94,7 +94,7 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
     }),
     enableReinitialize: true,
     onSubmit: (values) => {
-      console.log("Submitting ticket form", values, selectedUsers);
+      // console.log("Submitting ticket form", values, selectedUsers);
       const departmentObj = departmentFilters.find(
         (d) => d.value === values.department
       );
@@ -117,15 +117,20 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
     },
   });
 
-   useEffect(() => {
-     socket.on("notification", (data) => {
-       console.log("testing notification rom socket",data)
-     });
+
+  const handleCancel = () => {
+    if (!ticket) {
+      formik.resetForm(); // Only reset if it's a new ticket
+      setSelectedUsers([]); // Clear assigned users
+    }
+    onClose(); // Close the dialog
+  };
+  
+
+
+
+
  
-     return () => {
-       socket.off("notification");
-     };
-   }, []);
 
   const filteredUsers = (
     formik.values.department === "all"
@@ -144,7 +149,15 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
             {ticket ? "Edit Ticket" : "Create New Ticket"}
           </DialogTitle>
         </DialogHeader>
-
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          onClick={handleCancel}
+          className="absolute top-3 right-3 text-purple-300 hover:text-red-500"
+        >
+          <X className="w-5 h-5" />
+        </Button>
         <form onSubmit={formik.handleSubmit} className="space-y-6">
           {/* Title */}
           <motion.div
@@ -431,7 +444,7 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
             <Button
               type="button"
               variant="outline"
-              onClick={onClose}
+              onClick={handleCancel}
               className="border-purple-500/30 text-purple-300"
             >
               Cancel

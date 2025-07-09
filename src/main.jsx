@@ -17,15 +17,15 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <BrowserRouter>
       <ToastContainer />
       <AuthContextProvider>
-        <ForgetPassContextProvider>
-          <ProfileProvider>
-            <TicketCreateProvider>
-              <NotificationProvider>
+        <NotificationProvider>
+          <ForgetPassContextProvider>
+            <ProfileProvider>
+              <TicketCreateProvider>
                 <App />
-              </NotificationProvider>
-            </TicketCreateProvider>
-          </ProfileProvider>
-        </ForgetPassContextProvider>
+              </TicketCreateProvider>
+            </ProfileProvider>
+          </ForgetPassContextProvider>
+        </NotificationProvider>
       </AuthContextProvider>
     </BrowserRouter>
   </React.StrictMode>

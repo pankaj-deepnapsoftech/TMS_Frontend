@@ -2,6 +2,9 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { axiosHandler } from "../config/axiosConfig";
 import { toast } from "react-toastify";
 import { useAuthContext } from "./AuthContext2";
+import { socket } from "@/socket";
+import { useNotifications } from "./NotificationContext";
+import { useLocation } from "react-router-dom";
 // import { useNotifications } from "./NotificationContext";
 
 const TicketCreateContext = createContext();
@@ -9,7 +12,8 @@ const TicketCreateContext = createContext();
 export const useTicketCreate = () => useContext(TicketCreateContext);
 
 const TicketCreateProvider = ({ children }) => {
-  const { token } = useAuthContext();
+  const { token, user } = useAuthContext();
+  const { setNotifications, notifications } = useNotifications()
   const [allTicket, setAllTicket] = useState([]);
   const [myTickets, setMyTickets] = useState([]);
   const [ticketStats, setTicketStats] = useState({
@@ -19,7 +23,10 @@ const TicketCreateProvider = ({ children }) => {
     resolved: 0,
   });
   const [statsError, setStatsError] = useState(null);
+  const [comments, setComments] = useState([]);
+  const location = useLocation()
 
+  
 
 
   const fetchTicketStats = async () => {
@@ -58,9 +65,10 @@ const TicketCreateProvider = ({ children }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      setAllTicket(res?.data?.data);
-      console.log(res?.data?.data)
-      // console.log(res?.data?.data)
+      setAllTicket(res?.data?.data); 
+      // location.pathname.split("/")[2] 
+      const filter = res?.data?.data.filter((item) => item._id === location.pathname.split("/")[2] || "")[0]
+      setComments(filter?.comments || []) 
     } catch (error) {
       console.log(error);
     }
@@ -109,6 +117,8 @@ const TicketCreateProvider = ({ children }) => {
       GetAllTicket();
     } catch (error) {
       console.log("Error updating comment:", error);
+    }finally{
+     
     }
   };
   
@@ -131,13 +141,51 @@ const TicketCreateProvider = ({ children }) => {
     if (token) {
       GetAllTicket();
       fetchTicketStats();
-      GetMyTicket();
+      
     }
   }, []);
+ 
+ useEffect(()=>{
+   if(token)(
+     GetMyTicket()
+   )
+}, [notifications])
 
-  // useEffect(() => {
-    
-  // }, []);
+  useEffect(() => {
+    socket.on("ticket", (data) => {
+      // console.log("this is testing data", data)
+      if (data?.updatedTicket?.comments) {
+        setComments(data?.updatedTicket?.comments);
+      } else if (data?.updatedTicket?.comment) {
+        setComments((prev) => [...prev, data?.updatedTicket.comment]);
+      }
+
+      const filter = data?.notificatiosn.filter((item) => user.id === item.user)[0]
+
+      if(filter){
+        setNotifications((prev) => [filter,...prev])
+      }
+    });
+
+    return () => {
+      socket.off("ticket");
+    };
+  }, []);
+
+
+  useEffect(() => {
+    socket.on("ticketCreateNotification", (data) => {
+      if (data.user === user.id){
+        setNotifications((prev) => [data, ...prev])
+      }
+    //  console.log(data)
+    });
+
+    return () => {
+      socket.off("ticketCreateNotification");
+    };
+  }, []);
+
   return (
     <TicketCreateContext.Provider
       value={{
@@ -151,7 +199,8 @@ const TicketCreateProvider = ({ children }) => {
         ticketStats,
         fetchTicketStats,
         statsError,
-        updatedComments
+        updatedComments,
+        comments
       }}
     >
       {children}

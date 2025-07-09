@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { axiosHandler } from "../config/axiosConfig";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { socket } from "@/socket";
 
 const AuthContext = createContext();
 
@@ -107,6 +108,7 @@ const AuthContextProvider = ({ children }) => {
         },
       });
       setUnapprovedUsers(res?.data?.data);
+      console.log(res?.data)
     } catch (error) {
       console.error("Error fetching unapproved users:", error);
       toast.error("Failed to fetch unapproved users");
@@ -150,6 +152,27 @@ const AuthContextProvider = ({ children }) => {
       toast.error("Failed to reject user");
     }
   };
+
+  useEffect(() => {
+    if (token) {
+      UnapprovedUsers()
+    }
+  }, [token])
+
+
+  useEffect(() => {
+    socket.on("registeruser", (data) => {
+
+      setUnapprovedUsers((prev) => [data, ...prev])
+
+       console.log("resgisterUser",data)
+    });
+
+    return () => {
+      socket.off("registeruser");
+    };
+  }, []);
+
 
   return (
     <AuthContext.Provider

@@ -20,6 +20,7 @@ import { useProfile } from "@/context/UserProfileUpdateContext";
 import { useNotifications } from "@/context/NotificationContext";
 import { departmentFilters } from "../context/AuthContext2";
 import { useNavigate } from "react-router-dom";
+import { socket } from "@/socket";
 // // import { socket } from "@/socket";
 // import { useEffect } from "react";
 
@@ -61,6 +62,8 @@ const Header = () => {
     }
   };
 
+
+
   const handleAdmitUser = (userId, accept) => {
     if (accept) {
       approveUser(userId);
@@ -68,6 +71,9 @@ const Header = () => {
       rejectUser(userId);
     }
   };
+
+   
+  
 
   return (
     <section className="bg-slate-900/50 backdrop-blur-lg border-b border-purple-500/20 sticky top-0 z-40">
@@ -203,25 +209,23 @@ const Header = () => {
                               navigation(`/ticket/${note.ticket}/comment`);
                               setNotificationOpen(false);
                             }}
-                            className={`cursor-pointer p-3 rounded-lg transition-colors duration-150 ${
-                              note.isRead
+                            className={`cursor-pointer p-3 rounded-lg transition-colors duration-150 ${note.isRead
                                 ? "bg-[#00000096]"
                                 : "bg-[#3f235d] border-l-4 border-[#7d3cbd]"
-                            } hover:bg-purple-800/40`}
+                              } hover:bg-purple-800/40`}
                           >
                             <div className="flex justify-between items-start">
                               <div>
                                 {/* Type Badge */}
                                 <span
-                                  className={`text-xs px-2 py-1 rounded-full mr-2 font-medium ${
-                                    note.type === "comment"
+                                  className={`text-xs px-2 py-1 rounded-full mr-2 font-medium ${note.type === "comment"
                                       ? "bg-blue-600 text-white"
                                       : note.type === "message"
-                                      ? "bg-green-600 text-white"
-                                      : note.type === "ticket"
-                                      ? "bg-red-600 text-white"
-                                      : "bg-gray-600 text-white"
-                                  }`}
+                                        ? "bg-green-600 text-white"
+                                        : note.type === "ticket"
+                                          ? "bg-red-600 text-white"
+                                          : "bg-gray-600 text-white"
+                                    }`}
                                 >
                                   {note.type.charAt(0).toUpperCase() +
                                     note.type.slice(1)}
