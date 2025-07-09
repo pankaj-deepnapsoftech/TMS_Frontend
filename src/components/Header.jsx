@@ -7,6 +7,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { BellIcon, CheckSquare, LogOutIcon, UserPlus } from "lucide-react";
 import { motion } from "framer-motion";
@@ -67,16 +72,16 @@ const Header = () => {
   return (
     <section className="bg-slate-900/50 backdrop-blur-lg border-b border-purple-500/20 sticky top-0 z-40">
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex  md:flex-row items-center justify-between h-auto md:h-20 py-3 md:py-0 gap-4 md:gap-0">
+        <div className="flex  md:flex-row items-center justify-between h-auto md:h-20 py-3 md:py-0 gap-2 md:gap-0">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-3"
           >
             <div className="p-2 rounded-lg bg-gradient-to-r from-purple-500/20 to-pink-500/20">
-              <CheckSquare className="w-6 h-6 text-purple-400" />
+              <CheckSquare className="w-5 h-5 text-purple-400" />
             </div>
-            <span className="text-xl whitespace-nowrap sm:text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <span className="text-lg whitespace-nowrap sm:text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
               ITSYBIZZ TMS
             </span>
           </motion.div>
@@ -85,135 +90,118 @@ const Header = () => {
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex items-center flex-wrap md:flex-nowrap justify-end gap-4 w-full md:w-auto"
+              className="flex items-center flex-wrap md:flex-nowrap justify-end gap-2 w-full md:w-auto"
             >
               {user.role === "admin" && (
-                <div className="relative">
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="text-purple-400 border-purple-400 hover:bg-purple-900/20 hover:text-white"
-                    onClick={handleShowAdmitDropdown}
-                  >
-                    <UserPlus size="20" />
-                  </Button>
-                  {showAdmitDropdown && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="absolute right-0 mt-2 w-96 max-w-xs bg-slate-900 border border-purple-500/30 rounded-lg shadow-lg z-50"
+                <DropdownMenu
+                  open={showAdmitDropdown}
+                  onOpenChange={setShowAdmitDropdown}
+                >
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="text-purple-400 border-purple-400 hover:bg-purple-900/20 hover:text-white relative"
+                      aria-label="Show pending user requests"
                     >
-                      <div className="px-4 py-2 border-b border-purple-500/20 flex items-center justify-between">
-                        <span className="font-semibold text-purple-200">
-                          Pending User Requests
-                        </span>
-                        <button
-                          className="text-xs text-gray-400 hover:text-purple-400"
-                          onClick={() => setShowAdmitDropdown(false)}
-                          aria-label="Close admit user dropdown"
-                        >
-                          ✕
-                        </button>
-                      </div>
-                      <div className="space-y-3 max-h-64 overflow-y-auto px-4 py-2">
-                        {unapprovedUsers && unapprovedUsers.length > 0 ? (
-                          unapprovedUsers.map((pending) => (
-                            <div
-                              key={pending._id}
-                              className="p-3 rounded-lg bg-[#04083f96] flex flex-col gap-1 border border-purple-500/10"
-                            >
-                              <div className="flex items-center gap-2">
-                                <Avatar>
-                                  <AvatarFallback>
-                                    {pending.name?.[0]}
-                                  </AvatarFallback>
-                                </Avatar>
-                                <div>
-                                  <p className="font-semibold text-white">
-                                    {pending.name}
-                                  </p>
-                                  <p className="text-xs text-gray-400 capitalize">
-                                    {pending.department}
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="flex gap-2 mt-2 justify-end">
-                                <Button
-                                  size="sm"
-                                  className="bg-green-500/20 text-green-300 border border-green-500/30 hover:bg-green-600/30 hover:text-white transition-colors duration-150"
-                                  onClick={() =>
-                                    handleAdmitUser(pending._id, true)
-                                  }
-                                >
-                                  Accept
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  className="bg-red-500/20 text-red-300 border border-red-500/30 hover:bg-red-600/30 hover:text-white transition-colors duration-150"
-                                  onClick={() =>
-                                    handleAdmitUser(pending._id, false)
-                                  }
-                                >
-                                  Reject
-                                </Button>
+                      <UserPlus size="20" />
+                      {unapprovedUsers && unapprovedUsers.length > 0 && (
+                        <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full animate-ping" />
+                      )}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="bg-slate-900 border-purple-500/30 max-w-xs md:max-w-lg w-80 mt-2">
+                    <div className="px-4 py-2 border-b border-purple-500/20 flex items-center justify-between">
+                      <span className="font-semibold text-purple-200">
+                        Pending User Requests
+                      </span>
+                    </div>
+                    <div className="space-y-3 max-h-64 overflow-y-auto px-1 py-2">
+                      {unapprovedUsers && unapprovedUsers.length > 0 ? (
+                        unapprovedUsers.map((pending) => (
+                          <div
+                            key={pending._id}
+                            className="p-3 rounded-lg bg-[#04083f96] flex flex-col gap-1 border border-purple-500/10"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Avatar>
+                                <AvatarFallback>
+                                  {pending.name?.[0]}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <p className="font-semibold text-white">
+                                  {pending.name}
+                                </p>
+                                <p className="text-xs text-gray-400 capitalize">
+                                  {pending.department}
+                                </p>
                               </div>
                             </div>
-                          ))
-                        ) : (
-                          <p className="text-sm text-white">
-                            No pending requests.
-                          </p>
-                        )}
-                      </div>
-                    </motion.div>
-                  )}
-                </div>
+                            <div className="flex gap-2 mt-2 justify-end">
+                              <Button
+                                size="sm"
+                                className="bg-green-500/20 text-green-300 border border-green-500/30 hover:bg-green-600/30 hover:text-white transition-colors duration-150"
+                                onClick={() =>
+                                  handleAdmitUser(pending._id, true)
+                                }
+                              >
+                                Accept
+                              </Button>
+                              <Button
+                                size="sm"
+                                className="bg-red-500/20 text-red-300 border border-red-500/30 hover:bg-red-600/30 hover:text-white transition-colors duration-150"
+                                onClick={() =>
+                                  handleAdmitUser(pending._id, false)
+                                }
+                              >
+                                Reject
+                              </Button>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-sm text-white px-4 py-2">
+                          No pending requests.
+                        </p>
+                      )}
+                    </div>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               )}
 
-              {/* Notification Bell with Dropdown */}
               <div className="relative">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setNotificationOpen((prev) => !prev)}
-                  className="text-purple-400 hover:text-white relative"
-                  aria-label="Show notifications"
+                <DropdownMenu
+                  open={notificationOpen}
+                  onOpenChange={setNotificationOpen}
                 >
-                  <BellIcon className="h-5 w-5" />
-                  {notifications.some((note) => !note.isRead) && (
-                    <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full animate-ping" />
-                  )}
-                </Button>
-                {/* Dropdown Panel */}
-                {notificationOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="absolute right-0 mt-2 w-80 max-w-xs bg-slate-900 border border-purple-500/30 rounded-lg shadow-lg z-50"
-                    style={{ minWidth: "18rem" }}
-                  >
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-purple-400 hover:text-white relative"
+                      aria-label="Show notifications"
+                    >
+                      <BellIcon className="h-5 w-5" />
+                      {notifications.some((note) => !note.isRead) && (
+                        <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full animate-ping" />
+                      )}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="bg-slate-900 border-purple-500/30 max-w-xs md:max-w-lg w-80 mt-2">
                     <div className="px-4 py-2 border-b border-purple-500/20 flex items-center justify-between">
                       <span className="font-semibold text-purple-200">
                         Notifications
                       </span>
-                      <button
-                        className="text-xs text-gray-400 hover:text-purple-400"
-                        onClick={closeNotificationPanel}
-                        aria-label="Close notifications"
-                      >
-                        ✕
-                      </button>
                     </div>
-                    <div className="space-y-3 max-h-64 overflow-y-auto px-4 py-2">
+                    <div className="space-y-3 max-h-64 overflow-y-auto px-1 py-2">
                       {notifications.length > 0 ? (
                         notifications.map((note) => (
                           <div
                             key={note._id}
                             onClick={() => {
                               navigation(`/ticket/${note.ticket}/comment`);
-                              closeNotificationPanel();
+                              setNotificationOpen(false);
                             }}
                             className={`cursor-pointer p-3 rounded-lg transition-colors duration-150 ${
                               note.isRead
@@ -271,13 +259,13 @@ const Header = () => {
                           </div>
                         ))
                       ) : (
-                        <p className="text-sm text-white">
+                        <p className="text-sm text-white px-4 py-2">
                           No new notifications.
                         </p>
                       )}
                     </div>
-                  </motion.div>
-                )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
 
               <div
