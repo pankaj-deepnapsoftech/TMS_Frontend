@@ -46,6 +46,7 @@ const TicketCreateProvider = ({ children }) => {
       console.log(error);
     }
   };
+  
   const TicketCreate = async (formData) => {
     try {
       const res = await axiosHandler.post("/tickets", formData, {
