@@ -101,6 +101,7 @@ const TicketCreateProvider = ({ children }) => {
       });
       toast.success(res?.data?.message);
       GetAllTicket();
+      fetchTicketStats();
     } catch (error) {
       console.log(error);
     }
