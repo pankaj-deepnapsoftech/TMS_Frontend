@@ -107,6 +107,7 @@ const TicketForm = ({ ticket, users, onClose, isOpen }) => {
         dueDate: values.dueDate,
         assignedTo: selectedUsers.map((u) => u._id),
       };
+      console.log(payload)
       if (ticket) {
         updatedTicket(ticket._id, payload);
       } else {

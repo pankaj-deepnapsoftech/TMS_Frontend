@@ -21,13 +21,15 @@ const TicketCreateProvider = ({ children }) => {
     open: 0,
     inProgress: 0,
     resolved: 0,
+    
   });
   const [statsError, setStatsError] = useState(null);
   const [comments, setComments] = useState([]);
   const location = useLocation()
 
-  
 
+
+  // console.log(comments) 
 
   const fetchTicketStats = async () => {
     setStatsError(null);
@@ -65,15 +67,15 @@ const TicketCreateProvider = ({ children }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      setAllTicket(res?.data?.data); 
+      setAllTicket(res?.data?.data);
       // location.pathname.split("/")[2] 
       const filter = res?.data?.data.filter((item) => item._id === location.pathname.split("/")[2] || "")[0]
-      setComments(filter?.comments || []) 
+      setComments(filter?.comments || [])
     } catch (error) {
       console.log(error);
     }
   };
-  
+
   const DeleteTicket = async (ticketId) => {
 
     try {
@@ -115,11 +117,11 @@ const TicketCreateProvider = ({ children }) => {
       GetAllTicket();
     } catch (error) {
       console.log("Error updating comment:", error);
-    }finally{
-     
+    } finally {
+
     }
   };
-  
+
 
   const GetMyTicket = async () => {
     try {
@@ -137,17 +139,22 @@ const TicketCreateProvider = ({ children }) => {
 
   useEffect(() => {
     if (token) {
-      GetAllTicket();
       fetchTicketStats();
       
     }
   }, []);
- 
- useEffect(()=>{
-   if(token)(
-     GetMyTicket()
-   )
-}, [notifications])
+
+  useEffect(()=>{
+    if(token){
+      GetAllTicket();
+    }
+  }, [location.pathname])
+
+  useEffect(() => {
+    if (token) (
+      GetMyTicket()
+    )
+  }, [notifications])
 
   useEffect(() => {
     socket.on("ticket", (data) => {
@@ -160,10 +167,11 @@ const TicketCreateProvider = ({ children }) => {
 
       const filter = data?.notificatiosn.filter((item) => user.id === item.user)[0]
 
-      if(filter){
-        setNotifications((prev) => [filter,...prev])
+      if (filter) {
+        setNotifications((prev) => [filter, ...prev])
       }
-    });
+      
+    },[]);
 
     return () => {
       socket.off("ticket");
@@ -173,10 +181,10 @@ const TicketCreateProvider = ({ children }) => {
 
   useEffect(() => {
     socket.on("ticketCreateNotification", (data) => {
-      if (data.user === user.id){
+      if (data.user === user.id) {
         setNotifications((prev) => [data, ...prev])
       }
-    //  console.log(data) 
+      //  console.log(data) 
     });
 
     return () => {
@@ -198,7 +206,7 @@ const TicketCreateProvider = ({ children }) => {
     };
   }, []);
 
-  
+
   return (
     <TicketCreateContext.Provider
       value={{

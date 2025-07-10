@@ -51,9 +51,9 @@ const Header = () => {
   } = useProfile();
 
   const navigation = useNavigate();
-  const closeNotificationPanel = () => {
-    setNotificationOpen(false);
-  };
+  // const closeNotificationPanel = () => {
+  //   setNotificationOpen(false);
+  // };
 
   const handleShowAdmitDropdown = () => {
     setShowAdmitDropdown((prev) => !prev);
@@ -62,7 +62,7 @@ const Header = () => {
     }
   };
 
-
+  // console.log(notifications)
 
   const handleAdmitUser = (userId, accept) => {
     if (accept) {
@@ -72,7 +72,7 @@ const Header = () => {
     }
   };
 
-   
+  //  console.log(notifications)
   
 
   return (
@@ -238,7 +238,7 @@ const Header = () => {
 
                                 {/* Sender */}
                                 <p className="text-xs text-gray-300 mt-1">
-                                  From: {note.sender?.name}
+                                  From: {note?.sender?.name}
                                 </p>
 
                                 {/* Timestamp */}

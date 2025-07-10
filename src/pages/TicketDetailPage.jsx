@@ -141,7 +141,7 @@ const TicketDetailPage = () => {
   };
 
   const isOverdue = (dueDate) => {
-    return dueDate && new Date(dueDate) < new Date() && !['resolved', 'closed'].includes(ticket.status);
+    return dueDate && new Date(dueDate) < new Date() && !['resolved', 'closed'].includes(ticket.status); 
   };
 
   return (
