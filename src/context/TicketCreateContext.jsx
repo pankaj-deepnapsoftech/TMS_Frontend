@@ -44,6 +44,7 @@ const TicketCreateProvider = ({ children }) => {
       console.log(error);
     }
   };
+  
   const TicketCreate = async (formData) => {
     try {
       const res = await axiosHandler.post("/tickets", formData, {
@@ -52,6 +53,7 @@ const TicketCreateProvider = ({ children }) => {
         },
       });
       GetAllTicket();
+      fetchTicketStats();
       toast.success(res?.data?.message);
     } catch (error) {
       console.log(error);
