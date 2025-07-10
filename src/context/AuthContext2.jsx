@@ -69,7 +69,7 @@ const AuthContextProvider = ({ children }) => {
     try {
       const res = await axiosHandler.post("/auth/register", values);
       toast.success(res?.data?.message);
-      console.log(res?.data);
+      // console.log(res?.data);
     } catch (error) {
       console.error("Registration error:", error);
       toast.error(error?.response?.data?.message || "Registration failed");
@@ -108,7 +108,7 @@ const AuthContextProvider = ({ children }) => {
         },
       });
       setUnapprovedUsers(res?.data?.data);
-      console.log(res?.data)
+      // console.log(res?.data)
     } catch (error) {
       console.error("Error fetching unapproved users:", error);
       toast.error("Failed to fetch unapproved users");
@@ -165,7 +165,7 @@ const AuthContextProvider = ({ children }) => {
 
       setUnapprovedUsers((prev) => [data, ...prev])
 
-       console.log("resgisterUser",data)
+      //  console.log("resgisterUser",data)
     });
 
     return () => {

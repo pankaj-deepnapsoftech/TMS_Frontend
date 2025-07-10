@@ -38,8 +38,15 @@ const EmployeeDashboard = () => {
         ticket.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         ticket.ticketNumber?.toLowerCase().includes(searchTerm.toLowerCase());
 
+      const now = new Date();
       const matchesStatus =
-        statusFilter === "all" || ticket.status === statusFilter;
+        statusFilter === "all" ||
+        (statusFilter === "overdue"
+          ? ticket.status !== "resolved" &&
+          ticket.dueDate &&
+          new Date(ticket.dueDate) < now
+          : ticket.status === statusFilter);
+        
       const matchesPriority =
         priorityFilter === "all" || ticket.priority === priorityFilter;
       const matchesCategory =
@@ -58,6 +65,7 @@ const EmployeeDashboard = () => {
     setCategoryFilter("all");
   };
 
+  console.log(myTickets)
   return (
     <>
       <Helmet>
@@ -79,7 +87,7 @@ const EmployeeDashboard = () => {
           </p>
         </motion.div>
 
-        <TicketStats tickets={filteredTickets} />
+        <TicketStats onStatClick={(status) => setStatusFilter(status)} />
 
         <TicketFilters
           searchTerm={searchTerm}

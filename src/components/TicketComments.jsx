@@ -17,12 +17,12 @@ const TicketComments = ({
   formatDate,
   getInitials,
 }) => {
-  // const [comments, setComments] = useState(ticket.comments || []);
+
   const [newComment, setNewComment] = useState("");
   const { allUsers } = useAuthContext();
   const commentRef = useRef();
- 
-  const { comments } = useTicketCreate() 
+  const { comments } = useTicketCreate();
+
   
 
   // useEffect(() => {

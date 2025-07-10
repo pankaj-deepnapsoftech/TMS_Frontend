@@ -16,7 +16,7 @@ import { Plus, Ticket } from "lucide-react";
 import { departmentFilters } from "../context/AuthContext2";
 
 const AdminDashboard = () => {
-  const { toast } = useToast();
+  // const { toast } = useToast();
   const { allUsers } = useAuthContext();
   const { allTicket, DeleteTicket } = useTicketCreate();
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -54,8 +54,16 @@ const AdminDashboard = () => {
         ticket.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         ticket.ticketNumber?.toLowerCase().includes(searchTerm.toLowerCase());
 
+      const now = new Date();
       const matchesStatus =
-        statusFilter === "all" || ticket.status === statusFilter;
+        statusFilter === "all" ||
+        (statusFilter === "overdue"
+          ? ticket.status !== "resolved" &&
+          ticket.dueDate &&
+          new Date(ticket.dueDate) < now
+          : ticket.status === statusFilter);
+        
+
       const matchesPriority =
         priorityFilter === "all" || ticket.priority === priorityFilter;
       const matchesCategory =
@@ -86,6 +94,7 @@ const AdminDashboard = () => {
     departmentFilter,
   ]);
 
+  // console.log(allTicket)
   const handleDeleteTicket = (ticketId) => {
     if (window.confirm("Are you sure you want to delete ticket?")) {
       DeleteTicket(ticketId);
@@ -133,7 +142,14 @@ const AdminDashboard = () => {
           </p>
         </motion.div>
 
-        <TicketStats tickets={allTicket} />
+        <TicketStats 
+          onStatClick={(filter) => {
+            console.log("Filter clicked:", filter);
+            setStatusFilter(filter);  // or whatever your filtering state logic is
+          }}
+        />
+
+
 
         <TicketFilters
           searchTerm={searchTerm}

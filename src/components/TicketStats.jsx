@@ -7,22 +7,25 @@ import {
   AlertTriangle,
   Target,
   Ticket,
+  CalendarX,
 } from "lucide-react";
 import { useTicketCreate } from "../context/TicketCreateContext";
 
-const TicketStats = () => {
+const TicketStats = ({ onStatClick }) => {
+
   const { ticketStats, fetchTicketStats, statsError } = useTicketCreate();
 
   useEffect(() => {
     fetchTicketStats();
-    // eslint-disable-next-line
   }, []);
 
+   console.log(ticketStats)
   const stats = [
     {
       title: "Total Tickets",
       value: ticketStats.total,
       icon: Ticket,
+      filterValue: "all",  // Added filter value
       color: "from-sky-500 to-cyan-500",
       bgColor: "bg-sky-500/20",
       borderColor: "border-sky-500/30",
@@ -32,6 +35,7 @@ const TicketStats = () => {
       title: "Open",
       value: ticketStats.open,
       icon: Target,
+      filterValue: "open",  // Added filter value
       color: "from-purple-500 to-pink-500",
       bgColor: "bg-purple-500/20",
       borderColor: "border-purple-500/30",
@@ -41,6 +45,7 @@ const TicketStats = () => {
       title: "In Progress",
       value: ticketStats.inProgress,
       icon: Clock,
+      filterValue: "in progress",  // Added filter value
       color: "from-yellow-500 to-orange-500",
       bgColor: "bg-yellow-500/20",
       borderColor: "border-yellow-500/30",
@@ -50,13 +55,25 @@ const TicketStats = () => {
       title: "Resolved",
       value: ticketStats.resolved,
       icon: CheckCircle,
+      filterValue: "resolved",  // Added filter value
       color: "from-green-500 to-emerald-500",
       bgColor: "bg-green-500/20",
       borderColor: "border-green-500/30",
       iconBg: "bg-green-500/20",
     },
+    {
+      title: "OverDue Date",
+      value: ticketStats.overdue,
+      icon: CalendarX,
+      filterValue: "overdue",  // Added filter value
+      color: "from-red-500 to-emerald-500",
+      bgColor: "bg-red-500/20",
+      borderColor: "border-red-500/30",
+      iconBg: "bg-red-500/20",
+    },
   ];
   
+
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-8">
@@ -71,8 +88,14 @@ const TicketStats = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1 }}
+          onClick={() => {
+            console.log("Clicked filter:", stat.filterValue);
+            onStatClick?.(stat.filterValue);
+          }}
+          
+          className="cursor-pointer"
         >
-          <Card className={`  ${stat.bgColor}  ${stat.borderColor} backdrop-blur-sm hover:border-purple-400/40 transition-all duration-300`}>
+          <Card className={` ${stat.bgColor}  ${stat.borderColor} backdrop-blur-sm hover:border-purple-400/40 transition-all duration-300`}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-gray-300">
                 {stat.title}
@@ -80,7 +103,7 @@ const TicketStats = () => {
               <div className={`p-2 rounded-lg  ${stat.iconBg} `}>
                 <stat.icon className="h-4 w-4 text-white" />
               </div>
-            </CardHeader>
+            </CardHeader >
             <CardContent>
               <div
                 className={`text-2xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}
@@ -88,10 +111,10 @@ const TicketStats = () => {
                 {stat.value}
               </div>
             </CardContent>
-          </Card>
-        </motion.div>
+          </Card >
+        </motion.div >
       ))}
-    </div>
+    </div >
   );
 };
 

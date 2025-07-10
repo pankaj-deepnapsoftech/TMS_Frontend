@@ -83,7 +83,7 @@ const TicketFilters = ({
               <SelectItem value="all">All Priorities</SelectItem>
               <SelectItem value="high">High</SelectItem>
               <SelectItem value="medium">Medium</SelectItem>
-              <SelectItem value="low">Low</SelectItem>
+              <SelectItem value="low">Low</SelectItem>             
             </SelectContent>
           </Select>
 
@@ -121,7 +121,7 @@ const TicketFilters = ({
             </>
           )}
 
-          {hasActiveFilters && (
+          {/* {hasActiveFilters && (
             <Button
               variant="outline"
               size="icon"
@@ -130,7 +130,7 @@ const TicketFilters = ({
             >
               <X className="h-4 w-4" />
             </Button>
-          )}
+          )} */}
         </div>
       </div>
     </motion.div>

@@ -237,7 +237,7 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
               </p>
             )}
           </div>
-          <div className="flex justify-between gap-3 items-end text-sm text-gray-400">
+          <div className="flex justify-between gap-3 whitespace-nowrap items-end text-sm text-gray-400">
             {assignedUsers.length > 0 && (
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
