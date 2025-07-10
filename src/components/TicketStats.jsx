@@ -25,7 +25,7 @@ const TicketStats = ({ onStatClick }) => {
       title: "Total Tickets",
       value: ticketStats.total,
       icon: Ticket,
-      filterValue: "all",  // Added filter value
+      filterValue: "all", 
       color: "from-sky-500 to-cyan-500",
       bgColor: "bg-sky-500/20",
       borderColor: "border-sky-500/30",
@@ -35,7 +35,7 @@ const TicketStats = ({ onStatClick }) => {
       title: "Open",
       value: ticketStats.open,
       icon: Target,
-      filterValue: "open",  // Added filter value
+      filterValue: "open",  
       color: "from-purple-500 to-pink-500",
       bgColor: "bg-purple-500/20",
       borderColor: "border-purple-500/30",
@@ -45,7 +45,7 @@ const TicketStats = ({ onStatClick }) => {
       title: "In Progress",
       value: ticketStats.inProgress,
       icon: Clock,
-      filterValue: "in progress",  // Added filter value
+      filterValue: "in progress", 
       color: "from-yellow-500 to-orange-500",
       bgColor: "bg-yellow-500/20",
       borderColor: "border-yellow-500/30",
@@ -55,17 +55,17 @@ const TicketStats = ({ onStatClick }) => {
       title: "Resolved",
       value: ticketStats.resolved,
       icon: CheckCircle,
-      filterValue: "resolved",  // Added filter value
+      filterValue: "resolved", 
       color: "from-green-500 to-emerald-500",
       bgColor: "bg-green-500/20",
       borderColor: "border-green-500/30",
       iconBg: "bg-green-500/20",
     },
     {
-      title: "OverDue Date",
+      title: "Overdue Date",
       value: ticketStats.overdue,
       icon: CalendarX,
-      filterValue: "overdue",  // Added filter value
+      filterValue: "overdue",  
       color: "from-red-500 to-emerald-500",
       bgColor: "bg-red-500/20",
       borderColor: "border-red-500/30",
@@ -89,7 +89,6 @@ const TicketStats = ({ onStatClick }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1 }}
           onClick={() => {
-            console.log("Clicked filter:", stat.filterValue);
             onStatClick?.(stat.filterValue);
           }}
           

@@ -21,7 +21,7 @@ const TicketCreateProvider = ({ children }) => {
     open: 0,
     inProgress: 0,
     resolved: 0,
-    
+
   });
   const [statsError, setStatsError] = useState(null);
   const [comments, setComments] = useState([]);
@@ -101,6 +101,7 @@ const TicketCreateProvider = ({ children }) => {
       });
       toast.success(res?.data?.message);
       GetAllTicket();
+      fetchTicketStats();
     } catch (error) {
       console.log(error);
     }

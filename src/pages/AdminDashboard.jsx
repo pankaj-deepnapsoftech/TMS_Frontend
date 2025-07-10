@@ -144,7 +144,6 @@ const AdminDashboard = () => {
 
         <TicketStats 
           onStatClick={(filter) => {
-            console.log("Filter clicked:", filter);
             setStatusFilter(filter);  // or whatever your filtering state logic is
           }}
         />
