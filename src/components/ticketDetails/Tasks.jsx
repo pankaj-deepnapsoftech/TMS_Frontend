@@ -4,7 +4,8 @@ import { useParams } from "react-router-dom";
 
 export default function AsanaTodoTableInlineAdd() {
 
-  const { getAllAssignedUser, assinedUser } = useTodoContext();
+  const { getAllAssignedUser, assinedUser, CreateTask, totalTasks,GetTask } = useTodoContext();
+  console.log("here is total task",totalTasks)
   const { ticketId } = useParams();
   const [tasks, setTasks] = useState([
     {
@@ -27,25 +28,14 @@ export default function AsanaTodoTableInlineAdd() {
 
   const [newTask, setNewTask] = useState({
     title: "",
-    status: "Backlog",
     priority: "Medium",
-    assignee: "",
+    assinedTo: "",
     due_date: "",
     ticket_id: ticketId,
   });
 
   const handleAddTask = () => {
-    if (newTask.title.trim()) {
-      setTasks((prev) => [...prev, { id: Date.now(), ...newTask }]);
-      setNewTask({
-        title: "",
-        status: "Backlog",
-        priority: "Medium",
-        assinedTo: "",
-        due_date: "",
-        ticket_id: ticketId,
-      });
-    }
+    CreateTask(newTask)
   };
 
   const handleKeyDown = (e) => {
@@ -54,7 +44,8 @@ export default function AsanaTodoTableInlineAdd() {
 
   useEffect(() => {
     if (ticketId) {
-      getAllAssignedUser(ticketId)
+      getAllAssignedUser(ticketId);
+      GetTask(ticketId);
     }
 
   }, [ticketId])
@@ -118,7 +109,7 @@ export default function AsanaTodoTableInlineAdd() {
               <td className="px-4 py-2">
                 <select
                   value={newTask.assinedTo}
-                  onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}
+                  onChange={(e) => setNewTask({ ...newTask, assinedTo: e.target.value })}
                   className="bg-transparent border-b border-white/20 px-1 py-1 text-sm focus:outline-none focus:border-purple-400"
                 >
                   <option value="">Select Emp.</option>

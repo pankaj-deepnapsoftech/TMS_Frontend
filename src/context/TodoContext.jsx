@@ -1,10 +1,14 @@
 import { axiosHandler } from "@/config/axiosConfig";
 import {createContext, useContext, useState} from "react";
+import { toast } from "react-toastify";
 
 
 const TodoContext = createContext({
     getAllAssignedUser:()=>{},
-    assinedUser:[]
+    assinedUser:[],
+    CreateTask:()=>{},
+    totalTasks:[],
+    GetTask:()=>{},
 });
 
 export const useTodoContext = () => useContext(TodoContext);
@@ -12,6 +16,7 @@ export const useTodoContext = () => useContext(TodoContext);
 
 const TodoContextProvider = ({children}) => {
     const [assinedUser,setAssinedUser] = useState([]);
+    const [totalTasks,setTotalTasks] = useState([]);
 
     const getAllAssignedUser = async (ticketId) => {
         try {
@@ -22,8 +27,26 @@ const TodoContextProvider = ({children}) => {
         }
     }
 
+    const CreateTask =  async (data) => {
+        try {
+            const res = await axiosHandler.post("/todos/create",data);
+            toast.success(res.data.message || "Task Completed Successful");
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const GetTask = async (ticketId) => {
+        try {
+            const res = await axiosHandler.get(`/todos/get/${ticketId}`);
+            setTotalTasks(res.data?.data || []);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return(
-        <TodoContext.Provider value={{ getAllAssignedUser, assinedUser }}>
+        <TodoContext.Provider value={{ getAllAssignedUser, assinedUser, CreateTask, GetTask, totalTasks }}>
             {children}
         </TodoContext.Provider>
     )
