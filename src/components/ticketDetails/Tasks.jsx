@@ -142,7 +142,7 @@ export default function AsanaTodoTableInlineAdd() {
               </td>
 
               <td className="px-4 py-2">
-                <button className="flex px-3 py-1 bg-blue-600 rounded-lg">
+                <button className="flex px-3 py-1 bg-blue-600 text-white rounded-lg">
                   Add more
                 </button>
               </td>
