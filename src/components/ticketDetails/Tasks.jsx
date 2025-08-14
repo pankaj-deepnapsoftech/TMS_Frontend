@@ -7,10 +7,6 @@ import { useParams } from "react-router-dom";
 export default function AsanaTodoTableInlineAdd() {
   const { getAllAssignedUser, assinedUser, CreateTask, totalTasks, GetTask, DeleteTask } = useTodoContext();
   const { ticketId } = useParams();
-<<<<<<< HEAD
-
-=======
->>>>>>> 8b2f64cfe27c5914df4a7588e6961492b9bb7a9c
 
   const [newTask, setNewTask] = useState({
     title: "",
