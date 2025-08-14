@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Button } from '@/components/ui/button';
@@ -16,9 +16,10 @@ import { departmentFilters } from '@/context/AuthContext2';
 const TicketDetailPage = () => {
   const { ticketId } = useParams();
 
-  
+
   const navigate = useNavigate();
   const { user, allUsers } = useAuthContext();
+  const [topNavbar, setTopNavbar] = useState("Dashboard")
   const { allTicket, updatedTicket, updatedComments } = useTicketCreate(); // Assuming updateTicket is available
   const { toast } = useToast();
   const isLoading = !allTicket || allTicket.length === 0;
@@ -114,14 +115,14 @@ const TicketDetailPage = () => {
       },
     };
 
-    updatedComments(ticket._id, newComment); 
+    updatedComments(ticket._id, newComment);
 
     toast({
       title: 'Comment Added 💬',
       description: 'Your comment was posted.',
     });
   };
-  
+
 
   const handleStatusChange = (newStatus) => {
     const UpdatedTicket = {
@@ -141,7 +142,7 @@ const TicketDetailPage = () => {
   };
 
   const isOverdue = (dueDate) => {
-    return dueDate && new Date(dueDate) < new Date() && !['resolved', 'closed'].includes(ticket.status); 
+    return dueDate && new Date(dueDate) < new Date() && !['resolved', 'closed'].includes(ticket.status);
   };
 
   return (
@@ -187,41 +188,70 @@ const TicketDetailPage = () => {
           </Button>
         </div>
       ) : (
-        <div className="p-4 lg:p-8 max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 space-y-6">
-              <TicketDetailHeader
-                ticket={ticket}
-                status={status}
-                user={user}
-                isAssignedToCurrentUser={isAssignedToCurrentUser}
-                getPriorityColor={getPriorityColor}
-                getStatusColor={getStatusColor}
-              />
+        // <div className="p-4 lg:p-8 max-w-6xl mx-auto">
+        //   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        //     <div className="lg:col-span-2 space-y-6">
+        //       <TicketDetailHeader
+        //         ticket={ticket}
+        //         status={status}
+        //         user={user}
+        //         isAssignedToCurrentUser={isAssignedToCurrentUser}
+        //         getPriorityColor={getPriorityColor}
+        //         getStatusColor={getStatusColor}
+        //       />
 
-              <TicketComments
-                ticket={ticket}
-                user={user}
-                onAddComment={handleAddComment}
-                formatDate={formatDate}
-                getInitials={getInitials}
-              />
-            </div>
+        //       <TicketComments
+        //         ticket={ticket}
+        //         user={user}
+        //         onAddComment={handleAddComment}
+        //         formatDate={formatDate}
+        //         getInitials={getInitials}
+        //       />
+        //     </div>
 
-            <TicketDetailSidebar
-              ticket={ticket}
-              user={user}
-              status={status}
-              assignedIds={assignedIds}
-              department={department}
-              createdByUser={createdByUser}
-              isAssignedToCurrentUser={isAssignedToCurrentUser}
-              onStatusChange={handleStatusChange}
-              formatDate={formatDate}
-              getInitials={getInitials}
-              isOverdue={isOverdue}
-            />
+        //     <TicketDetailSidebar
+        //       ticket={ticket}
+        //       user={user}
+        //       status={status}
+        //       assignedIds={assignedIds}
+        //       department={department}
+        //       createdByUser={createdByUser}
+        //       isAssignedToCurrentUser={isAssignedToCurrentUser}
+        //       onStatusChange={handleStatusChange}
+        //       formatDate={formatDate}
+        //       getInitials={getInitials}
+        //       isOverdue={isOverdue}
+        //     />
+        //   </div>
+        // </div>
+        <div>
+          <div className="bg-[#120338] text-white px-6">
+            <nav className="flex space-x-8 border-b border-purple-500">
+              <button
+                onClick={() => setTopNavbar('Dashboard')}
+                className={`py-3 text-sm font-medium hover:text-purple-400 ${topNavbar === "Dashboard" && " text-purple-400 border-b-2 border-purple-500"} hover:border-b-2 hover:border-purple-500 transition-all`}
+              >
+                Dashboard
+              </button>
+              <button
+                onClick={() => setTopNavbar('Tasks')}
+                className={`py-3 text-sm font-medium hover:text-purple-400 ${topNavbar === "Tasks" && " text-purple-400 border-b-2 border-purple-500"} hover:border-b-2 hover:border-purple-500 transition-all`}
+              >
+                Tasks
+              </button>
+              <button
+                onClick={() => setTopNavbar('Comments')}
+                className={`py-3 text-sm font-medium hover:text-purple-400 ${topNavbar === "Comments" && " text-purple-400 border-b-2 border-purple-500"} hover:border-b-2 hover:border-purple-500 transition-all`}
+              >
+                Comments
+              </button>
+
+            </nav>
           </div>
+
+          {/* here sohow components conditinally  */}
+
+          hello
         </div>
       )}
 
