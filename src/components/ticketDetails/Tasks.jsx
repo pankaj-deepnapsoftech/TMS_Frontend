@@ -3,9 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 export default function AsanaTodoTableInlineAdd() {
-
-  const { getAllAssignedUser, assinedUser, CreateTask, totalTasks,GetTask } = useTodoContext();
-  console.log("here is total task",totalTasks)
+  const { getAllAssignedUser, assinedUser, CreateTask, totalTasks, GetTask } = useTodoContext();
+  console.log("here is total task", totalTasks);
   const { ticketId } = useParams();
   const [tasks, setTasks] = useState([
     {
@@ -35,7 +34,7 @@ export default function AsanaTodoTableInlineAdd() {
   });
 
   const handleAddTask = () => {
-    CreateTask(newTask)
+    CreateTask(newTask);
   };
 
   const handleKeyDown = (e) => {
@@ -47,18 +46,17 @@ export default function AsanaTodoTableInlineAdd() {
       getAllAssignedUser(ticketId);
       GetTask(ticketId);
     }
-
-  }, [ticketId])
+  }, [ticketId]);
 
   return (
-    <div className="min-h-screen bg-[#0f1024] text-white p-6">
-      <header className="mb-6 border-b border-white/10 pb-4">
+    <div className="min-h-screen bg-gray-50 text-gray-900 p-6">
+      <header className="mb-6 border-b border-gray-300 pb-4">
         <h1 className="text-2xl font-bold">FlowTasks Table</h1>
       </header>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full border border-white/10">
-          <thead className="bg-black/10">
+        <table className="min-w-full border border-gray-300">
+          <thead className="bg-gray-100">
             <tr>
               <th className="px-4 py-2 text-left text-sm font-medium">Task</th>
               <th className="px-4 py-2 text-left text-sm font-medium">Status</th>
@@ -69,7 +67,7 @@ export default function AsanaTodoTableInlineAdd() {
           </thead>
           <tbody>
             {/* Inline Add Row */}
-            <tr className="bg-white/5">
+            <tr className="bg-gray-50">
               <td className="px-4 py-2">
                 <input
                   type="text"
@@ -77,14 +75,14 @@ export default function AsanaTodoTableInlineAdd() {
                   value={newTask.title}
                   onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
                   onKeyDown={handleKeyDown}
-                  className="w-full bg-transparent border-b border-white/20 px-1 py-1 text-sm focus:outline-none focus:border-purple-400"
+                  className="w-full bg-transparent border-b border-gray-300 px-1 py-1 text-sm focus:outline-none focus:border-purple-500"
                 />
               </td>
               <td className="px-4 py-2">
                 <select
                   value={newTask.status}
                   onChange={(e) => setNewTask({ ...newTask, status: e.target.value })}
-                  className="bg-transparent border-b border-white/20 px-1 py-1 text-sm focus:outline-none focus:border-purple-400"
+                  className="bg-transparent border-b border-gray-300 px-1 py-1 text-sm focus:outline-none focus:border-purple-500"
                 >
                   <option value="">Select Status</option>
                   {["Backlog", "Pending", "In Progress", "Completed", "Re Open", "Under Review"].map((item) => (
@@ -98,7 +96,7 @@ export default function AsanaTodoTableInlineAdd() {
                 <select
                   value={newTask.priority}
                   onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}
-                  className="bg-transparent border-b border-white/20 px-1 py-1 text-sm focus:outline-none focus:border-purple-400"
+                  className="bg-transparent border-b border-gray-300 px-1 py-1 text-sm focus:outline-none focus:border-purple-500"
                 >
                   <option value="">Select Priority</option>
                   <option value="High">High</option>
@@ -110,10 +108,14 @@ export default function AsanaTodoTableInlineAdd() {
                 <select
                   value={newTask.assinedTo}
                   onChange={(e) => setNewTask({ ...newTask, assinedTo: e.target.value })}
-                  className="bg-transparent border-b border-white/20 px-1 py-1 text-sm focus:outline-none focus:border-purple-400"
+                  className="bg-transparent border-b border-gray-300 px-1 py-1 text-sm focus:outline-none focus:border-purple-500"
                 >
                   <option value="">Select Emp.</option>
-                  {assinedUser.map((item) =>  <option key={item._id} value={item._id}>{item.email}</option>)}
+                  {assinedUser.map((item) => (
+                    <option key={item._id} value={item._id}>
+                      {item.email}
+                    </option>
+                  ))}
                 </select>
               </td>
               <td className="px-4 py-2">
@@ -122,22 +124,22 @@ export default function AsanaTodoTableInlineAdd() {
                   value={newTask.due_date}
                   onChange={(e) => setNewTask({ ...newTask, due_date: e.target.value })}
                   onKeyDown={handleKeyDown}
-                  className="w-full h-10 bg-transparent border-b border-white/20 px-1 py-1 text-sm focus:outline-none focus:border-purple-400"
+                  className="w-full h-10 bg-transparent border-b border-gray-300 px-1 py-1 text-sm focus:outline-none focus:border-purple-500"
                 />
               </td>
             </tr>
 
             {/* Existing Tasks */}
             {tasks.map((task) => (
-              <tr key={task.id} className="border-t border-white/10 hover:bg-white/5">
+              <tr key={task.id} className="border-t border-gray-300 hover:bg-gray-100">
                 <td className="px-4 py-2 text-sm">{task.title}</td>
                 <td className="px-4 py-2 text-sm">{task.status}</td>
                 <td
                   className={`px-4 py-2 text-sm ${task.priority === "High"
-                    ? "text-red-400"
+                    ? "text-red-500"
                     : task.priority === "Medium"
-                      ? "text-yellow-400"
-                      : "text-green-400"
+                      ? "text-yellow-500"
+                      : "text-green-500"
                     }`}
                 >
                   {task.priority}

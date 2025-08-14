@@ -5,22 +5,19 @@ import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext2";
 import { departmentFilters } from "../context/AuthContext2";
+
 const Registrations = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [confirmShowPassword, setConfirmShowPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
   const [confirmError, setConfirmError] = useState("");
   const { PostUserData, user } = useAuthContext();
-
   const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
-      if (user.role === "employee") {
-        navigate("/employee", { replace: true });
-      } else {
-        navigate("/admin", { replace: true });
-      }
+      if (user.role === "employee") navigate("/employee", { replace: true });
+      else navigate("/admin", { replace: true });
     }
   }, [user, navigate]);
 
@@ -48,23 +45,24 @@ const Registrations = () => {
 
       PostUserData(values);
       setConfirmError("");
-
       formik.resetForm();
       setConfirmPassword("");
     },
   });
 
   return (
-    <section className="relative h-screen w-full">
+    <section className="relative min-h-screen w-full bg-gray-100 flex items-center justify-center p-4 sm:p-8">
+      {/* Background Image */}
       <img
-        className="absolute inset-0 h-full w-full object-cover"
-        src="/LoginPageImg/loginBGimg2.jpg"
+        className="absolute inset-0 h-full w-full object-cover opacity-20"
+        src="/LoginPageImg/loginbg.png"
         alt="Registration background"
       />
-      <div className="absolute inset-0 bg-black bg-opacity-20" />
-      <div className="relative z-10 flex h-full w-full items-center justify-center px-4">
-        <div className="backdrop-blur-lg bg-white/10 border border-white/20 rounded-xl shadow-xl p-8 w-full h-[70%] flex flex-col justify-center max-w-[30rem]">
-          <h2 className="text-3xl font-[500] text-center mb-6 font-rubik text-white">
+
+      <div className="relative z-10 w-full max-w-md mx-auto">
+        {/* Form Card */}
+        <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-xl shadow-lg p-6 sm:p-8 flex flex-col">
+          <h2 className="text-3xl font-semibold text-center text-gray-900 mb-6">
             Create Your Account
           </h2>
 
@@ -73,11 +71,9 @@ const Registrations = () => {
             onSubmit={formik.handleSubmit}
             autoComplete="off"
           >
+            {/* Name */}
             <div className="relative">
-              <label
-                className="block text-sm text-white font-medium mb-1"
-                htmlFor="name"
-              >
+              <label className="block text-sm text-gray-800 mb-1" htmlFor="name">
                 Full Name
               </label>
               <input
@@ -85,22 +81,18 @@ const Registrations = () => {
                 type="text"
                 name="name"
                 placeholder="Enter your name"
-                className="w-full px-10 py-2 rounded-md bg-transparent text-gray-300 placeholder-gray-600 focus:outline-none border border-gray-300"
+                className="w-full pl-10 pr-3 py-2 rounded-md bg-white text-gray-900 placeholder-gray-400 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
                 {...formik.getFieldProps("name")}
               />
               <User className="absolute top-9 left-2" size={19} color="gray" />
               {formik.touched.name && formik.errors.name && (
-                <p className="text-sm text-red-400 mt-1">
-                  {formik.errors.name}
-                </p>
+                <p className="text-sm text-red-500 mt-1">{formik.errors.name}</p>
               )}
             </div>
 
+            {/* Email */}
             <div className="relative">
-              <label
-                className="block text-sm text-white font-medium mb-1"
-                htmlFor="email"
-              >
+              <label className="block text-sm text-gray-800 mb-1" htmlFor="email">
                 Email
               </label>
               <input
@@ -108,23 +100,18 @@ const Registrations = () => {
                 type="email"
                 name="email"
                 placeholder="Enter your email"
-                autoComplete="new-email"
-                className="w-full px-10 py-2 rounded-md bg-transparent text-gray-300 placeholder-gray-600 focus:outline-none border border-gray-300"
+                className="w-full pl-10 pr-3 py-2 rounded-md bg-white text-gray-900 placeholder-gray-400 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
                 {...formik.getFieldProps("email")}
               />
               <Mail className="absolute top-9 left-2" size={18} color="gray" />
               {formik.touched.email && formik.errors.email && (
-                <p className="text-sm text-red-400 mt-1">
-                  {formik.errors.email}
-                </p>
+                <p className="text-sm text-red-500 mt-1">{formik.errors.email}</p>
               )}
             </div>
 
+            {/* Password */}
             <div className="relative">
-              <label
-                className="block text-sm text-white font-medium mb-1"
-                htmlFor="password"
-              >
+              <label className="block text-sm text-gray-800 mb-1" htmlFor="password">
                 Password
               </label>
               <input
@@ -132,8 +119,7 @@ const Registrations = () => {
                 type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="••••••••"
-                autoComplete="new-password"
-                className="w-full px-10 py-2 rounded-md bg-transparent text-gray-300 placeholder-gray-600 focus:outline-none border border-gray-300"
+                className="w-full pl-10 pr-10 py-2 rounded-md bg-white text-gray-900 placeholder-gray-400 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
                 {...formik.getFieldProps("password")}
               />
               <Lock className="absolute top-9 left-2" size={18} color="gray" />
@@ -141,24 +127,16 @@ const Registrations = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute cursor-pointer right-3 top-9"
               >
-                {showPassword ? (
-                  <Eye size={20} color="gray" />
-                ) : (
-                  <EyeOff size={20} color="gray" />
-                )}
+                {showPassword ? <Eye size={20} color="gray" /> : <EyeOff size={20} color="gray" />}
               </div>
               {formik.touched.password && formik.errors.password && (
-                <p className="text-sm text-red-400 mt-1">
-                  {formik.errors.password}
-                </p>
+                <p className="text-sm text-red-500 mt-1">{formik.errors.password}</p>
               )}
             </div>
 
+            {/* Confirm Password */}
             <div className="relative">
-              <label
-                className="block text-sm text-white font-medium mb-1"
-                htmlFor="confirmPassword"
-              >
+              <label className="block text-sm text-gray-800 mb-1" htmlFor="confirmPassword">
                 Confirm Password
               </label>
               <input
@@ -166,8 +144,7 @@ const Registrations = () => {
                 type={confirmShowPassword ? "text" : "password"}
                 name="confirmPassword"
                 placeholder="••••••••"
-                autoComplete="new-password"
-                className="w-full px-10 py-2 rounded-md bg-transparent text-gray-300 placeholder-gray-600 focus:outline-none border border-gray-300"
+                className="w-full pl-10 pr-10 py-2 rounded-md bg-white text-gray-900 placeholder-gray-400 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
@@ -176,59 +153,44 @@ const Registrations = () => {
                 onClick={() => setConfirmShowPassword(!confirmShowPassword)}
                 className="absolute cursor-pointer right-3 top-9"
               >
-                {confirmShowPassword ? (
-                  <Eye size={20} color="gray" />
-                ) : (
-                  <EyeOff size={20} color="gray" />
-                )}
+                {confirmShowPassword ? <Eye size={20} color="gray" /> : <EyeOff size={20} color="gray" />}
               </div>
-              {confirmError && (
-                <p className="text-sm text-red-400 mt-1">{confirmError}</p>
-              )}
+              {confirmError && <p className="text-sm text-red-500 mt-1">{confirmError}</p>}
             </div>
-            <div className="relative">
-              <label
-                className="block text-sm text-white font-medium mb-1"
-                htmlFor="department"
-              >
+
+            {/* Department */}
+            <div>
+              <label className="block text-sm text-gray-800 mb-1" htmlFor="department">
                 Department
               </label>
               <select
                 id="department"
                 name="department"
-                className="w-full px-3 py-2 rounded-md bg-[#272727a1] text-gray-300 placeholder-gray-600 focus:outline-none border border-gray-300"
+                className="w-full px-3 py-2 rounded-md bg-white text-gray-900 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
                 {...formik.getFieldProps("department")}
               >
                 <option value="" disabled>
                   Select your department
                 </option>
                 {departmentFilters.map((filter) => (
-                  <option
-                    key={filter.value}
-                    value={filter.value}
-                    className="text-white"
-                  >
+                  <option key={filter.value} value={filter.value}>
                     {filter.label}
                   </option>
                 ))}
               </select>
-              {formik.touched.role && formik.errors.role && (
-                <p className="text-sm text-red-400 mt-1">
-                  {formik.errors.role}
-                </p>
-              )}
             </div>
+
             <button
               type="submit"
-              className="w-full bg-gradient-to-r to-sky-500 from-purple-600 hover:opacity-90 text-white font-[500] py-2 rounded-md transition duration-200"
+              className="w-full bg-gradient-to-r from-purple-600 to-sky-500 hover:opacity-90 text-white font-semibold py-2 rounded-md transition duration-200"
             >
               Register
             </button>
           </form>
 
-          <p className="text-sm text-white text-center mt-6">
+          <p className="text-sm text-gray-800 text-center mt-6">
             Already have an account?{" "}
-            <NavLink to="/login" className="text-blue-400 hover:underline">
+            <NavLink to="/login" className="text-blue-500 hover:underline">
               Log in
             </NavLink>
           </p>

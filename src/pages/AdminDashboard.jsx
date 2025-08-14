@@ -168,7 +168,7 @@ const AdminDashboard = () => {
           <Button
             onClick={() => setIsFormOpen(true)}
             size="lg"
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-xl shadow transition-all duration-300 transform hover:scale-105"
+            className="bg-gradient-to-br from-blue-600 to-slate-600  hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-xl shadow transition-all duration-300 transform hover:scale-105"
           >
             <Plus className="w-5 h-5 mr-2" />
             Create & Assign Ticket
