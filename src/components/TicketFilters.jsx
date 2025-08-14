@@ -94,7 +94,7 @@ const TicketFilters = ({
                   <SelectValue placeholder="Assignee" />
                 </SelectTrigger>
                 <SelectContent className="bg-slate-800 border-purple-500/30">
-                  <SelectItem value="all">All Assignees</SelectItem>
+                  <SelectItem value="all">All Employees</SelectItem>
                   {users.map((u) => (
                     <SelectItem key={u._id} value={u._id}>
                       {u.name}

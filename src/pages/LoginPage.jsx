@@ -1,24 +1,23 @@
 import { useFormik } from "formik";
-import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import React, { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext2";
 import { useForgetPass } from "../context/ForgetPassContext";
-
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [forgotStep, setForgotStep] = useState(1); // 1: email, 2: otp+newpass
+  const [forgotStep, setForgotStep] = useState(1);
   const [forgotEmail, setForgotEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const { UserLogin, user } = useAuthContext();
 
   const navigate = useNavigate();
-  
+  const { sendForgotPasswordEmail, resetPassword, loading, error } = useForgetPass();
+
   useEffect(() => {
     if (user) {
       if (user.role === "employee") {
@@ -28,14 +27,9 @@ const LoginPage = () => {
       }
     }
   }, [user, navigate]);
-  const { sendForgotPasswordEmail, resetPassword, loading, error } =
-    useForgetPass();
 
   const formik = useFormik({
-    initialValues: {
-      email: "",
-      password: "",
-    },
+    initialValues: { email: "", password: "" },
     onSubmit: (values) => {
       UserLogin(values);
     },
@@ -65,16 +59,16 @@ const LoginPage = () => {
   };
 
   return (
-    <section className="relative h-screen w-full ">
+    <section className="relative h-screen w-full bg-gray-100">
       <img
-        className="absolute inset-0 h-full w-full object-cover"
-        src="/LoginPageImg/loginBGimg2.jpg"
+        className="absolute inset-0 h-full w-full object-cover opacity-40"
+        src="/LoginPageImg/loginbg.png"
         alt="Login background"
       />
-      <div className="absolute inset-0 bg-black bg-opacity-20" />
+      <div className="absolute inset-0 bg-white bg-opacity-50" />
 
       <div className="relative z-10 flex h-full w-full items-center justify-center px-4">
-        <div className="backdrop-blur-lg bg-white/10 border border-white/20 rounded-xl shadow-xl p-8 w-full  max-w-[30rem]">
+        <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-xl shadow-xl p-8 w-full max-w-[30rem]">
           <div className="w-full flex justify-center items-center">
             <img className="h-32" src="/LoginPageImg/CompanyLogo.png" alt="" />
           </div>
@@ -84,17 +78,16 @@ const LoginPage = () => {
               <form className="space-y-6" onSubmit={formik.handleSubmit}>
                 <div className="relative">
                   <label
-                    className="block text-sm font-[500] text-white mb-1"
+                    className="block text-sm font-[500] text-gray-700 mb-1"
                     htmlFor="email"
                   >
                     Email
                   </label>
-
                   <input
                     id="email"
                     type="email"
                     placeholder="you@example.com"
-                    className="w-full px-10 py-2 rounded-md bg-transparent text-gray-300 border border-gray-400 placeholder-gray-600 focus:outline-none "
+                    className="w-full px-10 py-2 rounded-md bg-transparent text-gray-800 border border-gray-300 placeholder-gray-400 focus:outline-none focus:border-blue-500"
                     required
                     autoComplete="new-email"
                     value={formik.values.email}
@@ -110,7 +103,7 @@ const LoginPage = () => {
 
                 <div className="relative">
                   <label
-                    className="block text-sm font-[500]  text-white mb-1"
+                    className="block text-sm font-[500] text-gray-700 mb-1"
                     htmlFor="password"
                   >
                     Password
@@ -119,7 +112,7 @@ const LoginPage = () => {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
-                    className="w-full px-10 py-2 border border-gray-400 rounded-md bg-transparent text-gray-300 placeholder-gray-600 focus:outline-none "
+                    className="w-full px-10 py-2 border border-gray-300 rounded-md bg-transparent text-gray-800 placeholder-gray-400 focus:outline-none focus:border-blue-500"
                     required
                     autoComplete="new-password"
                     value={formik.values.password}
@@ -128,7 +121,7 @@ const LoginPage = () => {
                   />
                   <div
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute cursor-pointer right-3 top-9  "
+                    className="absolute cursor-pointer right-3 top-9"
                   >
                     {showPassword ? (
                       <Eye size={20} color="gray" />
@@ -143,14 +136,14 @@ const LoginPage = () => {
                   />
                 </div>
 
-                <div className="flex items-center justify-between text-sm text-white">
+                <div className="flex items-center justify-between text-sm text-gray-600">
                   <label className="flex items-center gap-2">
                     <input type="checkbox" className="accent-blue-500" />
                     Remember me
                   </label>
                   <button
                     type="button"
-                    className="hover:underline text-blue-300 bg-transparent border-none outline-none cursor-pointer"
+                    className="hover:underline text-blue-500 bg-transparent border-none outline-none cursor-pointer"
                     onClick={() => setShowForgotPassword(true)}
                   >
                     Forgot password?
@@ -159,17 +152,17 @@ const LoginPage = () => {
 
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r to-sky-500 from-purple-600 hover:opacity-90 text-white font-[500] py-2 rounded-md transition duration-200"
+                  className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-[500] py-2 rounded-md transform transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95"
                 >
                   Log In
                 </button>
               </form>
 
-              <p className="text-sm text-white text-center mt-6">
+              <p className="text-sm text-gray-700 text-center mt-6">
                 Don't have an account?{" "}
                 <NavLink
                   to="/registration"
-                  className="text-blue-400 hover:underline"
+                  className="text-blue-500 hover:underline"
                 >
                   Register
                 </NavLink>
@@ -190,7 +183,7 @@ const LoginPage = () => {
               {forgotStep === 1 ? (
                 <>
                   <label
-                    className="block text-sm font-[500] text-white mb-1"
+                    className="block text-sm font-[500] text-gray-700 mb-1"
                     htmlFor="forgot-email"
                   >
                     Enter your email to reset password
@@ -199,14 +192,14 @@ const LoginPage = () => {
                     id="forgot-email"
                     type="email"
                     placeholder="you@example.com"
-                    className="w-full px-4 py-2 rounded-md bg-transparent text-gray-300 border border-gray-400 placeholder-gray-600 focus:outline-none "
+                    className="w-full px-4 py-2 rounded-md bg-transparent text-gray-800 border border-gray-300 placeholder-gray-400 focus:outline-none focus:border-blue-500"
                     required
                     value={forgotEmail}
                     onChange={(e) => setForgotEmail(e.target.value)}
                   />
                   <button
                     type="submit"
-                    className="w-full bg-gradient-to-r to-sky-500 from-purple-600 hover:opacity-90 text-white font-[500] py-2 rounded-md transition duration-200 mt-2"
+                    className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-[500] py-2 rounded-md transform transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95 mt-2"
                     disabled={loading}
                   >
                     {loading ? "Sending..." : "Verify Email"}
@@ -215,7 +208,7 @@ const LoginPage = () => {
               ) : (
                 <>
                   <label
-                    className="block text-sm font-[500] text-white mb-1"
+                    className="block text-sm font-[500] text-gray-700 mb-1"
                     htmlFor="otp"
                   >
                     Enter OTP sent to your email
@@ -224,13 +217,13 @@ const LoginPage = () => {
                     id="otp"
                     type="text"
                     placeholder="Enter OTP"
-                    className="w-full px-4 py-2 rounded-md bg-transparent text-gray-300 border border-gray-400 placeholder-gray-600 focus:outline-none "
+                    className="w-full px-4 py-2 rounded-md bg-transparent text-gray-800 border border-gray-300 placeholder-gray-400 focus:outline-none focus:border-blue-500"
                     required
                     value={otp}
                     onChange={(e) => setOtp(e.target.value)}
                   />
                   <label
-                    className="block text-sm font-[500] text-white mb-1 mt-4"
+                    className="block text-sm font-[500] text-gray-700 mb-1 mt-4"
                     htmlFor="new-password"
                   >
                     New Password
@@ -240,7 +233,7 @@ const LoginPage = () => {
                       id="new-password"
                       type={showPassword ? "text" : "password"}
                       placeholder="New password"
-                      className="w-full px-4 py-2 rounded-md bg-transparent text-gray-300 border border-gray-400 placeholder-gray-600 focus:outline-none "
+                      className="w-full px-4 py-2 rounded-md bg-transparent text-gray-800 border border-gray-300 placeholder-gray-400 focus:outline-none focus:border-blue-500"
                       required
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
@@ -258,17 +251,17 @@ const LoginPage = () => {
                   </div>
                   <button
                     type="submit"
-                    className="w-full bg-gradient-to-r to-sky-500 from-purple-600 hover:opacity-90 text-white font-[500] py-2 rounded-md transition duration-200 mt-2"
+                    className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-[500] py-2 rounded-md transform transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95 mt-2"
                     disabled={loading}
                   >
                     {loading ? "Resetting..." : "Reset Password"}
                   </button>
                 </>
               )}
-              {error && <p className="text-red-400 text-sm mt-2">{error}</p>}
+              {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
               <button
                 type="button"
-                className="w-full text-white mt-2 underline"
+                className="w-full text-blue-500 mt-2 underline"
                 onClick={() => {
                   setShowForgotPassword(false);
                   setForgotStep(1);

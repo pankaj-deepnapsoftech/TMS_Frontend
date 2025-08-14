@@ -16,7 +16,6 @@ const TicketDetailHeader = ({
 }) => {
   const navigate = useNavigate();
 
-  // console.log(ticket.status);
   return (
     <>
       <motion.div
