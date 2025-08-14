@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   CheckCircle,
   Clock,
-  AlertTriangle,
   Target,
   Ticket,
   CalendarX,
@@ -12,68 +11,64 @@ import {
 import { useTicketCreate } from "../context/TicketCreateContext";
 
 const TicketStats = ({ onStatClick }) => {
-
   const { ticketStats, fetchTicketStats, statsError } = useTicketCreate();
 
   useEffect(() => {
     fetchTicketStats();
   }, []);
 
-   console.log(ticketStats)
   const stats = [
     {
       title: "Total Tickets",
       value: ticketStats.total,
       icon: Ticket,
-      filterValue: "all", 
-      color: "from-sky-500 to-cyan-500",
-      bgColor: "bg-sky-500/20",
-      borderColor: "border-sky-500/30",
-      iconBg: "bg-sky-500/20",
+      filterValue: "all",
+      color: "from-yellow-600 to-yellow-700",
+      bgColor: "bg-yellow-200",
+      borderColor: "border-gray-200",
+      iconBg: "bg-yellow-200/70",
     },
     {
       title: "Open",
       value: ticketStats.open,
       icon: Target,
-      filterValue: "open",  
-      color: "from-purple-500 to-pink-500",
-      bgColor: "bg-purple-500/20",
-      borderColor: "border-purple-500/30",
-      iconBg: "bg-purple-500/20",
+      filterValue: "open",
+      color: "from-blue-600 to-blue-700",
+      bgColor: "bg-blue-200",
+      borderColor: "border-gray-200",
+      iconBg: "bg-blue-200/70",
     },
     {
       title: "In Progress",
       value: ticketStats.inProgress,
       icon: Clock,
-      filterValue: "in progress", 
-      color: "from-yellow-500 to-orange-500",
-      bgColor: "bg-yellow-500/20",
-      borderColor: "border-yellow-500/30",
-      iconBg: "bg-yellow-500/20",
+      filterValue: "in progress",
+      color: "from-purple-600 to-purple-700",
+      bgColor: "bg-purple-200",
+      borderColor: "border-gray-200",
+      iconBg: "bg-purple-200/70",
     },
     {
       title: "Resolved",
       value: ticketStats.resolved,
       icon: CheckCircle,
-      filterValue: "resolved", 
-      color: "from-green-500 to-emerald-500",
-      bgColor: "bg-green-500/20",
-      borderColor: "border-green-500/30",
-      iconBg: "bg-green-500/20",
+      filterValue: "resolved",
+      color: "from-green-600 to-green-700",
+      bgColor: "bg-green-200",
+      borderColor: "border-gray-200",
+      iconBg: "bg-green-200/70",
     },
     {
       title: "Overdue Date",
       value: ticketStats.overdue,
       icon: CalendarX,
-      filterValue: "overdue",  
-      color: "from-red-500 to-emerald-500",
-      bgColor: "bg-red-500/20",
-      borderColor: "border-red-500/30",
-      iconBg: "bg-red-500/20",
+      filterValue: "overdue",
+      color: "from-red-600 to-red-700",
+      bgColor: "bg-red-200",
+      borderColor: "border-gray-200",
+      iconBg: "bg-red-200/70",
     },
   ];
-  
-
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-8">
@@ -91,18 +86,21 @@ const TicketStats = ({ onStatClick }) => {
           onClick={() => {
             onStatClick?.(stat.filterValue);
           }}
-          
           className="cursor-pointer"
         >
-          <Card className={` ${stat.bgColor}  ${stat.borderColor} backdrop-blur-sm hover:border-purple-400/40 transition-all duration-300`}>
+          <Card
+            className={` ${stat.bgColor} ${stat.borderColor} rounded-xl shadow-sm hover:shadow-md transition-all duration-300`}
+          >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-300">
+              <CardTitle className="text-sm font-medium text-gray-800">
                 {stat.title}
               </CardTitle>
-              <div className={`p-2 rounded-lg  ${stat.iconBg} `}>
-                <stat.icon className="h-4 w-4 text-white" />
+              <div
+                className={`p-2 rounded-lg flex items-center justify-center ${stat.iconBg}`}
+              >
+                <stat.icon className="h-5 w-5 text-gray-800" />
               </div>
-            </CardHeader >
+            </CardHeader>
             <CardContent>
               <div
                 className={`text-2xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}
@@ -110,10 +108,10 @@ const TicketStats = ({ onStatClick }) => {
                 {stat.value}
               </div>
             </CardContent>
-          </Card >
-        </motion.div >
+          </Card>
+        </motion.div>
       ))}
-    </div >
+    </div>
   );
 };
 
