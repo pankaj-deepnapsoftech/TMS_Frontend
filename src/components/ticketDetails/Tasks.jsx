@@ -5,8 +5,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 export default function AsanaTodoTableInlineAdd() {
-  const { getAllAssignedUser, assinedUser, CreateTask, totalTasks, GetTask } = useTodoContext();
-  console.log("here is total task", totalTasks);
+  const { getAllAssignedUser, assinedUser, CreateTask, totalTasks, GetTask, DeleteTask } = useTodoContext();
   const { ticketId } = useParams();
   
 
@@ -22,9 +21,7 @@ export default function AsanaTodoTableInlineAdd() {
     CreateTask(newTask);
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") handleAddTask();
-  };
+
 
   useEffect(() => {
     if (ticketId) {
@@ -61,7 +58,6 @@ export default function AsanaTodoTableInlineAdd() {
                   placeholder="Add a new task..."
                   value={newTask.title}
                   onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-                  onKeyDown={handleKeyDown}
                   className="w-full bg-transparent border-b border-gray-300 px-1 py-1 text-sm focus:outline-none focus:border-blue-500"
                 />
               </td>
@@ -110,12 +106,11 @@ export default function AsanaTodoTableInlineAdd() {
                   type="date"
                   value={newTask.due_date}
                   onChange={(e) => setNewTask({ ...newTask, due_date: e.target.value })}
-                  onKeyDown={handleKeyDown}
                   className="w-full h-10 bg-transparent border-b border-gray-300 px-1 py-1 text-sm focus:outline-none focus:border-blue-500"
                 />
               </td>
               <td className="px-4 py-2">
-               <button className="flex px-3 py-1 bg-blue-600 rounded-lg" >Add more</button>
+                <button onClick={handleAddTask} className="flex px-3 py-1 bg-blue-600 rounded-lg" >Add more</button>
               </td>
             </tr>
 
@@ -137,7 +132,7 @@ export default function AsanaTodoTableInlineAdd() {
                 </td>
                 <td className="px-4 py-2 text-sm">{task?.assinedTo?.email}</td>
                 <td className="px-4 py-2 text-sm">{DateModifier(task.due_date) || "-"}</td>
-                <td className="px-4 py-2 text-sm"><Trash2 /></td>
+                <td className="px-4 py-2 text-sm"><Trash2 className="px-3 py-2 hover:bg-gray-200 text-red-500" /></td>
               </tr>
             ))}
           </tbody>

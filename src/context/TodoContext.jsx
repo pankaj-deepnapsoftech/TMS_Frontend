@@ -1,22 +1,23 @@
 import { axiosHandler } from "@/config/axiosConfig";
-import {createContext, useContext, useState} from "react";
+import { createContext, useContext, useState } from "react";
 import { toast } from "react-toastify";
 
 
 const TodoContext = createContext({
-    getAllAssignedUser:()=>{},
-    assinedUser:[],
-    CreateTask:()=>{},
-    totalTasks:[],
-    GetTask:()=>{},
+    getAllAssignedUser: () => { },
+    assinedUser: [],
+    CreateTask: () => { },
+    totalTasks: [],
+    GetTask: () => { },
+    DeleteTask:() => {},
 });
 
 export const useTodoContext = () => useContext(TodoContext);
 
 
-const TodoContextProvider = ({children}) => {
-    const [assinedUser,setAssinedUser] = useState([]);
-    const [totalTasks,setTotalTasks] = useState([]);
+const TodoContextProvider = ({ children }) => {
+    const [assinedUser, setAssinedUser] = useState([]);
+    const [totalTasks, setTotalTasks] = useState([]);
 
     const getAllAssignedUser = async (ticketId) => {
         try {
@@ -36,9 +37,9 @@ const TodoContextProvider = ({children}) => {
         }
     }
 
-    const CreateTask =  async (data) => {
+    const CreateTask = async (data) => {
         try {
-            const res = await axiosHandler.post("/todos/create",data);
+            const res = await axiosHandler.post("/todos/create", data);
             toast.success(res.data.message || "Task Completed Successful");
             GetTask(data.ticket_id);
         } catch (error) {
@@ -46,10 +47,22 @@ const TodoContextProvider = ({children}) => {
         }
     }
 
-   
+    const DeleteTask = async (todoId) => {
+        try {
+            const res = await axiosHandler.get(`/todos/delete/${todoId}`);
+            const deletedId = res.data?.data?._id;
 
-    return(
-        <TodoContext.Provider value={{ getAllAssignedUser, assinedUser, CreateTask, GetTask, totalTasks }}>
+            setTotalTasks((prev) => prev.filter(task => task._id !== deletedId));
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+
+
+
+    return (
+        <TodoContext.Provider value={{ getAllAssignedUser, assinedUser, CreateTask, GetTask, totalTasks, }}>
             {children}
         </TodoContext.Provider>
     )
