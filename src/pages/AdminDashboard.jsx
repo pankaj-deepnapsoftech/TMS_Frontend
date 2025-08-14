@@ -1,11 +1,8 @@
-
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { Helmet } from "react-helmet";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/toaster";
-import { useToast } from "@/components/ui/use-toast";
-import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useAuthContext } from "../context/AuthContext2";
 import { useTicketCreate } from "../context/TicketCreateContext";
 import TicketForm from "@/components/TicketForm";
@@ -16,7 +13,6 @@ import { Plus, Ticket } from "lucide-react";
 import { departmentFilters } from "../context/AuthContext2";
 
 const AdminDashboard = () => {
-  // const { toast } = useToast();
   const { allUsers } = useAuthContext();
   const { allTicket, DeleteTicket } = useTicketCreate();
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -59,10 +55,9 @@ const AdminDashboard = () => {
         statusFilter === "all" ||
         (statusFilter === "overdue"
           ? ticket.status !== "resolved" &&
-          ticket.dueDate &&
-          new Date(ticket.dueDate) < now
+            ticket.dueDate &&
+            new Date(ticket.dueDate) < now
           : ticket.status === statusFilter);
-        
 
       const matchesPriority =
         priorityFilter === "all" || ticket.priority === priorityFilter;
@@ -94,7 +89,6 @@ const AdminDashboard = () => {
     departmentFilter,
   ]);
 
-  // console.log(allTicket)
   const handleDeleteTicket = (ticketId) => {
     if (window.confirm("Are you sure you want to delete ticket?")) {
       DeleteTicket(ticketId);
@@ -129,26 +123,24 @@ const AdminDashboard = () => {
           content="Manage all team tickets from the admin dashboard."
         />
       </Helmet>
-      <div className="p-4 lg:p-8">
+      <div className="p-4 lg:p-8 bg-gray-50 min-h-screen">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <h1 className="text-3xl font-bold text-white mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Ticket Management Dashboard
           </h1>
-          <p className="text-gray-400 mb-8">
+          <p className="text-gray-600 mb-8">
             Oversee and manage all tickets across the team.
           </p>
         </motion.div>
 
-        <TicketStats 
+        <TicketStats
           onStatClick={(filter) => {
-            setStatusFilter(filter);  // or whatever your filtering state logic is
+            setStatusFilter(filter);
           }}
         />
-
-
 
         <TicketFilters
           searchTerm={searchTerm}
@@ -176,7 +168,7 @@ const AdminDashboard = () => {
           <Button
             onClick={() => setIsFormOpen(true)}
             size="lg"
-            className="bg-gradient-to-br from-blue-600 to-slate-700 hover:from-blue-800 hover:to-slate-800 text-white font-semibold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-xl shadow transition-all duration-300 transform hover:scale-105"
           >
             <Plus className="w-5 h-5 mr-2" />
             Create & Assign Ticket
@@ -202,13 +194,13 @@ const AdminDashboard = () => {
                 className="col-span-full text-center py-16"
               >
                 <div className="max-w-md mx-auto">
-                  <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-r from-blue-500/20 to-slate-500/20 flex items-center justify-center">
-                    <Ticket className="w-12 h-12 text-blue-400" />
+                  <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-r from-blue-200/50 to-gray-200/50 flex items-center justify-center">
+                    <Ticket className="w-12 h-12 text-blue-500" />
                   </div>
-                  <h3 className="text-2xl font-semibold text-gray-300 mb-2">
+                  <h3 className="text-2xl font-semibold text-gray-900 mb-2">
                     No tickets match your filters
                   </h3>
-                  <p className="text-gray-400">
+                  <p className="text-gray-600">
                     Try adjusting your search or filter criteria.
                   </p>
                 </div>
@@ -217,7 +209,7 @@ const AdminDashboard = () => {
           </AnimatePresence>
         </div>
 
-        <TicketForm 
+        <TicketForm
           isOpen={isFormOpen}
           onClose={handleCloseForm}
           ticket={editingTicket}
