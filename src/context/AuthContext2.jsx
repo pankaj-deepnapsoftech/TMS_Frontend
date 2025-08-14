@@ -49,6 +49,7 @@ const AuthContextProvider = ({ children }) => {
       setUser(loggedInUser);
       localStorage.setItem("authToken", authToken);
       localStorage.setItem("authUser", JSON.stringify(loggedInUser));
+      axiosHandler.defaults.headers.authorization = `Bearer ${authToken}`;
 
       toast.success(res?.data?.message);
 

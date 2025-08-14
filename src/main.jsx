@@ -9,6 +9,7 @@ import TicketCreateProvider from './context/TicketCreateContext';
 import { ProfileProvider } from './context/UserProfileUpdateContext';
 import NotificationProvider from './context/NotificationContext';
 import ForgetPassContextProvider from './context/ForgetPassContext';
+import TodoContextProvider from './context/TodoContext';
 
 
 
@@ -21,7 +22,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <ForgetPassContextProvider>
             <ProfileProvider>
               <TicketCreateProvider>
-                <App />
+                <TodoContextProvider>
+                  <App />
+                </TodoContextProvider>
               </TicketCreateProvider>
             </ProfileProvider>
           </ForgetPassContextProvider>
