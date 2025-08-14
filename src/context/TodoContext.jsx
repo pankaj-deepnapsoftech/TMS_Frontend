@@ -49,10 +49,10 @@ const TodoContextProvider = ({ children }) => {
 
     const DeleteTask = async (todoId) => {
         try {
-            const res = await axiosHandler.get(`/todos/delete/${todoId}`);
-            const deletedId = res.data?.data?._id;
+            const res = await axiosHandler.delete(`/todos/delete/${todoId}`);
+            toast.success(res.data.message || "task delete successfully ")
 
-            setTotalTasks((prev) => prev.filter(task => task._id !== deletedId));
+            setTotalTasks((prev) => prev.filter(task => task._id !== todoId));
         } catch (error) {
             console.log(error);
         }
@@ -62,7 +62,7 @@ const TodoContextProvider = ({ children }) => {
 
 
     return (
-        <TodoContext.Provider value={{ getAllAssignedUser, assinedUser, CreateTask, GetTask, totalTasks, }}>
+        <TodoContext.Provider value={{ getAllAssignedUser, assinedUser, CreateTask, GetTask, totalTasks, DeleteTask }}>
             {children}
         </TodoContext.Provider>
     )

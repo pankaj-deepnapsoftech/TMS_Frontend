@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 export default function AsanaTodoTableInlineAdd() {
   const { getAllAssignedUser, assinedUser, CreateTask, totalTasks, GetTask, DeleteTask } = useTodoContext();
   const { ticketId } = useParams();
-  
+
 
   const [newTask, setNewTask] = useState({
     title: "",
@@ -19,6 +19,13 @@ export default function AsanaTodoTableInlineAdd() {
 
   const handleAddTask = () => {
     CreateTask(newTask);
+    setNewTask({
+      title: "",
+      priority: "Medium",
+      assinedTo: "",
+      due_date: "",
+      ticket_id: ticketId,
+    })
   };
 
 
@@ -68,7 +75,7 @@ export default function AsanaTodoTableInlineAdd() {
                   className="bg-transparent border-b border-gray-300 px-1 py-1 text-sm focus:outline-none focus:border-blue-500"
                 >
                   <option value="">Select Status</option>
-                  {[ "Pending", "In Progress", "Completed", "Re Open", "Under Review"].map((item) => (
+                  {["Pending", "In Progress", "Completed", "Re Open", "Under Review"].map((item) => (
                     <option key={item} value={item}>
                       {item}
                     </option>
@@ -132,7 +139,7 @@ export default function AsanaTodoTableInlineAdd() {
                 </td>
                 <td className="px-4 py-2 text-sm">{task?.assinedTo?.email}</td>
                 <td className="px-4 py-2 text-sm">{DateModifier(task.due_date) || "-"}</td>
-                <td className="px-4 py-2 text-sm"><Trash2 className="px-3 py-2 hover:bg-gray-200 text-red-500" /></td>
+                <td className="px-4 py-2 text-sm"><button className="py-1 px-3 rounded-md hover:bg-gray-200 hover:text-red-500" onClick={() => DeleteTask(task._id)}><Trash2 /></button></td>
               </tr>
             ))}
           </tbody>
