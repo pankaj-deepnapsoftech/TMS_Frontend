@@ -84,7 +84,7 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
       case "in progress":
         return "bg-yellow-500/20 text-yellow-300 border-yellow-500/30";
       case "under review":
-        return "bg-purple-500/20 text-purple-300 border-purple-500/30";
+        return "bg-blue-500/20 text-blue-300 border-blue-500/30";
       case "resolved":
         return "bg-green-500/20 text-green-300 border-green-500/30";
       case "closed":
@@ -128,41 +128,40 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
       .map((n) => n[0])
       .join("");
   };
-   
+
   return (
     <motion.div
       layout
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
-      whileHover={{ y: -2 }}
+      whileHover={{ y: -4, boxShadow: "0 8px 20px rgba(0,0,0,0.1)" }}
       transition={{ duration: 0.2 }}
     >
       <Card
-        className={`bg-gradient-to-br from-slate-800/50 to-slate-900/50 border-purple-500/20 backdrop-blur-sm hover:border-purple-400/40 transition-all duration-300 overflow-hidden ${
+        className={`bg-gradient-to-br from-white to-gray-50 border-gray-300 hover:border-blue-300 transition-all duration-300 overflow-hidden ${
           ticket.status === "closed" ? "opacity-75" : ""
-        } ${isAssignedToCurrentUser() ? "ring-1 ring-purple-400/30" : ""}`}
+        } ${isAssignedToCurrentUser() ? "ring-1 ring-blue-300/40" : ""}`}
         style={{ wordBreak: "break-word" }}
       >
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
-                <div className=" text-[10px] border border-red-500 bg-[#8b21265d] rounded-full px-4 py-1">
-                   {ticket.ticketNumber}
+                <div className="text-[10px] border border-red-400 bg-red-100 rounded-full px-4 py-1 text-red-700">
+                  {ticket.ticketNumber}
                 </div>
                 <Badge className={getStatusColor(ticket.status)}>
                   {status?.name || ticket.status}
                 </Badge>
               </div>
-             
             </div>
             <div className="flex gap-1">
               <Button
                 size="icon"
                 variant="ghost"
                 onClick={handleViewTicket}
-                className="h-8 w-8 text-blue-400 hover:text-blue-300 hover:bg-blue-500/20"
+                className="h-8 w-8 text-blue-600 hover:text-blue-500 hover:bg-blue-100"
               >
                 <Eye className="h-4 w-4" />
               </Button>
@@ -172,7 +171,7 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
                     size="icon"
                     variant="ghost"
                     onClick={() => onEdit(ticket)}
-                    className="h-8 w-8 text-purple-400 hover:text-purple-300 hover:bg-purple-500/20"
+                    className="h-8 w-8 text-blue-600 hover:text-blue-500 hover:bg-blue-100"
                   >
                     <Edit className="h-4 w-4" />
                   </Button>
@@ -180,7 +179,7 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
                     size="icon"
                     variant="ghost"
                     onClick={() => onDelete(ticket._id)}
-                    className="h-8 w-8 text-red-400 hover:text-red-300 hover:bg-red-500/20"
+                    className="h-8 w-8 text-red-600 hover:text-red-500 hover:bg-red-100"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -199,7 +198,7 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
             </Badge>
             <Badge
               variant="secondary"
-              className="bg-pink-500/20 text-pink-300 border-pink-500/30"
+              className="bg-pink-100 text-pink-700 border-pink-300"
             >
               <Briefcase className="w-3 h-3 mr-1" />
               {department.label}
@@ -207,7 +206,7 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
             {ticket.comments && ticket.comments.length > 0 && (
               <Badge
                 variant="secondary"
-                className="bg-green-500/20 text-green-300 border-green-500/30"
+                className="bg-green-100 text-green-700 border-green-300"
               >
                 <MessageSquare className="w-3 h-3 mr-1" />
                 {ticket.comments.length} comment
@@ -215,36 +214,38 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
               </Badge>
             )}
           </div>
+
           <div>
             <h3
-              className={`font-semibold text-lg leading-tight ${ticket.status === "closed"
+              className={`font-semibold text-lg leading-tight ${
+                ticket.status === "closed"
                   ? "line-through text-gray-400"
-                  : "text-white"
-                }`}
+                  : "text-gray-900"
+              }`}
               style={{ wordBreak: "break-word" }}
             >
               {ticket.title}
             </h3>
             {ticket.description && (
               <p
-                className={`text-sm mt-1 line-clamp-2 ${ticket.status === "closed"
-                    ? "text-gray-500"
-                    : "text-gray-300"
-                  }`}
+                className={`text-sm mt-1 line-clamp-2 ${
+                  ticket.status === "closed" ? "text-gray-400" : "text-gray-700"
+                }`}
                 style={{ wordBreak: "break-word" }}
               >
                 {ticket.description}
               </p>
             )}
           </div>
-          <div className="flex justify-between gap-3 whitespace-nowrap items-end text-sm text-gray-400">
+
+          <div className="flex justify-between gap-3 whitespace-nowrap items-end text-sm text-gray-600">
             {assignedUsers.length > 0 && (
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   {assignedUsers.length === 1 ? (
-                    <User className="w-4 h-4 text-purple-400" />
+                    <User className="w-4 h-4 text-blue-500" />
                   ) : (
-                    <Users className="w-4 h-4 text-purple-400" />
+                    <Users className="w-4 h-4 text-blue-500" />
                   )}
                   <span>Assigned to ({assignedUsers.length}):</span>
                 </div>
@@ -256,21 +257,21 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
                       animate={{ opacity: 1, scale: 1 }}
                       className={`flex items-center gap-2 rounded-full px-2 py-1 border ${
                         user.id === currentUser?.id
-                          ? "bg-purple-500/30 border-purple-400/50"
-                          : "bg-slate-700/30 border-purple-500/20"
+                          ? "bg-blue-100 border-blue-300"
+                          : "bg-gray-100 border-gray-300"
                       }`}
                     >
                       <Avatar className="w-7 h-7">
                         <AvatarImage src={user.avatar} alt={user.name} />
-                        <AvatarFallback className="text-xs bg-purple-500/20">
+                        <AvatarFallback className="text-xs bg-blue-100 text-blue-700">
                           {getInitials(user.name)}
                         </AvatarFallback>
                       </Avatar>
                       <span
                         className={`font-medium text-xs ${
                           user.id === currentUser?.id
-                            ? "text-purple-200"
-                            : "text-white"
+                            ? "text-blue-700"
+                            : "text-gray-900"
                         }`}
                       >
                         {user.id === currentUser?.id ? "You" : user.name}
@@ -278,8 +279,8 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
                     </motion.div>
                   ))}
                   {assignedUsers.length > 3 && (
-                    <div className="flex items-center justify-center bg-slate-700/30 rounded-full px-2 py-1 border border-purple-500/20">
-                      <span className="text-xs text-purple-300">
+                    <div className="flex items-center justify-center bg-gray-100 rounded-full px-2 py-1 border border-gray-300">
+                      <span className="text-xs text-gray-600">
                         +{assignedUsers.length - 3} more
                       </span>
                     </div>
@@ -290,7 +291,7 @@ const TicketCard = ({ ticket, onEdit, onDelete, onStatusChange }) => {
             {ticket.dueDate && (
               <div
                 className={`flex items-center gap-2 ${
-                  isOverdue(ticket.dueDate) ? "text-red-400" : ""
+                  isOverdue(ticket.dueDate) ? "text-red-600" : "text-gray-600"
                 }`}
               >
                 {isOverdue(ticket.dueDate) ? (

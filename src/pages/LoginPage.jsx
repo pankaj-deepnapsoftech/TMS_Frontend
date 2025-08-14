@@ -59,7 +59,7 @@ const LoginPage = () => {
   };
 
   return (
-    <section className="relative h-screen w-full bg-gray-100">
+    <section className="relative h-screen w-full bg-white">
       <img
         className="absolute inset-0 h-full w-full object-cover opacity-40"
         src="/LoginPageImg/loginbg.png"
@@ -68,7 +68,7 @@ const LoginPage = () => {
       <div className="absolute inset-0 bg-white bg-opacity-50" />
 
       <div className="relative z-10 flex h-full w-full items-center justify-center px-4">
-        <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-xl shadow-xl p-8 w-full max-w-[30rem]">
+        <div className="backdrop-blur-lg bg-gray-100 rounded-xl shadow-xl p-8 w-full max-w-[30rem]">
           <div className="w-full flex justify-center items-center">
             <img className="h-32" src="/LoginPageImg/CompanyLogo.png" alt="" />
           </div>
@@ -87,7 +87,7 @@ const LoginPage = () => {
                     id="email"
                     type="email"
                     placeholder="you@example.com"
-                    className="w-full px-10 py-2 rounded-md bg-transparent text-gray-800 border border-gray-300 placeholder-gray-400 focus:outline-none focus:border-blue-500"
+                    className="w-full px-10 py-2 rounded-md bg-transparent text-gray-800 border border-gray-600 placeholder-gray-400 focus:outline-none focus:border-blue-500"
                     required
                     autoComplete="new-email"
                     value={formik.values.email}
@@ -112,7 +112,7 @@ const LoginPage = () => {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
-                    className="w-full px-10 py-2 border border-gray-300 rounded-md bg-transparent text-gray-800 placeholder-gray-400 focus:outline-none focus:border-blue-500"
+                    className="w-full px-10 py-2 border border-gray-600 rounded-md bg-transparent text-gray-800 placeholder-gray-400 focus:outline-none focus:border-blue-500"
                     required
                     autoComplete="new-password"
                     value={formik.values.password}
@@ -152,7 +152,7 @@ const LoginPage = () => {
 
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-[500] py-2 rounded-md transform transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95"
+                  className="w-full bg-gradient-to-br from-blue-600 to-slate-700 text-white font-[500] py-2 rounded-md transform transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95"
                 >
                   Log In
                 </button>
@@ -192,7 +192,7 @@ const LoginPage = () => {
                     id="forgot-email"
                     type="email"
                     placeholder="you@example.com"
-                    className="w-full px-4 py-2 rounded-md bg-transparent text-gray-800 border border-gray-300 placeholder-gray-400 focus:outline-none focus:border-blue-500"
+                    className="w-full px-4 py-2 rounded-md bg-transparent text-gray-800 border border-gray-600 placeholder-gray-400 focus:outline-none focus:border-blue-500"
                     required
                     value={forgotEmail}
                     onChange={(e) => setForgotEmail(e.target.value)}
@@ -217,7 +217,7 @@ const LoginPage = () => {
                     id="otp"
                     type="text"
                     placeholder="Enter OTP"
-                    className="w-full px-4 py-2 rounded-md bg-transparent text-gray-800 border border-gray-300 placeholder-gray-400 focus:outline-none focus:border-blue-500"
+                    className="w-full px-4 py-2 rounded-md bg-transparent text-gray-800 border border-gray-600 placeholder-gray-400 focus:outline-none focus:border-blue-500"
                     required
                     value={otp}
                     onChange={(e) => setOtp(e.target.value)}
@@ -233,7 +233,7 @@ const LoginPage = () => {
                       id="new-password"
                       type={showPassword ? "text" : "password"}
                       placeholder="New password"
-                      className="w-full px-4 py-2 rounded-md bg-transparent text-gray-800 border border-gray-300 placeholder-gray-400 focus:outline-none focus:border-blue-500"
+                      className="w-full px-4 py-2 rounded-md bg-transparent text-gray-800 border border-gray-600 placeholder-gray-400 focus:outline-none focus:border-blue-500"
                       required
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
@@ -251,7 +251,7 @@ const LoginPage = () => {
                   </div>
                   <button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-[500] py-2 rounded-md transform transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95 mt-2"
+                    className="w-full bg-gradient-to-r from-blue-600 to-slate-800 text-white font-[500] py-2 rounded-md transform transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95 mt-2"
                     disabled={loading}
                   >
                     {loading ? "Resetting..." : "Reset Password"}

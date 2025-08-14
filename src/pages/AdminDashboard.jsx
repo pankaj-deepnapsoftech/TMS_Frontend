@@ -176,7 +176,7 @@ const AdminDashboard = () => {
           <Button
             onClick={() => setIsFormOpen(true)}
             size="lg"
-            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+            className="bg-gradient-to-br from-blue-600 to-slate-700 hover:from-blue-800 hover:to-slate-800 text-white font-semibold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
           >
             <Plus className="w-5 h-5 mr-2" />
             Create & Assign Ticket
@@ -202,8 +202,8 @@ const AdminDashboard = () => {
                 className="col-span-full text-center py-16"
               >
                 <div className="max-w-md mx-auto">
-                  <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 flex items-center justify-center">
-                    <Ticket className="w-12 h-12 text-purple-400" />
+                  <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-r from-blue-500/20 to-slate-500/20 flex items-center justify-center">
+                    <Ticket className="w-12 h-12 text-blue-400" />
                   </div>
                   <h3 className="text-2xl font-semibold text-gray-300 mb-2">
                     No tickets match your filters
