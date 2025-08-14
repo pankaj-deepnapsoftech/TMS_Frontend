@@ -153,10 +153,7 @@ body {
     @apply bg-muted text-foreground border border-input rounded-md px-3 py-2 text-sm w-full;
   }
 
-  input[type="date"] {
-    @apply form-input;
-    appearance: none;
-  }
+
 
   input[type="date"]::-webkit-calendar-picker-indicator {
     /* background-color: hsl(var(--primary));  */
