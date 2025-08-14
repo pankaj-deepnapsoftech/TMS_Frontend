@@ -21,8 +21,6 @@ import { useNotifications } from "@/context/NotificationContext";
 import { departmentFilters } from "../context/AuthContext2";
 import { useNavigate } from "react-router-dom";
 import { socket } from "@/socket";
-// // import { socket } from "@/socket";
-// import { useEffect } from "react";
 
 const Header = () => {
   const {
@@ -51,9 +49,6 @@ const Header = () => {
   } = useProfile();
 
   const navigation = useNavigate();
-  // const closeNotificationPanel = () => {
-  //   setNotificationOpen(false);
-  // };
 
   const handleShowAdmitDropdown = () => {
     setShowAdmitDropdown((prev) => !prev);
@@ -61,8 +56,6 @@ const Header = () => {
       UnapprovedUsers();
     }
   };
-
-  // console.log(notifications)
 
   const handleAdmitUser = (userId, accept) => {
     if (accept) {
@@ -72,22 +65,17 @@ const Header = () => {
     }
   };
 
-  //  console.log(notifications)
-  
-
   return (
-    <section className="bg-slate-900/50 backdrop-blur-lg border-b border-purple-500/20 sticky top-0 z-40">
+    <section className="bg-white backdrop-blur-lg border-b border-blue-300 sticky top-0 z-40">
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex  md:flex-row items-center justify-between h-auto md:h-20 py-3 md:py-0 gap-2 md:gap-0">
+        <div className="flex md:flex-row items-center justify-between h-auto md:h-20 py-3 md:py-0 gap-2 md:gap-0">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-3"
           >
-            <div className="p-2 rounded-lg bg-gradient-to-r from-purple-500/20 to-pink-500/20">
-              <CheckSquare className="w-5 h-5 text-purple-400" />
-            </div>
-            <span className="text-lg whitespace-nowrap sm:text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <CheckSquare className="w-5 h-5 text-blue-600" />
+            <span className="text-lg whitespace-nowrap sm:text-2xl font-bold bg-gradient-to-br from-blue-600 to-slate-700 bg-clip-text text-transparent">
               ITSYBIZZ TMS
             </span>
           </motion.div>
@@ -107,7 +95,7 @@ const Header = () => {
                     <Button
                       size="sm"
                       variant="ghost"
-                      className="text-purple-400 border-purple-400 hover:bg-purple-900/20 hover:text-white relative"
+                      className="text-blue-600 border-blue-400 hover:bg-blue-100 hover:text-blue-800 relative transition-colors duration-200"
                       aria-label="Show pending user requests"
                     >
                       <UserPlus size="20" />
@@ -116,18 +104,21 @@ const Header = () => {
                       )}
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="bg-slate-900 border-purple-500/30 max-w-xs md:max-w-lg w-80 mt-2">
-                    <div className="px-4 py-2 border-b border-purple-500/20 flex items-center justify-between">
-                      <span className="font-semibold text-purple-200">
+                  <DropdownMenuContent className="bg-white border-blue-300 text-black max-w-xs md:max-w-lg w-80 mt-2 shadow-lg">
+                    <div className="px-4 py-2 border-b border-blue-200 flex items-center justify-between">
+                      <span className="font-semibold text-blue-700">
                         Pending User Requests
                       </span>
                     </div>
                     <div className="space-y-3 max-h-64 overflow-y-auto px-1 py-2">
                       {unapprovedUsers && unapprovedUsers.length > 0 ? (
                         unapprovedUsers.map((pending) => (
-                          <div
+                          <motion.div
                             key={pending._id}
-                            className="p-3 rounded-lg bg-[#04083f96] flex flex-col gap-1 border border-purple-500/10"
+                            initial={{ opacity: 0, y: 5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="p-3 rounded-lg bg-blue-50 flex flex-col gap-1 border border-blue-100"
                           >
                             <div className="flex items-center gap-2">
                               <Avatar>
@@ -136,10 +127,10 @@ const Header = () => {
                                 </AvatarFallback>
                               </Avatar>
                               <div>
-                                <p className="font-semibold text-white">
+                                <p className="font-semibold text-gray-900">
                                   {pending.name}
                                 </p>
-                                <p className="text-xs text-gray-400 capitalize">
+                                <p className="text-xs text-gray-500 capitalize">
                                   {pending.department}
                                 </p>
                               </div>
@@ -147,7 +138,7 @@ const Header = () => {
                             <div className="flex gap-2 mt-2 justify-end">
                               <Button
                                 size="sm"
-                                className="bg-green-500/20 text-green-300 border border-green-500/30 hover:bg-green-600/30 hover:text-white transition-colors duration-150"
+                                className="bg-green-100 text-green-700 border border-green-300 hover:bg-green-200 transition-colors duration-150"
                                 onClick={() =>
                                   handleAdmitUser(pending._id, true)
                                 }
@@ -156,7 +147,7 @@ const Header = () => {
                               </Button>
                               <Button
                                 size="sm"
-                                className="bg-red-500/20 text-red-300 border border-red-500/30 hover:bg-red-600/30 hover:text-white transition-colors duration-150"
+                                className="bg-red-100 text-red-700 border border-red-300 hover:bg-red-200 transition-colors duration-150"
                                 onClick={() =>
                                   handleAdmitUser(pending._id, false)
                                 }
@@ -164,10 +155,10 @@ const Header = () => {
                                 Reject
                               </Button>
                             </div>
-                          </div>
+                          </motion.div>
                         ))
                       ) : (
-                        <p className="text-sm text-white px-4 py-2">
+                        <p className="text-sm text-gray-600 px-4 py-2">
                           No pending requests.
                         </p>
                       )}
@@ -185,7 +176,7 @@ const Header = () => {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="text-purple-400 hover:text-white relative"
+                      className="text-blue-600 hover:text-blue-200 relative"
                       aria-label="Show notifications"
                     >
                       <BellIcon className="h-5 w-5" />
@@ -194,76 +185,72 @@ const Header = () => {
                       )}
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="bg-slate-900 border-purple-500/30 max-w-xs md:max-w-lg w-80 mt-2">
-                    <div className="px-4 py-2 border-b border-purple-500/20 flex items-center justify-between">
-                      <span className="font-semibold text-purple-200">
+                  <DropdownMenuContent className="bg-white max-w-xs md:max-w-lg w-80 mt-2 shadow-lg">
+                    <div className="px-4 py-2 flex items-center justify-between">
+                      <span className="font-semibold text-blue-700">
                         Notifications
                       </span>
                     </div>
                     <div className="space-y-3 max-h-64 overflow-y-auto px-1 py-2">
                       {notifications.length > 0 ? (
                         notifications.map((note) => (
-                          <div
+                          <motion.div
                             key={note._id}
+                            initial={{ opacity: 0, y: 5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.2 }}
                             onClick={() => {
                               navigation(`/ticket/${note.ticket}/comment`);
                               setNotificationOpen(false);
                             }}
-                            className={`cursor-pointer p-3 rounded-lg transition-colors duration-150 ${note.isRead
-                                ? "bg-[#00000096]"
-                                : "bg-[#3f235d] border-l-4 border-[#7d3cbd]"
-                              } hover:bg-purple-800/40`}
+                            className={`cursor-pointer p-3 rounded-lg transition-colors duration-150 ${
+                              note.isRead
+                                ? "bg-gray-50"
+                                : "bg-blue-100 border-l-4 border-blue-400"
+                            } hover:bg-blue-200`}
                           >
                             <div className="flex justify-between items-start">
                               <div>
-                                {/* Type Badge */}
                                 <span
-                                  className={`text-xs px-2 py-1 rounded-full mr-2 font-medium ${note.type === "comment"
-                                      ? "bg-blue-600 text-white"
+                                  className={`text-xs px-2 py-1 rounded-full mr-2 font-medium ${
+                                    note.type === "comment"
+                                      ? "bg-blue-500 text-white"
                                       : note.type === "message"
-                                        ? "bg-green-600 text-white"
-                                        : note.type === "ticket"
-                                          ? "bg-red-600 text-white"
-                                          : "bg-gray-600 text-white"
-                                    }`}
+                                      ? "bg-green-500 text-white"
+                                      : note.type === "ticket"
+                                      ? "bg-red-500 text-white"
+                                      : "bg-gray-500 text-white"
+                                  }`}
                                 >
                                   {note.type.charAt(0).toUpperCase() +
                                     note.type.slice(1)}
                                 </span>
-
-                                {/* Message */}
-                                <p className="text-sm font-semibold text-purple-300 inline">
+                                <p className="text-sm font-semibold text-blue-700 inline">
                                   {note.message}
                                 </p>
-
-                                {/* Sender */}
-                                <p className="text-xs text-gray-300 mt-1">
+                                <p className="text-xs text-gray-500 mt-1">
                                   From: {note?.sender?.name}
                                 </p>
-
-                                {/* Timestamp */}
                                 <p className="text-xs text-gray-400">
                                   {new Date(note.createdAt).toLocaleString()}
                                 </p>
                               </div>
                             </div>
-
-                            {/* Mark as Read Button */}
                             {!note.isRead && (
                               <button
                                 onClick={(e) => {
-                                  e.stopPropagation(); // prevent routing on button click
+                                  e.stopPropagation();
                                   handleMarkAsRead(note._id);
                                 }}
-                                className="text-xs text-purple-400 hover:underline mt-1"
+                                className="text-xs text-blue-600 hover:underline mt-1"
                               >
                                 Mark as Read
                               </button>
                             )}
-                          </div>
+                          </motion.div>
                         ))
                       ) : (
-                        <p className="text-sm text-white px-4 py-2">
+                        <p className="text-sm text-gray-600 px-4 py-2">
                           No new notifications.
                         </p>
                       )}
@@ -281,63 +268,63 @@ const Header = () => {
                   <AvatarFallback>{user.name?.[0]}</AvatarFallback>
                 </Avatar>
                 <div className="text-right hidden sm:block">
-                  <p className="font-semibold text-white group-hover:underline">
+                  <p className="font-semibold text-gray-900 group-hover:underline">
                     {user.name}
                   </p>
-                  <p className="text-xs text-purple-300 capitalize">
+                  <p className="text-xs text-blue-600 capitalize">
                     {user.role}
                   </p>
                 </div>
               </div>
 
               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogContent className="bg-slate-900 border-purple-500/30">
+                <DialogContent className="bg-white border-blue-300 text-black shadow-lg">
                   <DialogHeader>
                     <DialogTitle>Edit Profile</DialogTitle>
                   </DialogHeader>
                   <form onSubmit={handleProfileSave} className="space-y-4">
                     {error && (
-                      <div className="text-red-400 text-sm">{error}</div>
+                      <div className="text-red-500 text-sm">{error}</div>
                     )}
                     <div>
-                      <label className="block text-sm text-purple-300 mb-1">
+                      <label className="block text-sm text-gray-700-700 mb-1">
                         Name
                       </label>
                       <Input
                         value={editName}
                         onChange={(e) => setEditName(e.target.value)}
-                        className="bg-slate-800 text-white"
+                        className="bg-gray-100 text-gray-900"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm text-purple-300 mb-1">
+                      <label className="block text-sm text-gray-700-700 mb-1">
                         Email
                       </label>
                       <Input
                         value={editEmail}
                         disabled
-                        className="bg-slate-800 text-white"
+                        className="bg-gray-100 text-gray-900"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm text-purple-300 mb-1">
+                      <label className="block text-sm text-gray-700-700 mb-1">
                         Role
                       </label>
                       <Input
                         value={editRole}
                         disabled
-                        className="bg-slate-800 text-white"
+                        className="bg-gray-100 text-gray-900"
                       />
                     </div>
                     {user.department && user.role !== "admin" && (
                       <div>
-                        <label className="block text-sm text-purple-300 mb-1">
+                        <label className="block text-sm text-gray-700-700 mb-1">
                           Department
                         </label>
                         <select
                           value={editDepartment}
                           onChange={(e) => setEditDepartment(e.target.value)}
-                          className="bg-slate-800 text-white px-3 py-2 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-purple-500"
+                          className="bg-gray-100 text-gray-900 px-3 py-2 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
                         >
                           {departmentFilters
                             .filter((dept) => dept.value !== "all")
@@ -358,7 +345,7 @@ const Header = () => {
                         Cancel
                       </Button>
                       <Button
-                        className="text-white"
+                        className="text-white bg-blue-500 hover:bg-blue-600"
                         type="submit"
                         variant="default"
                         disabled={loading}
@@ -370,11 +357,16 @@ const Header = () => {
                 </DialogContent>
               </Dialog>
 
+              {/* Updated Logout Button with Confirmation */}
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={Logout}
-                className="text-purple-400 hover:text-red-400 hover:bg-red-500/10"
+                onClick={() => {
+                  if (window.confirm("Are you sure you want to log out?")) {
+                    Logout();
+                  }
+                }}
+                className="text-blue-600 hover:text-gray-800 hover:bg-gray-100"
               >
                 <LogOutIcon className="h-5 w-5" />
               </Button>
