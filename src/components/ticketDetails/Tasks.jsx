@@ -1,4 +1,6 @@
 import { useTodoContext } from "@/context/TodoContext";
+import { DateModifier } from "@/lib/dateModifier";
+import { Trash2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -6,24 +8,7 @@ export default function AsanaTodoTableInlineAdd() {
   const { getAllAssignedUser, assinedUser, CreateTask, totalTasks, GetTask } = useTodoContext();
   console.log("here is total task", totalTasks);
   const { ticketId } = useParams();
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      title: "Audit pages for redesign",
-      status: "Backlog",
-      priority: "High",
-      assignee: "DT",
-      due_date: "2025-08-15",
-    },
-    {
-      id: 2,
-      title: "Hero section layout",
-      status: "In Progress",
-      priority: "Medium",
-      assignee: "RS",
-      due_date: "2025-08-20",
-    },
-  ]);
+  
 
   const [newTask, setNewTask] = useState({
     title: "",
@@ -63,6 +48,8 @@ export default function AsanaTodoTableInlineAdd() {
               <th className="px-4 py-2 text-left text-sm font-medium">Priority</th>
               <th className="px-4 py-2 text-left text-sm font-medium">Assignee</th>
               <th className="px-4 py-2 text-left text-sm font-medium">Due Date</th>
+              <th className="px-4 py-2 text-left text-sm font-medium">Action</th>
+
             </tr>
           </thead>
           <tbody>
@@ -85,7 +72,7 @@ export default function AsanaTodoTableInlineAdd() {
                   className="bg-transparent border-b border-gray-300 px-1 py-1 text-sm focus:outline-none focus:border-blue-500"
                 >
                   <option value="">Select Status</option>
-                  {["Backlog", "Pending", "In Progress", "Completed", "Re Open", "Under Review"].map((item) => (
+                  {[ "Pending", "In Progress", "Completed", "Re Open", "Under Review"].map((item) => (
                     <option key={item} value={item}>
                       {item}
                     </option>
@@ -127,13 +114,17 @@ export default function AsanaTodoTableInlineAdd() {
                   className="w-full h-10 bg-transparent border-b border-gray-300 px-1 py-1 text-sm focus:outline-none focus:border-blue-500"
                 />
               </td>
+              <td className="px-4 py-2">
+               <button className="flex px-3 py-1 bg-blue-600 rounded-lg" >Add more</button>
+              </td>
             </tr>
 
             {/* Existing Tasks */}
-            {tasks.map((task) => (
-              <tr key={task.id} className="border-t border-gray-300 hover:bg-gray-100">
+            {totalTasks.map((task) => (
+              <tr key={task._id} className="border-t border-gray-300 hover:bg-gray-100">
                 <td className="px-4 py-2 text-sm">{task.title}</td>
-                <td className="px-4 py-2 text-sm">{task.status}</td>
+                <td className="px-4 py-2 text-sm">{task?.statusHistory[task?.statusHistory.length - 1].
+                  status}</td>
                 <td
                   className={`px-4 py-2 text-sm ${task.priority === "High"
                     ? "text-red-500"
@@ -144,8 +135,9 @@ export default function AsanaTodoTableInlineAdd() {
                 >
                   {task.priority}
                 </td>
-                <td className="px-4 py-2 text-sm">{task.assignee}</td>
-                <td className="px-4 py-2 text-sm">{task.due_date || "-"}</td>
+                <td className="px-4 py-2 text-sm">{task?.assinedTo?.email}</td>
+                <td className="px-4 py-2 text-sm">{DateModifier(task.due_date) || "-"}</td>
+                <td className="px-4 py-2 text-sm"><Trash2 /></td>
               </tr>
             ))}
           </tbody>
