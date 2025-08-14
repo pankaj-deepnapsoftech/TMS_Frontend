@@ -43,10 +43,10 @@ const TicketStats = ({ onStatClick }) => {
       value: ticketStats.inProgress,
       icon: Clock,
       filterValue: "in progress",
-      color: "from-purple-600 to-purple-700",
-      bgColor: "bg-purple-200",
+      color: "from-blue-600 to-blue-700",
+      bgColor: "bg-blue-200",
       borderColor: "border-gray-200",
-      iconBg: "bg-purple-200/70",
+      iconBg: "bg-blue-200/70",
     },
     {
       title: "Resolved",

@@ -31,9 +31,9 @@ const TicketDetailSidebar = ({
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   {assignedIds.length === 1 ? (
-                    <User className="w-4 h-4 text-purple-600" />
+                    <User className="w-4 h-4 text-blue-600" />
                   ) : (
-                    <Users className="w-4 h-4 text-purple-600" />
+                    <Users className="w-4 h-4 text-blue-600" />
                   )}
                   <p className="text-sm text-gray-500">Assigned to ({assignedIds.length})</p>
                 </div>
@@ -45,7 +45,7 @@ const TicketDetailSidebar = ({
                       animate={{ opacity: 1, scale: 1 }}
                       className={`flex items-center gap-3 p-3 rounded-lg border ${
                         assignedUser._id === user?._id
-                          ? 'bg-purple-50 border-purple-200'
+                          ? 'bg-blue-50 border-blue-200'
                           : 'bg-gray-50 border-gray-200'
                       }`}
                     >
@@ -55,7 +55,7 @@ const TicketDetailSidebar = ({
                       </Avatar>
                       <div>
                         <p className={`font-medium text-sm ${
-                          assignedUser._id === user?._id ? 'text-purple-600' : 'text-gray-900'
+                          assignedUser._id === user?._id ? 'text-blue-600' : 'text-gray-900'
                         }`}>
                           {assignedUser._id === user?._id ? 'You' : assignedUser.name}
                         </p>
@@ -70,7 +70,7 @@ const TicketDetailSidebar = ({
             {/* Department */}
             {department && (
               <div className="flex items-center gap-3">
-                <Briefcase className="w-4 h-4 text-purple-600" />
+                <Briefcase className="w-4 h-4 text-blue-600" />
                 <div>
                   <p className="text-sm text-gray-500">Department</p>
                   <p className="font-medium text-gray-900">{department.label}</p>
@@ -81,7 +81,7 @@ const TicketDetailSidebar = ({
             {/* Due Date */}
             {ticket.dueDate && (
               <div className={`flex items-center gap-3 ${isOverdue(ticket.dueDate) ? 'text-red-500' : ''}`}>
-                {isOverdue(ticket.dueDate) ? <Clock className="w-4 h-4 text-red-500" /> : <Calendar className="w-4 h-4 text-purple-600" />}
+                {isOverdue(ticket.dueDate) ? <Clock className="w-4 h-4 text-red-500" /> : <Calendar className="w-4 h-4 text-blue-600" />}
                 <div>
                   <p className="text-sm text-gray-500">Due Date</p>
                   <p className="font-medium text-gray-900">{formatDate(ticket.dueDate)}</p>
@@ -93,7 +93,7 @@ const TicketDetailSidebar = ({
             {/* Created By */}
             {createdByUser && (
               <div className="flex items-center gap-3">
-                <User className="w-4 h-4 text-purple-600" />
+                <User className="w-4 h-4 text-blue-600" />
                 <div>
                   <p className="text-sm text-gray-500">Created by</p>
                   <p className="font-medium text-gray-900">{createdByUser.name}</p>
@@ -103,7 +103,7 @@ const TicketDetailSidebar = ({
 
             {/* Created At */}
             <div className="flex items-center gap-3">
-              <Calendar className="w-4 h-4 text-purple-600" />
+              <Calendar className="w-4 h-4 text-blue-600" />
               <div>
                 <p className="text-sm text-gray-500">Created</p>
                 <p className="font-medium text-gray-900">{formatDate(ticket.createdAt)}</p>
@@ -112,7 +112,7 @@ const TicketDetailSidebar = ({
 
             {/* Last Updated */}
             <div className="flex items-center gap-3">
-              <Clock className="w-4 h-4 text-purple-600" />
+              <Clock className="w-4 h-4 text-blue-600" />
               <div>
                 <p className="text-sm text-gray-500">Last Updated</p>
                 <p className="font-medium text-gray-900">{formatDate(ticket.updatedAt)}</p>

@@ -199,7 +199,7 @@ const LoginPage = () => {
                   />
                   <button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-[500] py-2 rounded-md transform transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95 mt-2"
+                    className="w-full bg-gradient-to-r from-blue-500 to-blue-500 text-white font-[500] py-2 rounded-md transform transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95 mt-2"
                     disabled={loading}
                   >
                     {loading ? "Sending..." : "Verify Email"}

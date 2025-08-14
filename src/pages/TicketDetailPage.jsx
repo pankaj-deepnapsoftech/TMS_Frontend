@@ -15,19 +15,19 @@ const TicketDetailPage = () => {
           <nav className="flex space-x-8 border-b border-gray-300">
             <button
               onClick={() => setTopNavbar('Dashboard')}
-              className={`py-3 text-sm font-medium hover:text-purple-600 ${topNavbar === "Dashboard" && "text-purple-600 border-b-2 border-purple-600"} hover:border-b-2 hover:border-purple-600 transition-all`}
+              className={`py-3 text-sm font-medium hover:text-blue-600 ${topNavbar === "Dashboard" && "text-blue-600 border-b-2 border-blue-600"} hover:border-b-2 hover:border-blue-600 transition-all`}
             >
               Dashboard
             </button>
             <button
               onClick={() => setTopNavbar('Tasks')}
-              className={`py-3 text-sm font-medium hover:text-purple-600 ${topNavbar === "Tasks" && "text-purple-600 border-b-2 border-purple-600"} hover:border-b-2 hover:border-purple-600 transition-all`}
+              className={`py-3 text-sm font-medium hover:text-blue-600 ${topNavbar === "Tasks" && "text-blue-600 border-b-2 border-blue-600"} hover:border-b-2 hover:border-blue-600 transition-all`}
             >
               Tasks
             </button>
             <button
               onClick={() => setTopNavbar('Comments')}
-              className={`py-3 text-sm font-medium hover:text-purple-600 ${topNavbar === "Comments" && "text-purple-600 border-b-2 border-purple-600"} hover:border-b-2 hover:border-purple-600 transition-all`}
+              className={`py-3 text-sm font-medium hover:text-blue-600 ${topNavbar === "Comments" && "text-blue-600 border-b-2 border-blue-600"} hover:border-b-2 hover:border-blue-600 transition-all`}
             >
               Comments
             </button>

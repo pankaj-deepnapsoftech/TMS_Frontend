@@ -19,7 +19,7 @@ export const users = [
 export const ticketStatuses = [
   { id: 'open', name: 'Open', color: 'bg-blue-500/20 text-blue-300 border-blue-500/30' },
   { id: 'in progress', name: 'In Progress', color: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30' },
-  { id: 'review', name: 'Under Review', color: 'bg-purple-500/20 text-purple-300 border-purple-500/30' },
+  { id: 'review', name: 'Under Review', color: 'bg-blue-500/20 text-blue-300 border-blue-500/30' },
   { id: 'resolved', name: 'Resolved', color: 'bg-green-500/20 text-green-300 border-green-500/30' },
   { id: 'closed', name: 'Closed', color: 'bg-gray-500/20 text-gray-300 border-gray-500/30' },
   { id: 'overdue', name: 'Overdue Date', color: 'bg-gray-500/20 text-gray-300 border-gray-500/30' },

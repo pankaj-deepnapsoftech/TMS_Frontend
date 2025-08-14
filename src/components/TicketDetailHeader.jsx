@@ -23,7 +23,7 @@ const TicketDetailHeader = ({
         <Button
           variant="ghost"
           onClick={() => navigate(-1)}
-          className="mb-6 text-purple-600 hover:text-purple-800 hover:bg-purple-100"
+          className="mb-6 text-blue-600 hover:text-blue-800 hover:bg-blue-100"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Dashboard

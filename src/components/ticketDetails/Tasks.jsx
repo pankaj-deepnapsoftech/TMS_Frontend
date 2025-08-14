@@ -75,14 +75,14 @@ export default function AsanaTodoTableInlineAdd() {
                   value={newTask.title}
                   onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
                   onKeyDown={handleKeyDown}
-                  className="w-full bg-transparent border-b border-gray-300 px-1 py-1 text-sm focus:outline-none focus:border-purple-500"
+                  className="w-full bg-transparent border-b border-gray-300 px-1 py-1 text-sm focus:outline-none focus:border-blue-500"
                 />
               </td>
               <td className="px-4 py-2">
                 <select
                   value={newTask.status}
                   onChange={(e) => setNewTask({ ...newTask, status: e.target.value })}
-                  className="bg-transparent border-b border-gray-300 px-1 py-1 text-sm focus:outline-none focus:border-purple-500"
+                  className="bg-transparent border-b border-gray-300 px-1 py-1 text-sm focus:outline-none focus:border-blue-500"
                 >
                   <option value="">Select Status</option>
                   {["Backlog", "Pending", "In Progress", "Completed", "Re Open", "Under Review"].map((item) => (
@@ -96,7 +96,7 @@ export default function AsanaTodoTableInlineAdd() {
                 <select
                   value={newTask.priority}
                   onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}
-                  className="bg-transparent border-b border-gray-300 px-1 py-1 text-sm focus:outline-none focus:border-purple-500"
+                  className="bg-transparent border-b border-gray-300 px-1 py-1 text-sm focus:outline-none focus:border-blue-500"
                 >
                   <option value="">Select Priority</option>
                   <option value="High">High</option>
@@ -108,7 +108,7 @@ export default function AsanaTodoTableInlineAdd() {
                 <select
                   value={newTask.assinedTo}
                   onChange={(e) => setNewTask({ ...newTask, assinedTo: e.target.value })}
-                  className="bg-transparent border-b border-gray-300 px-1 py-1 text-sm focus:outline-none focus:border-purple-500"
+                  className="bg-transparent border-b border-gray-300 px-1 py-1 text-sm focus:outline-none focus:border-blue-500"
                 >
                   <option value="">Select Emp.</option>
                   {assinedUser.map((item) => (
@@ -124,7 +124,7 @@ export default function AsanaTodoTableInlineAdd() {
                   value={newTask.due_date}
                   onChange={(e) => setNewTask({ ...newTask, due_date: e.target.value })}
                   onKeyDown={handleKeyDown}
-                  className="w-full h-10 bg-transparent border-b border-gray-300 px-1 py-1 text-sm focus:outline-none focus:border-purple-500"
+                  className="w-full h-10 bg-transparent border-b border-gray-300 px-1 py-1 text-sm focus:outline-none focus:border-blue-500"
                 />
               </td>
             </tr>

@@ -81,7 +81,7 @@ const Registrations = () => {
                 type="text"
                 name="name"
                 placeholder="Enter your name"
-                className="w-full pl-10 pr-3 py-2 rounded-md bg-white text-gray-900 placeholder-gray-400 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full pl-10 pr-3 py-2 rounded-md bg-white text-gray-900 placeholder-gray-400 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 {...formik.getFieldProps("name")}
               />
               <User className="absolute top-9 left-2" size={19} color="gray" />
@@ -100,7 +100,7 @@ const Registrations = () => {
                 type="email"
                 name="email"
                 placeholder="Enter your email"
-                className="w-full pl-10 pr-3 py-2 rounded-md bg-white text-gray-900 placeholder-gray-400 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full pl-10 pr-3 py-2 rounded-md bg-white text-gray-900 placeholder-gray-400 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 {...formik.getFieldProps("email")}
               />
               <Mail className="absolute top-9 left-2" size={18} color="gray" />
@@ -119,7 +119,7 @@ const Registrations = () => {
                 type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="••••••••"
-                className="w-full pl-10 pr-10 py-2 rounded-md bg-white text-gray-900 placeholder-gray-400 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full pl-10 pr-10 py-2 rounded-md bg-white text-gray-900 placeholder-gray-400 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 {...formik.getFieldProps("password")}
               />
               <Lock className="absolute top-9 left-2" size={18} color="gray" />
@@ -144,7 +144,7 @@ const Registrations = () => {
                 type={confirmShowPassword ? "text" : "password"}
                 name="confirmPassword"
                 placeholder="••••••••"
-                className="w-full pl-10 pr-10 py-2 rounded-md bg-white text-gray-900 placeholder-gray-400 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full pl-10 pr-10 py-2 rounded-md bg-white text-gray-900 placeholder-gray-400 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
@@ -166,7 +166,7 @@ const Registrations = () => {
               <select
                 id="department"
                 name="department"
-                className="w-full px-3 py-2 rounded-md bg-white text-gray-900 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-3 py-2 rounded-md bg-white text-gray-900 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 {...formik.getFieldProps("department")}
               >
                 <option value="" disabled>
@@ -182,7 +182,7 @@ const Registrations = () => {
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-purple-600 to-sky-500 hover:opacity-90 text-white font-semibold py-2 rounded-md transition duration-200"
+              className="w-full bg-gradient-to-r from-blue-600 to-sky-500 hover:opacity-90 text-white font-semibold py-2 rounded-md transition duration-200"
             >
               Register
             </button>
