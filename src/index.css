@@ -48,7 +48,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(147, 51, 234, 0.5);
+  background: rgb(59, 130, 246);;
   border-radius: 4px;
 }
 
