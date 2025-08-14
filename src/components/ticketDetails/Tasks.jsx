@@ -75,7 +75,6 @@ export default function AsanaTodoTableInlineAdd() {
                   onChange={(e) =>
                     setNewTask({ ...newTask, title: e.target.value })
                   }
-                  onKeyDown={handleKeyDown}
                   className="w-full bg-transparent border-b border-gray-300 px-1 py-1 text-sm focus:outline-none focus:border-blue-500"
                 />
               </td>
@@ -138,7 +137,6 @@ export default function AsanaTodoTableInlineAdd() {
                   onChange={(e) =>
                     setNewTask({ ...newTask, due_date: e.target.value })
                   }
-                  onKeyDown={handleKeyDown}
                   className="w-full h-10 bg-white text-gray-900 border-b border-gray-300 px-1 py-1 text-sm focus:outline-none focus:border-blue-500 rounded"
                 />
               </td>
