@@ -1,4 +1,4 @@
-// EmployeeDashboard.jsx — Fixed filter logic for API response format
+// EmployeeDashboard.jsx — Light Theme
 
 import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
@@ -22,8 +22,6 @@ const EmployeeDashboard = () => {
   const [priorityFilter, setPriorityFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
 
-  // const ticketsArray = Array.isArray(myTickets) ? myTickets : [];
-
   const normalizeTicket = (ticket) => ({
     ...ticket,
     status: ticket.status?.toLowerCase(),
@@ -43,10 +41,10 @@ const EmployeeDashboard = () => {
         statusFilter === "all" ||
         (statusFilter === "overdue"
           ? ticket.status !== "resolved" &&
-          ticket.dueDate &&
-          new Date(ticket.dueDate) < now
+            ticket.dueDate &&
+            new Date(ticket.dueDate) < now
           : ticket.status === statusFilter);
-        
+
       const matchesPriority =
         priorityFilter === "all" || ticket.priority === priorityFilter;
       const matchesCategory =
@@ -65,7 +63,6 @@ const EmployeeDashboard = () => {
     setCategoryFilter("all");
   };
 
-  console.log(myTickets)
   return (
     <>
       <Helmet>
@@ -75,13 +72,13 @@ const EmployeeDashboard = () => {
           content="View and manage your assigned tickets."
         />
       </Helmet>
-      <div className="p-4 lg:p-8">
+      <div className="p-4 lg:p-8 bg-gray-50 min-h-screen">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <h1 className="text-3xl font-bold text-white mb-2">My Tickets</h1>
-          <p className="text-gray-400 mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">My Tickets</h1>
+          <p className="text-gray-700 mb-8">
             Welcome {user?.name}! Here are all the tickets assigned specifically
             to you. Let's get them resolved!
           </p>
@@ -118,15 +115,15 @@ const EmployeeDashboard = () => {
                 className="col-span-full text-center py-16"
               >
                 <div className="max-w-md mx-auto">
-                  <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 flex items-center justify-center">
-                    <Ticket className="w-12 h-12 text-purple-400" />
+                  <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-yellow-200/40 flex items-center justify-center">
+                    <Ticket className="w-12 h-12 text-yellow-600" />
                   </div>
-                  <h3 className="text-2xl font-semibold text-gray-300 mb-2">
+                  <h3 className="text-2xl font-semibold text-gray-800 mb-2">
                     {myTickets.length === 0
                       ? "No tickets assigned yet!"
                       : "All clear!"}
                   </h3>
-                  <p className="text-gray-400">
+                  <p className="text-gray-700">
                     {myTickets.length === 0
                       ? "You have no tickets assigned to you at the moment. Check back later!"
                       : "You have no tickets matching the current filters. Great job!"}

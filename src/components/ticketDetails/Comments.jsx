@@ -1,8 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
-// import { useNotifications } from '@/context/NotificationContext';
 import TicketDetailHeader from '@/components/TicketDetailHeader';
 import TicketComments from '@/components/TicketComments';
 import TicketDetailSidebar from '@/components/TicketDetailSidebar';
@@ -12,27 +11,20 @@ import { departmentFilters } from '@/context/AuthContext2';
 
 const Comments = () => {
     const { ticketId } = useParams();
-
-
     const navigate = useNavigate();
     const { user, allUsers } = useAuthContext();
-    
-    const { allTicket, updatedTicket, updatedComments } = useTicketCreate(); // Assuming updateTicket is available
+    const { allTicket, updatedTicket, updatedComments } = useTicketCreate();
     const { toast } = useToast();
+
     const isLoading = !allTicket || allTicket.length === 0;
     const ticket = useMemo(() => allTicket.find(t => t._id === ticketId), [allTicket, ticketId]);
 
     useEffect(() => {
         if (!ticket) return;
-
         if (user?.role === 'employee') {
             const assigned = Array.isArray(ticket.assignedTo)
                 ? ticket.assignedTo.includes(user.id)
                 : ticket.assignedTo === user.id;
-
-            // if (!assigned) {
-            //   navigate('/employee');
-            // }
         }
     }, [ticket, user, navigate]);
 
@@ -54,30 +46,30 @@ const Comments = () => {
     const getPriorityColor = (priority) => {
         switch (priority) {
             case "High":
-                return "bg-red-500/20 text-red-300 border-red-500/30";
+                return "bg-red-100 text-red-700 border-red-200";
             case "Medium":
-                return "bg-yellow-500/20 text-yellow-300 border-yellow-500/30";
+                return "bg-yellow-100 text-yellow-700 border-yellow-200";
             case "Low":
-                return "bg-green-500/20 text-green-300 border-green-500/30";
+                return "bg-green-100 text-green-700 border-green-200";
             default:
-                return "bg-gray-500/20 text-gray-300 border-gray-500/30";
+                return "bg-gray-100 text-gray-700 border-gray-200";
         }
     };
 
     const getStatusColor = (status) => {
         switch (status) {
             case "Open":
-                return "bg-blue-500/20 text-blue-300  border-blue-500/30";
+                return "bg-blue-100 text-blue-700 border-blue-200";
             case "In Progress":
-                return "bg-yellow-500/20 text-yellow-300 border-yellow-500/30";
+                return "bg-yellow-100 text-yellow-700 border-yellow-200";
             case "Under Review":
-                return "bg-blue-500/20 text-blue-300 border-blue-500/30";
+                return "bg-blue-100 text-blue-700 border-blue-200";
             case "Resolved":
-                return "bg-green-500/20 text-green-300 border-green-500/30";
+                return "bg-green-100 text-green-700 border-green-200";
             case "Closed":
-                return "bg-gray-500/20 text-gray-300 border-gray-500/30";
+                return "bg-gray-100 text-gray-700 border-gray-200";
             default:
-                return "bg-gray-500/20 text-gray-300 border-gray-500/30";
+                return "bg-gray-100 text-gray-700 border-gray-200";
         }
     };
 
@@ -111,15 +103,12 @@ const Comments = () => {
                 email: user?.email,
             },
         };
-
         updatedComments(ticket._id, newComment);
-
         toast({
             title: 'Comment Added 💬',
             description: 'Your comment was posted.',
         });
     };
-
 
     const handleStatusChange = (newStatus) => {
         const UpdatedTicket = {
@@ -127,11 +116,8 @@ const Comments = () => {
             status: newStatus,
             updatedAt: new Date().toISOString()
         };
-
         updatedTicket(ticket._id, UpdatedTicket);
-
         const newStatusName = user?.status?.find(s => s._id === newStatus)?.name || newStatus;
-
         toast({
             title: 'Status Updated! 📋',
             description: `Ticket status changed to ${newStatusName} and notifications sent.`
@@ -145,32 +131,31 @@ const Comments = () => {
     return (
         <>
             {isLoading ? (
-                <div className="p-8 text-center">
-                    <h1 className="text-2xl font-bold text-white mb-4">
+                <div className="p-8 text-center w-full bg-gray-50 text-gray-900 rounded-md shadow-md">
+                    <h1 className="text-2xl font-bold mb-4">
                         Loading Ticket...
                     </h1>
-                    <p className="text-gray-400 mb-4">
+                    <p className="text-gray-700 mb-4">
                         Please wait while we load the ticket details.
                     </p>
                 </div>
             ) : !ticket ? (
-                <div className="p-8 text-center">
-                    <h1 className="text-2xl font-bold text-white mb-4">
+                <div className="p-8 text-center w-full bg-gray-50 text-gray-900 rounded-md shadow-md">
+                    <h1 className="text-2xl font-bold mb-4">
                         Ticket Not Found
                     </h1>
-                    <p className="text-gray-400 mb-4">
+                    <p className="text-gray-700 mb-4">
                         This ticket may have been deleted or you don't have access to it.
                     </p>
                     <Button
                         onClick={() => navigate(-1)}
-                        className="bg-blue-500 hover:bg-blue-600"
+                        className="bg-blue-500 hover:bg-blue-600 text-white"
                     >
                         Go Back
                     </Button>
                 </div>
             ) : (
-
-                <div className="p-4 lg:p-8 max-w-6xl mx-auto">
+                <div className="p-4 lg:p-8 max-w-6xl mx-auto bg-gray-50 text-gray-900 rounded-md shadow-md">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div className="lg:col-span-2 space-y-6">
                             <TicketDetailHeader
@@ -207,10 +192,8 @@ const Comments = () => {
                     </div>
                 </div>
             )}
-
         </>
     )
-
 }
 
-export default Comments
+export default Comments;
