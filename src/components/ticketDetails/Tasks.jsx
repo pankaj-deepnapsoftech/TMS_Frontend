@@ -5,9 +5,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 export default function AsanaTodoTableInlineAdd() {
-  const { getAllAssignedUser, assinedUser, CreateTask, totalTasks, GetTask } =
-    useTodoContext();
-  console.log("here is total task", totalTasks);
+  const { getAllAssignedUser, assinedUser, CreateTask, totalTasks, GetTask, DeleteTask } = useTodoContext();
   const { ticketId } = useParams();
 
   const [newTask, setNewTask] = useState({
@@ -22,9 +20,7 @@ export default function AsanaTodoTableInlineAdd() {
     CreateTask(newTask);
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") handleAddTask();
-  };
+
 
   useEffect(() => {
     if (ticketId) {
