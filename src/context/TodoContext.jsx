@@ -27,15 +27,6 @@ const TodoContextProvider = ({children}) => {
         }
     }
 
-    const CreateTask =  async (data) => {
-        try {
-            const res = await axiosHandler.post("/todos/create",data);
-            toast.success(res.data.message || "Task Completed Successful");
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
     const GetTask = async (ticketId) => {
         try {
             const res = await axiosHandler.get(`/todos/get/${ticketId}`);
@@ -44,6 +35,18 @@ const TodoContextProvider = ({children}) => {
             console.log(error);
         }
     }
+
+    const CreateTask =  async (data) => {
+        try {
+            const res = await axiosHandler.post("/todos/create",data);
+            toast.success(res.data.message || "Task Completed Successful");
+            GetTask(data.ticket_id);
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+   
 
     return(
         <TodoContext.Provider value={{ getAllAssignedUser, assinedUser, CreateTask, GetTask, totalTasks }}>
